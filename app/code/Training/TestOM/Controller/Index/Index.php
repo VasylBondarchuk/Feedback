@@ -10,21 +10,23 @@ class Index implements HttpGetActionInterface
     /** @var PageFactory */
     private $pageFactory;
 
-    private $testClass;
+    //private $testClass;
+
+    private $playWithTest;
 
     // Instantiating the Context object is no longer required
     public function __construct(
         PageFactory $pageFactory,
-        \Training\TestOM\Model\Test $testClass
+        \Training\TestOM\Model\PlayWithTest $playWithTest
     ) {
-        // Calling parent::__construct() is also no longer needed
         $this->pageFactory = $pageFactory;
-        $this->testClass = $testClass;
+        $this->playWithTest = $playWithTest;
     }
 
     public function execute()
     {
-        $this->testClass->log();
+        //$this->testClass->log();
+        $this->playWithTest->run();
         $page = $this->pageFactory->create();
         return $page;
     }
