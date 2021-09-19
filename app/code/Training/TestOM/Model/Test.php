@@ -25,6 +25,11 @@ class Test
     private $number;
 
     /**
+     * @var ManagerInterfaceFactory
+     */
+    private $managerFactory;
+
+    /**
      * @param ManagerInterface $manager
      * @param $name
      * @param int $number
@@ -34,12 +39,14 @@ class Test
         \Training\TestOM\Model\ManagerInterface $manager,
         string $name,
         int $number,
-        array $arrayList
+        array $arrayList,
+        \Training\TestOM\Model\ManagerInterfaceFactory $managerFactory
     ) {
         $this->manager = $manager;
         $this->name = $name;
         $this->number = $number;
         $this->arrayList = $arrayList;
+        $this->managerFactory = $managerFactory;
     }
 
     /**
@@ -54,5 +61,8 @@ class Test
         print_r($this->number);
         echo '<br>';
         print_r($this->arrayList);
+        echo '<br>';
+        $newManager = $this->managerFactory->create();
+        print_r(get_class($newManager));
     }
 }
