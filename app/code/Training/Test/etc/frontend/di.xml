@@ -6,7 +6,10 @@
     <type name="Magento\Framework\View\Element\Template">
         <plugin name="training_test_2" type="Training\Test\Plugin\Block\Template" />
     </type>
+    <!--
     <type name="Magento\Catalog\Controller\Product\View">
         <plugin name="training_test_3" type="Training\Test\Plugin\Controller\Product\View" />
     </type>
+    -->
+    <preference for="Magento\Framework\App\FrontController" type="Training\Test\App\FrontController"/>
 </config>
