@@ -20,6 +20,7 @@
         </arguments>
     </type>
     <preference for="Magento\Framework\App\FrontController" type="Training\Test\App\FrontController"/>
--->
     <preference for="\Magento\Cms\Controller\Page\View" type="Training\Test\Controller\Page\View"/>
+    -->
+    <preference for="Magento\Catalog\Controller\Product\View" type="Training\Test\Controller\Product\Index"/>
 </config>
