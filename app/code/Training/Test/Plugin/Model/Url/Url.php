@@ -1,6 +1,6 @@
 <?php
 
-namespace Training\Test\Plugin\Model;
+namespace Training\Test\Plugin\Model\Url;
 
 class Url
 {
