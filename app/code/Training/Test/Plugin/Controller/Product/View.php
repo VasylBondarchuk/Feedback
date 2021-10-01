@@ -4,8 +4,8 @@ namespace Training\Test\Plugin\Controller\Product;
 
 class View
 {
-    protected $customerSession;
-    protected $redirectFactory;
+    private $customerSession;
+    private $redirectFactory;
 
     public function __construct(
         \Magento\Customer\Model\Session $customerSession,
