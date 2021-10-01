@@ -2,7 +2,9 @@
 
 namespace Training\Test\Controller\Index;
 
-class Index extends \Magento\Framework\App\Action\Action
+use Magento\Framework\App\Action\HttpGetActionInterface;
+
+class Index implements HttpGetActionInterface
 {
     private $resultRawFactory;
 
@@ -11,7 +13,6 @@ class Index extends \Magento\Framework\App\Action\Action
         \Magento\Framework\Controller\Result\RawFactory $resultRawFactory
     ) {
         $this->resultRawFactory = $resultRawFactory;
-        parent::__construct($context);
     }
     public function execute()
     {
