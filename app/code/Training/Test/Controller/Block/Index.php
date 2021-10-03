@@ -4,14 +4,8 @@ namespace Training\Test\Controller\Block;
 
 class Index extends \Magento\Framework\App\Action\Action
 {
-    /**
-     * @var \Magento\Framework\View\LayoutFactory
-     */
     private $layoutFactory;
-    /**
-     * @param \Magento\Backend\App\Action\Context $context
-     * @param \Magento\Framework\View\LayoutFactory $layoutFactory
-     */
+
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
         \Magento\Framework\View\LayoutFactory $layoutFactory
