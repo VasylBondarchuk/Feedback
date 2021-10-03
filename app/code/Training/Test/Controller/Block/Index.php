@@ -2,27 +2,27 @@
 
 namespace Training\Test\Controller\Block;
 
-use Magento\Framework\App\Action\HttpGetActionInterface;
-
-class Index implements HttpGetActionInterface
+class Index extends \Magento\Framework\App\Action\Action
 {
-
+    /**
+     * @var \Magento\Framework\View\LayoutFactory
+     */
     private $layoutFactory;
-    private $resultRawFactory;
-
+    /**
+     * @param \Magento\Backend\App\Action\Context $context
+     * @param \Magento\Framework\View\LayoutFactory $layoutFactory
+     */
     public function __construct(
-        \Magento\Framework\Controller\Result\RawFactory $resultRawFactory,
+        \Magento\Backend\App\Action\Context $context,
         \Magento\Framework\View\LayoutFactory $layoutFactory
     ) {
         $this->layoutFactory = $layoutFactory;
-        $this->resultRawFactory = $resultRawFactory;
+        parent::__construct($context);
     }
     public function execute()
     {
         $layout = $this->layoutFactory->create();
         $block = $layout->createBlock('Training\Test\Block\Test');
-        $resultRaw = $this->resultRawFactory->create();
-        $resultRaw->setContents($block->toHtml());
-        return $resultRaw;
+        $this->getResponse()->appendBody($block->toHtml());
     }
 }
