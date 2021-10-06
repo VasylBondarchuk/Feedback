@@ -3,7 +3,8 @@
 namespace Training\Test\Plugin\Block\Product\View;
 
 /**
- * Adds 'Test description' to a description of a product
+ * Customizes the Catalog\Block\Product\View\Description block and assign description.phtml
+template to it
  */
 class Description extends \Magento\Framework\View\Element\Template
 {
@@ -12,6 +13,7 @@ class Description extends \Magento\Framework\View\Element\Template
      */
     public function beforeToHtml(\Magento\Catalog\Block\Product\View\Description $subject)
     {
-        $subject->getProduct()->setDescription('Test description');
+        //$subject->getProduct()->setDescription('Test description');
+       $subject->setTemplate('Training_Test::description.phtml');
     }
 }
