@@ -22,8 +22,8 @@ class Index implements HttpGetActionInterface
     public function execute()
     {
         $layout = $this->layoutFactory->create();
-        $block = $layout->createBlock('Training\Test\Block\Test');
-        $block->setTemplate('test.phtml');
+        $block = $layout->createBlock(\Magento\Framework\View\Element\Template::class);
+        $block->setTemplate('Training_Test::test.phtml');
         $resultRaw = $this->resultRawFactory->create();
         return $resultRaw->setContents($block->toHtml()) ;
     }
