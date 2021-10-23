@@ -1,12 +1,9 @@
 <div>
+    <div class="feedback-statistic">
+        <p><?= __('Total number of submitted feedbacks: %1', $block->getAllFeedbackNumber()) ?></p>
+        <p><?= __('Total number of active feedbacks: %1', $block->getActiveFeedbackNumber()) ?></p>
+    </div>
     <div class="toolbar">
-        <div class="action">
-            <button id="add" title="<?= __('Add Feedback') ?>"
-                    type="button" class="action scalable primary"
-                    onclick="location.href = '<?= $block->escapeUrl($block->getAddFeedbackUrl()) ?>';">
-                <span><?= __('Add Feedbaack') ?></span>
-            </button>
-        </div>
         <?= $block->getPaginationHtml() ?>
     </div>
     <div class="feedback-list">
@@ -22,5 +19,12 @@
     </div>
     <div class="toolbar">
         <?= $block->getPaginationHtml() ?>
+    </div>
+    <div class="action">
+        <button id="add" title="<?= __('Add Feedback') ?>"
+                type="button" class="action scalable primary"
+                onclick="location.href = '<?= $block->escapeUrl($block->getAddFeedbackUrl()) ?>';">
+            <span><?= __('Add Feedbaack') ?></span>
+        </button>
     </div>
 </div

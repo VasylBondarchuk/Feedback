@@ -1,6 +1,11 @@
 <?php
 
 namespace Training\Feedback\Block;
+use Magento\Framework\Stdlib\DateTime\Timezone;
+use Magento\Framework\View\Element\Template\Context;
+use Training\Feedback\Model\ResourceModel\Feedback;
+use Training\Feedback\Model\ResourceModel\Feedback\CollectionFactory;
+
 /**
  *
  */
@@ -11,7 +16,7 @@ class FeedbackList extends \Magento\Framework\View\Element\Template
      */
     const PAGE_SIZE = 5;
     /**
-     * @var \Training\Feedback\Model\ResourceModel\Feedback\CollectionFactory
+     * @var CollectionFactory
      */
     private $collectionFactory;
     /**
@@ -19,26 +24,30 @@ class FeedbackList extends \Magento\Framework\View\Element\Template
      */
     private $collection;
     /**
-     * @var \Magento\Framework\Stdlib\DateTime\Timezone
+     * @var Timezone
      */
     private $timezone;
 
+    private $feedbackResource;
+
     /**
-     * @param \Magento\Framework\View\Element\Template\Context $context
-     * @param \Training\Feedback\Model\ResourceModel\Feedback\CollectionFactory $collectionFactory
-     * @param \Magento\Framework\Stdlib\DateTime\Timezone $timezone
+     * @param Context $context
+     * @param CollectionFactory $collectionFactory
+     * @param Timezone $timezone
      * @param array $data
      */
     public function __construct(
-        \Magento\Framework\View\Element\Template\Context                  $context,
-        \Training\Feedback\Model\ResourceModel\Feedback\CollectionFactory $collectionFactory,
-        \Magento\Framework\Stdlib\DateTime\Timezone                       $timezone,
-        array                                                             $data = array()
+        Context                  $context,
+        CollectionFactory $collectionFactory,
+        Timezone                       $timezone,
+        Feedback $feedbackResource,
+        array $data = array()
     )
     {
         parent::__construct($context, $data);
         $this->collectionFactory = $collectionFactory;
         $this->timezone = $timezone;
+        $this->feedbackResource = $feedbackResource;
     }
 
     /**
@@ -96,6 +105,15 @@ class FeedbackList extends \Magento\Framework\View\Element\Template
     public function getFeedbackDate($feedback)
     {
         return $this->timezone->formatDateTime($feedback->getCreationTime());
+    }
+
+    public function getAllFeedbackNumber()
+    {
+        return $this->feedbackResource->getAllFeedbackNumber();
+    }
+    public function getActiveFeedbackNumber()
+    {
+        return $this->feedbackResource->getActiveFeedbackNumber();
     }
 }
 
