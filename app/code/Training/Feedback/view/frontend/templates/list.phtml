@@ -1,0 +1,26 @@
+<div>
+    <div class="toolbar">
+        <div class="action">
+            <button id="add" title="<?= __('Add Feedback') ?>"
+                    type="button" class="action scalable primary"
+                    onclick="location.href = '<?= $block->escapeUrl($block->getAddFeedbackUrl()) ?>';">
+                <span><?= __('Add Feedbaack') ?></span>
+            </button>
+        </div>
+        <?= $block->getPaginationHtml() ?>
+    </div>
+    <div class="feedback-list">
+        <?php foreach ($block->getCollection() as $feedback): ?>
+            <div class="feedback-item" style="background-color: aliceblue; margin: 5px;">
+                <p>
+                    <?= $block->escapeHtml($feedback->getAuthorName()) ?> |
+                    <?= $block->getFeedbackDate($feedback) ?>
+                </p>
+                <p><?= $block->escapeHtml($feedback->getMessage()) ?></p>
+            </div>
+        <?php endforeach; ?>
+    </div>
+    <div class="toolbar">
+        <?= $block->getPaginationHtml() ?>
+    </div>
+</div
