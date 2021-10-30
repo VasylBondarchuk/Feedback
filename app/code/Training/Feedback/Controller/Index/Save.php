@@ -2,17 +2,21 @@
 
 namespace Training\Feedback\Controller\Index;
 
+use Magento\Framework\App\Action\Action;
+use Magento\Framework\App\Action\Context;
 use Magento\Framework\Exception\LocalizedException;
+use Training\Feedback\Model\FeedbackFactory;
+use Training\Feedback\Model\ResourceModel\Feedback;
 
-class Save extends \Magento\Framework\App\Action\Action
+class Save extends Action
 {
     private $feedbackFactory;
     private $feedbackResource;
 
     public function __construct(
-        \Magento\Framework\App\Action\Context $context,
-        \Training\Feedback\Model\FeedbackFactory $feedbackFactory,
-        \Training\Feedback\Model\ResourceModel\Feedback $feedbackResource
+        Context $context,
+        FeedbackFactory $feedbackFactory,
+        Feedback $feedbackResource
     ) {
         $this->feedbackFactory = $feedbackFactory;
         $this->feedbackResource = $feedbackResource;

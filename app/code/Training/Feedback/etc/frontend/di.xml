@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Training\Feedback\Api\Data\FeedbackInterface" type="Training\Feedback\Model\Feedback" />
+    <preference for="Training\Feedback\Api\Data\FeedbackRepositoryInterface" type="Training\Feedback\Model\FeedbackRepository" />
+    <preference for="Training\Feedback\Api\Data\FeedbackSearchResultsInterface" type="Magento\Framework\Api\SearchResults" />
+</config>
