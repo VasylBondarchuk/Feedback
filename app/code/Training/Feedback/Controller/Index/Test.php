@@ -38,13 +38,13 @@ class Test extends Action
         $newFeedback->setIsActive(1);
         $this->feedbackRepository->save($newFeedback);
         // load item by id
-        $feedback = $this->feedbackRepository->getById(28);
+        $feedback = $this->feedbackRepository->getById(30);
         $this->printFeedback($feedback);
         // update item
-        $feedbackToUpdate = $this->feedbackRepository->getById(28);
+        $feedbackToUpdate = $this->feedbackRepository->getById(30);
         $feedbackToUpdate->setMessage('CUSTOM ' . $feedbackToUpdate->getMessage());
         // delete feedback
-        $this->feedbackRepository->deleteById(28);
+        $this->feedbackRepository->deleteById(30);
         // load multiple items
         $this->searchCriteriaBuilder
             ->addFilter('is_active', 1);

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Training\Feedback\ViewModel;
+namespace Training\FeedbackProduct\ViewModel;
 
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;

@@ -171,5 +171,4 @@ class Feedback extends AbstractExtensibleModel implements FeedbackInterface
     {
         return $this->setExtensionAttributes($extensionAttributes);
     }
-
 }

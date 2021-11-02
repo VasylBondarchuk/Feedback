@@ -30,6 +30,19 @@
                        class="input-text" type="email" data-validate="{required:true, 'validate-email':true}"/>
             </div>
         </div>
+
+        <div class="field">
+            <label class="label" for="products_skus">
+                <span><?= $block->escapeHtml(__('Product SKU(s) comma-separated')) ?></span>
+            </label>
+            <div class="control">
+                <input name="products_skus" id="products_skus"
+                       title="<?= $block->escapeHtmlAttr(__('Product SKU(s) comma-separated')) ?>" value=""
+                       class="input-text" type="text"/>
+            </div>
+        </div>
+
+
         <div class="field comment required">
             <label class="label" for="message">
                 <span><?= $block->escapeHtml(__('What’s on your mind?')) ?></span>

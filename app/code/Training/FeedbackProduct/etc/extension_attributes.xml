@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<config>
+    <extension_attributes for="Training\Feedback\Api\Data\FeedbackInterface">
+        <attribute code="products" type="Magento\Catalog\Api\Data\ProductInterface"/>
+    </extension_attributes>
+</config>
