@@ -5,4 +5,8 @@
     <type name="Training\Feedback\Api\Data\FeedbackInterface">
         <plugin name="feedback_model_plugin" type="Training\FeedbackProduct\Plugin\Model\FeedbackExtension" sortOrder="1" disabled="false" />
     </type>
+
+    <type name="Training\Feedback\Ui\DataProvider\Form\DataProvider">
+        <plugin name="feedback_dataprovider_plugin" type="Training\FeedbackProduct\Plugin\Ui\Form\DataProvider\AddProductsToFeedback" sortOrder="2" disabled="false" />
+    </type>
 </config>
