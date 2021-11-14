@@ -10,7 +10,7 @@ class FeedbackProducts extends AbstractDb
     {
         $this->_init('training_feedback_product', 'row_id');
     }
-    public function saveProductRelations($feedbackId, $productIds)
+    public function saveProductRelations($feedbackId, $productIds): FeedbackProducts
     {
         $savedProductIds = $this->loadProductRelations($feedbackId);
         $productIdsToAdd = array_diff($productIds, $savedProductIds);
@@ -33,7 +33,7 @@ class FeedbackProducts extends AbstractDb
         }
         return $this;
     }
-    public function loadProductRelations($feedbackId)
+    public function loadProductRelations($feedbackId): array
     {
         $adapter = $this->getConnection();
         $select = $adapter->select()

@@ -1,7 +1,6 @@
 <?php
 
 namespace Training\FeedbackProduct\Model;
-
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\Api\FilterBuilder;
 use Magento\Framework\Api\SearchCriteriaBuilder;
@@ -10,15 +9,14 @@ class FeedbackDataLoader
 {
     const PRODUCT_ID_FIELD = 'entity_id';
     const PRODUCT_SKU_FIELD = 'sku';
-
     private $productRepository;
     private $searchCriteriaBuilder;
     private $filterBuilder;
-
     public function __construct(
         ProductRepositoryInterface $productRepository,
         SearchCriteriaBuilder $searchCriteriaBuilder,
         FilterBuilder $filterBuilder
+
     ) {
         $this->productRepository = $productRepository;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;

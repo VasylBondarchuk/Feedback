@@ -1,7 +1,7 @@
 <?php
 
 namespace Training\FeedbackProduct\Plugin\Model;
-
+use Training\Feedback\Api\Data\FeedbackExtensionInterface;
 use Training\Feedback\Api\Data\FeedbackExtensionInterfaceFactory;
 use Training\Feedback\Api\Data\FeedbackInterface;
 
@@ -13,11 +13,12 @@ class FeedbackExtension
     ) {
         $this->extensionAttributesFactory = $extensionAttributesFactory;
     }
-    public function afterGetExtensionAttributes(FeedbackInterface $subject,$result) {
+    public function afterGetExtensionAttributes(FeedbackInterface $subject,$result)
+    {
         if (!is_null($result)) {
             return $result;
         }
-        /** @var \Training\Feedback\Api\Data\FeedbackExtensionInterface $extensionAttributes */
+        /** @var FeedbackExtensionInterface $extensionAttributes */
         $extensionAttributes = $this->extensionAttributesFactory->create();
         $subject->setExtensionAttributes($extensionAttributes);
         return $extensionAttributes;

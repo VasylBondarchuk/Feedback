@@ -10,21 +10,30 @@ use Training\Feedback\Model\ResourceModel\Feedback;
 use Training\FeedbackProduct\Model\FeedbackDataLoader;
 use Training\Feedback\Controller\Index\Save as OverrideSave;
 use Magento\Framework\Event\ManagerInterface as EventManager;
+use Psr\Log\LoggerInterface;
+
 
 class Save extends OverrideSave
 {
+    private $feedbackFactory;
+    private $feedbackResource;
     private $feedbackDataLoader;
-    private $eventManager;
+    private $logger;
 
     public function __construct(
         Context $context,
         FeedbackFactory $feedbackFactory,
         Feedback $feedbackResource,
         FeedbackDataLoader $feedbackDataLoader,
-        EventManager $eventManager
+        EventManager $eventManager,
+        LoggerInterface $logger
+
     ) {
+        $this->feedbackFactory = $feedbackFactory;
         $this->feedbackDataLoader = $feedbackDataLoader;
+        $this->feedbackResource = $feedbackResource;
         $this->eventManager = $eventManager;
+        $this->logger = $logger;
 
         parent::__construct($context,$feedbackFactory,$feedbackResource);
     }
@@ -32,20 +41,19 @@ class Save extends OverrideSave
     {
         $result = $this->resultRedirectFactory->create();
 
-        //if "Submit" button is clicked
         if ($post = $this->getRequest()->getPostValue()) {
-        //[author_name] => Name 1 [author_email] => email1@email.com [products_skus] => TEST SIMPLE 1 [message] => What’s on your mind 1 [hideit] => [form_key] => 4d5FLZSm1WXypefK
             try {
                 $this->validatePost($post);
                 $feedback = $this->feedbackFactory->create();
                 $feedback->setData($post);
-                $this->eventManager->dispatch('training_feedback_save_after', ['myEventData1' => $feedback]);
                 $this->setProductsToFeedback($feedback, $post);
                 $this->feedbackResource->save($feedback);
+                $this->eventManager->dispatch('training_feedback_save_after', ['feedback' => $feedback]);
                 $this->messageManager->addSuccessMessage(
                     __('Thank you for your feedback.')
                 );
             } catch (\Exception $e) {
+                $this->logger->critical('Error message', ['exception' => $e]);
                 $this->messageManager->addErrorMessage(
                     __('An error occurred while processing your form. Please try again later.')
                 );
@@ -67,6 +75,7 @@ class Save extends OverrideSave
 
         $this->feedbackDataLoader->addProductsToFeedbackBySkus($feedback, $skus);
     }
+
     private function validatePost($post)
     {
         if (!isset($post['author_name']) || trim($post['author_name']) === '') {

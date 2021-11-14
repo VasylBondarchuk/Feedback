@@ -17,8 +17,9 @@ class LoadFeedbackProducts implements ObserverInterface
     }
     public function execute(Observer $observer)
     {
-        $feedback = $observer->getData('myEventData2');
-        echo '2';
+        $feedback = $observer->getData('feedback');
         $this->feedbackProducts->loadProductRelations($feedback);
+        return $feedback;
+        //var_dump($feedback->getExtensionAttributes()->getProducts());exit;
     }
 }
