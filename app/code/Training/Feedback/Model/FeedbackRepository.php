@@ -4,24 +4,28 @@ namespace Training\Feedback\Model;
 
 use Magento\Framework\Api\SearchCriteriaInterface;
 use Training\Feedback\Api\Data;
-use Training\Feedback\Api\Data\FeedbackInterface;
-use Training\Feedback\Api\Data\FeedbackRepositoryInterface;
+use Training\Feedback\Api\Data\Feedback\FeedbackInterface;
+use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Exception\CouldNotDeleteException;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Training\Feedback\Api\Data\FeedbackSearchResultsInterface;
+use Training\Feedback\Api\Data\Feedback\FeedbackSearchResultsInterface;
 use Training\Feedback\Model\ResourceModel\Feedback as FeedbackResource;
-use Training\Feedback\Api\Data\FeedbackInterfaceFactory as FeedbackFactory;
+use Training\Feedback\Api\Data\Feedback\FeedbackInterfaceFactory as FeedbackFactory;
 use Training\Feedback\Model\ResourceModel\Feedback\CollectionFactory as FeedbackCollectionFactory;
+use Training\Feedback\Api\Data\Feedback\FeedbackSearchResultsInterfaceFactory;
 
+/**
+ *
+ */
 class FeedbackRepository implements FeedbackRepositoryInterface
 {
     /**
     © 2018 M2Training.com.ua 6
      * @var FeedbackResource
      */
-    private $resource;
+    private FeedbackResource $resource;
     /**
      * @var FeedbackFactory
      */
@@ -30,26 +34,25 @@ class FeedbackRepository implements FeedbackRepositoryInterface
      * @var FeedbackCollectionFactory
      */
     private $feedbackCollectionFactory;
-    /**
-     * @var Data\FeedbackSearchResultsInterfaceFactory
-     */
+
     private $searchResultsFactory;
     /**
      * @var CollectionProcessorInterface
      */
     private $collectionProcessor;
+
     /**
      * @param FeedbackResource $resource
      * @param FeedbackFactory $feedbackFactory
      * @param FeedbackCollectionFactory $feedbackCollectionFactory
-     * @param Data\FeedbackSearchResultsInterfaceFactory $searchResultsFactory
+     * @param FeedbackSearchResultsInterfaceFactory $searchResultsFactory
      * @param CollectionProcessorInterface $collectionProcessor
      */
     public function __construct(
         FeedbackResource $resource,
         FeedbackFactory $feedbackFactory,
         FeedbackCollectionFactory $feedbackCollectionFactory,
-        Data\FeedbackSearchResultsInterfaceFactory $searchResultsFactory,
+        FeedbackSearchResultsInterfaceFactory $searchResultsFactory,
         CollectionProcessorInterface $collectionProcessor
     ) {
         $this->resource = $resource;
@@ -58,6 +61,7 @@ class FeedbackRepository implements FeedbackRepositoryInterface
         $this->searchResultsFactory = $searchResultsFactory;
         $this->collectionProcessor = $collectionProcessor;
     }
+
     /**
      * Save Feedback data
      *
@@ -65,7 +69,7 @@ class FeedbackRepository implements FeedbackRepositoryInterface
      * @return FeedbackInterface
      * @throws CouldNotSaveException
      */
-    public function save(FeedbackInterface $feedback)
+    public function save(FeedbackInterface $feedback): FeedbackInterface
     {
         try {
             $this->resource->save($feedback);
@@ -77,15 +81,15 @@ class FeedbackRepository implements FeedbackRepositoryInterface
         }
         return $feedback;
     }
+
     /**
      * Load Feedback data by given Feedback Identity
-    © 2018 M2Training.com.ua 7
      *
-     * @param string $feedbackId
-     * @return FeedbackInterface
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     * @param int $feedbackId
+     * @return FeedbackInterface Interface
+     * @throws NoSuchEntityException
      */
-    public function getById($feedbackId)
+    public function getById(int $feedbackId): FeedbackInterface
     {
         $feedback = $this->feedbackFactory->create();
         $this->resource->load($feedback, $feedbackId);
@@ -94,24 +98,26 @@ class FeedbackRepository implements FeedbackRepositoryInterface
         }
         return $feedback;
     }
+
     /**
      * Load Feedback data collection by given search criteria
      *
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
-     * @param SearchCriteriaInterface $criteria
+     * @param SearchCriteriaInterface $searchCriteria
      * @return FeedbackSearchResultsInterface
      */
-    public function getList(SearchCriteriaInterface $criteria)
+    public function getList(SearchCriteriaInterface $searchCriteria)
     {
         $collection = $this->feedbackCollectionFactory->create();
-        $this->collectionProcessor->process($criteria, $collection);
+        $this->collectionProcessor->process($searchCriteria, $collection);
         $searchResults = $this->searchResultsFactory->create();
-        $searchResults->setSearchCriteria($criteria);
+        $searchResults->setSearchCriteria($searchCriteria);
         $searchResults->setItems($collection->getItems());
         $searchResults->setTotalCount($collection->getSize());
         return $searchResults;
     }
+
     /**
      * Delete Feedback
      *
@@ -119,7 +125,7 @@ class FeedbackRepository implements FeedbackRepositoryInterface
      * @return bool
      * @throws CouldNotDeleteException
      */
-    public function delete(FeedbackInterface $feedback)
+    public function delete(FeedbackInterface $feedback): bool
     {
         try {
             $this->resource->delete($feedback);
@@ -134,12 +140,12 @@ class FeedbackRepository implements FeedbackRepositoryInterface
     /**
      * Delete Feedback by given Feedback Identity
      *
-     * @param string $feedbackId
+     * @param int $feedbackId
      * @return bool
      * @throws CouldNotDeleteException
      * @throws NoSuchEntityException
      */
-    public function deleteById($feedbackId)
+    public function deleteById(int $feedbackId): bool
     {
         return $this->delete($this->getById($feedbackId));
     }

@@ -2,32 +2,57 @@
 
 namespace Training\Feedback\Controller\Adminhtml\Index;
 
-use Magento\Backend\Model\View\Result\ForwardFactory;
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\App\Request\DataPersistorInterface;
+use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\View\Result\PageFactory;
 
-class NewAction extends \Magento\Backend\App\Action
+/**
+ *
+ */
+class NewAction extends Action
 {
-    const ADMIN_RESOURCE = 'Training_Feedback::feedback_save';
     /**
-     * @var ForwardFactory
+     *
      */
-    private $resultForwardFactory;
+    const ADMIN_RESOURCE = 'Training_Feedback::feedback';
+
     /**
-     * @param \Magento\Backend\App\Action\Context $context
-     * @param ForwardFactory $resultForwardFactory
+     * @var PageFactory
+     */
+    private $resultPageFactory;
+    /**
+     * @var DataPersistorInterface
+     */
+    private $dataPersistor;
+    /**
+     * @param Context $context
+     * @param PageFactory $resultPageFactory
+     * @param DataPersistorInterface $dataPersistor
      */
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
-        ForwardFactory $resultForwardFactory
+        Context                $context,
+        PageFactory            $resultPageFactory,
+        DataPersistorInterface $dataPersistor
     ) {
-        $this->resultForwardFactory = $resultForwardFactory;
+        $this->resultPageFactory = $resultPageFactory;
+        $this->dataPersistor = $dataPersistor;
         parent::__construct($context);
     }
     /**
-     * @return \Magento\Framework\Controller\ResultInterface
+     * Index action
+     *
+     * @return ResultInterface
      */
     public function execute()
     {
-        $resultForward = $this->resultForwardFactory->create();
-        return $resultForward->forward('edit');
+        $resultPage = $this->resultPageFactory->create();
+        $resultPage
+            ->setActiveMenu('Training_Feedback::feedback')
+            ->addBreadcrumb(__('Create New Feedback'), __('Create New Feedback'))
+            ->getConfig()->getTitle()->prepend(__('Create New Feedback'));
+        $this->dataPersistor->clear('training_feedback');
+        return $resultPage;
     }
 }

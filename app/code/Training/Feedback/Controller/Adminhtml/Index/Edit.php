@@ -1,50 +1,71 @@
 <?php
 
 namespace Training\Feedback\Controller\Adminhtml\Index;
+
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
+use Magento\Framework\Controller\Result\Redirect;
+use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\View\Result\PageFactory;
-use Training\Feedback\Api\Data\FeedbackRepositoryInterface;
-use Training\Feedback\Model\FeedbackFactory;
+use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
+use Psr\Log\LoggerInterface;
+use Training\Feedback\Model\Feedback;
 
+/**
+ *
+ */
 class Edit extends Action
 {
+    /**
+     *
+     */
     const ADMIN_RESOURCE = 'Training_Feedback::feedback_save';
+    /**
+     * @var PageFactory
+     */
     private $resultPageFactory;
+    /**
+     * @var Feedback RepositoryInterface
+     */
     private $feedbackRepository;
-    private $feedbackFactory;
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
     /**
      * @param Context $context
      * @param PageFactory $resultPageFactory
+     * @param FeedbackRepositoryInterface $feedbackRepository
+     * @param LoggerInterface $logger
      */
     public function __construct(
-        Context $context,
-        PageFactory $resultPageFactory,
+        Context                   $context,
+        PageFactory               $resultPageFactory,
         FeedbackRepositoryInterface $feedbackRepository,
-        FeedbackFactory $feedbackFactory
+        LoggerInterface           $logger
     ) {
         $this->resultPageFactory = $resultPageFactory;
         $this->feedbackRepository = $feedbackRepository;
-        $this->feedbackFactory = $feedbackFactory;
+        $this->logger = $logger;
         parent::__construct($context);
     }
+
     /**
-     * @return \Magento\Framework\Controller\ResultInterface
+     * @return ResultInterface
      * @SuppressWarnings(PHPMD.NPathComplexity)
+     * @throws LocalizedException
      */
     public function execute()
     {
-        $id = $this->getRequest()->getParam('feedback_id');
-        $model = $this->feedbackFactory->create();
-        if ($id) {
-            try {
-                $model = $this->feedbackRepository->getById($id);
-            } catch (NoSuchEntityException $e) {
-                $this->messageManager->addErrorMessage(__('This feedback no longer exists.'));
-                $resultRedirect = $this->resultRedirectFactory->create();
-                return $resultRedirect->setPath('*/*/');
-            }
+        $id = (int)$this->getRequest()->getParam('feedback_id');
+
+        if (!$this->isIdExist($id)) {
+            $this->messageManager->addErrorMessage(__('This feedback does not exist.'));
+            $resultRedirect = $this->resultRedirectFactory->create();
+            return $resultRedirect->setPath('*/*/');
         }
         $resultPage = $this->resultPageFactory->create();
         $resultPage
@@ -56,5 +77,30 @@ class Edit extends Action
             )
             ->getConfig()->getTitle()->prepend(__('Edit Feedback'));
         return $resultPage;
+    }
+    /**
+     * @param $id
+     * @return bool
+     * @throws LocalizedException
+     */
+    private function isIdExist($id): bool
+    {
+        $exist = false;
+        if (is_int($id) && $id > 0) {
+            try {
+                $this->feedbackRepository->getById($id);
+                $exist = true;
+            } catch (NoSuchEntityException $e) {
+                $this->logger->error($e->getLogMessage());
+            }
+        }
+        return $exist;
+    }
+
+    private function redirectToIndexPage() : Redirect
+    {
+        $this->messageManager->addErrorMessage(__('This feedback does not exist.'));
+        $resultRedirect = $this->resultRedirectFactory->create();
+        return $resultRedirect->setPath('*/*/');
     }
 }

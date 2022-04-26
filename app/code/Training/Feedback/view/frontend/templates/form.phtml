@@ -16,7 +16,7 @@
             </label>
             <div class="control">
                 <input name="author_name" id="author_name"
-                       title="<?= $block->escapeHtmlAttr(__('Name')) ?>" value=""
+                       title="<?= $block->escapeHtmlAttr(__('Name')) ?>" value="<?= $viewModel->getCustomerName() ?>"
                        class="input-text" type="text" data-validate="{required:true}"/>
             </div>
         </div>
@@ -35,9 +35,10 @@
                 <span><?= $block->escapeHtml(__('What’s on your mind?')) ?></span>
             </label>
             <div class="control">
-<textarea name="message" id="message"
-          title="<?= $block->escapeHtmlAttr(__('What’s on your mind?')) ?>"
-          class="input-text" cols="5" rows="3" data-validate="{required:true}"></textarea>
+                <textarea name="message" id="message"
+                          title="<?= $block->escapeHtmlAttr(__('What’s on your mind?')) ?>"
+                          class="input-text" cols="5" rows="3" data-validate="{required:true}">
+                </textarea>
             </div>
         </div>
     </fieldset>

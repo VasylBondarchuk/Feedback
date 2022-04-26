@@ -6,8 +6,8 @@ use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Api\SortOrderBuilder;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
-use Training\Feedback\Api\Data\FeedbackInterfaceFactory;
-use Training\Feedback\Api\Data\FeedbackRepositoryInterface;
+use Training\Feedback\Api\Data\Feedback\FeedbackInterfaceFactory;
+use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
 
 class Test extends Action
 {
@@ -16,11 +16,11 @@ class Test extends Action
     private $searchCriteriaBuilder;
     private $sortOrderBuilder;
     public function __construct(
-        Context $context,
-        FeedbackInterfaceFactory $feedbackFactory,
+        Context                   $context,
+        FeedbackInterfaceFactory  $feedbackFactory,
         FeedbackRepositoryInterface $feedbackRepository,
-        SearchCriteriaBuilder $searchCriteriaBuilder,
-        SortOrderBuilder $sortOrderBuilder
+        SearchCriteriaBuilder     $searchCriteriaBuilder,
+        SortOrderBuilder          $sortOrderBuilder
     ) {
         $this->feedbackFactory = $feedbackFactory;
         $this->feedbackRepository = $feedbackRepository;

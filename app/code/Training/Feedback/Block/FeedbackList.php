@@ -1,15 +1,22 @@
 <?php
 
 namespace Training\Feedback\Block;
+
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Stdlib\DateTime\Timezone;
+use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
-use Training\Feedback\Model\ResourceModel\Feedback;
+use Training\Feedback\Model\ResourceModel\Feedback as FeedbackResource;
+use Training\Feedback\Model\Feedback as FeedbackModel;
+use Training\Feedback\Model\ResourceModel\Feedback\Collection;
 use Training\Feedback\Model\ResourceModel\Feedback\CollectionFactory;
+use Training\Feedback\Model\ReplyRepository;
+use Psr\Log\LoggerInterface;
 
 /**
  *
  */
-class FeedbackList extends \Magento\Framework\View\Element\Template
+class FeedbackList extends Template
 {
     /**
      *
@@ -28,32 +35,50 @@ class FeedbackList extends \Magento\Framework\View\Element\Template
      */
     private $timezone;
 
+    /**
+     * @var FeedbackResource
+     */
     private $feedbackResource;
+
+    /**
+     * @var ReplyRepository
+     */
+    private $replyRepository;
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
 
     /**
      * @param Context $context
      * @param CollectionFactory $collectionFactory
      * @param Timezone $timezone
+     * @param FeedbackResource $feedbackResource
      * @param array $data
      */
     public function __construct(
-        Context                  $context,
+        Context           $context,
         CollectionFactory $collectionFactory,
-        Timezone                       $timezone,
-        Feedback $feedbackResource,
-        array $data = array()
+        Timezone          $timezone,
+        FeedbackResource  $feedbackResource,
+        ReplyRepository   $replyRepository,
+        LoggerInterface   $logger,
+        array             $data = []
     )
     {
         parent::__construct($context, $data);
         $this->collectionFactory = $collectionFactory;
         $this->timezone = $timezone;
         $this->feedbackResource = $feedbackResource;
+        $this->replyRepository = $replyRepository;
+        $this->logger = $logger;
     }
 
     /**
-     * @return \Training\Feedback\Model\ResourceModel\Feedback\Collection
+     * @return Collection
      */
-    public function getCollection()
+    public function getCollection(): Collection
     {
         if (!$this->collection) {
             $this->collection = $this->collectionFactory->create();
@@ -64,36 +89,35 @@ class FeedbackList extends \Magento\Framework\View\Element\Template
     }
 
     /**
-     * @return string
+     * @inheritDoc
+     * @throws LocalizedException
      */
-    public function getPagerHtml() : string
+    protected function _prepareLayout()
     {
-        $pagerBlock = $this->getChildBlock('feedback_list_pager');
-        if ($pagerBlock instanceof \Magento\Framework\DataObject) {
-            /* @var $pagerBlock \Magento\Theme\Block\Html\Pager */
-            $pagerBlock
-                ->setUseContainer(false)
-                ->setShowPerPage(false)
-                ->setShowAmounts(false)
-                ->setLimit($this->getLimit())
-                ->setCollection($this->getCollection());
-            return $pagerBlock->toHtml();
-        }
-        return '';
+        parent::_prepareLayout();
+        $pager = $this->getLayout()->createBlock(
+            CustomPager::class,
+            'feedback.list.pager'
+        )->setCollection($this->getCollection());
+        $this->setChild('pager', $pager);
+
+        return $this;
     }
 
     /**
-     * @return int
+     * Get Pager child block output
+     *
+     * @return string
      */
-    public function getLimit()
+    public function getPagerHtml(): string
     {
-        return static::PAGE_SIZE;
+        return $this->getChildHtml('pager');
     }
 
     /**
      * @return string
      */
-    public function getAddFeedbackUrl()
+    public function getAddFeedbackUrl(): string
     {
         return $this->getUrl('training_feedback/index/form');
     }
@@ -107,14 +131,59 @@ class FeedbackList extends \Magento\Framework\View\Element\Template
         return $this->timezone->formatDateTime($feedback->getCreationTime());
     }
 
-    public function getAllFeedbackNumber()
+    /**
+     * @return string
+     */
+    public function getAllFeedbackNumber(): string
     {
         return $this->feedbackResource->getAllFeedbackNumber();
     }
-    public function getActiveFeedbackNumber()
+
+    /**
+     * @return string
+     */
+    public function getActiveFeedbackNumber(): string
     {
         return $this->feedbackResource->getActiveFeedbackNumber();
     }
+
+    /**
+     * @param FeedbackModel $feedback
+     * @return false|string
+     */
+    public function getReplyDate(FeedbackModel $feedback)
+    {
+        $replyDate = '';
+        $feedbackId = $feedback->getFeedbackId();
+        try {
+            $replyDate =
+                $this->timezone->formatDateTime(
+                    $this->replyRepository->getByFeedbackId($feedbackId)->getReplyCreationTime()
+                );
+        } catch (LocalizedException $e) {
+            $this->logger->error($e->getLogMessage());
+        }
+        return $replyDate;
+    }
+
+    /**
+     * @param FeedbackModel $feedback
+     * @return string
+     */
+    public function getReplyText(FeedbackModel $feedback): ?string
+    {
+        $replyText = '';
+        $feedbackId = $feedback->getFeedbackId();
+        try {
+            $replyText =  $this->replyRepository->getByFeedbackId($feedbackId)->getReplyText();
+        } catch (LocalizedException $e) {
+            $this->logger->error($e->getLogMessage());
+        }
+        return $replyText;
+    }
+
+    public function getReplyAuthorName(): string
+    {
+        return 'Admin';
+    }
 }
-
-

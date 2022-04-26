@@ -3,27 +3,40 @@
 namespace Training\Feedback\Model;
 
 use Magento\Framework\Model\AbstractExtensibleModel;
-use Training\Feedback\Api\Data\FeedbackInterface;
+use Training\Feedback\Api\Data\Feedback\FeedbackInterface;
 
+/**
+ *
+ */
 class Feedback extends AbstractExtensibleModel implements FeedbackInterface
 {
-    const STATUS_ACTIVE = 1;
-    const STATUS_INACTIVE = 0;
-
+    const STATUS_ACTIVE_VALUE = 1;
+    const STATUS_INACTIVE_VALUE = 0;
+    const STATUS_ACTIVE_LABEL = 'Published';
+    const STATUS_INACTIVE_LABEL = 'Not published';
+    /**
+     * @var string
+     */
     protected $_eventPrefix = 'training_feedback';
+    /**
+     * @var string
+     */
     protected $_eventObject = 'feedback';
 
+    /**
+     * @return void
+     */
     protected function _construct()
     {
         $this->_init(ResourceModel\Feedback::class);
     }
 
     /**
-     * Retrieve post id
+     * Retrieve Get FEEDBACK_ID
      *
      * @return int
      */
-    public function getId()
+    public function getFeedbackId(): int
     {
         return $this->getData(self::FEEDBACK_ID);
     }
@@ -32,7 +45,7 @@ class Feedback extends AbstractExtensibleModel implements FeedbackInterface
      *
      * @return string
      */
-    public function getAuthorName()
+    public function getAuthorName(): string
     {
         return (string)$this->getData(self::AUTHOR_NAME);
     }
@@ -41,7 +54,7 @@ class Feedback extends AbstractExtensibleModel implements FeedbackInterface
      *
      * @return string
      */
-    public function getAuthorEmail()
+    public function getAuthorEmail(): string
     {
         return $this->getData(self::AUTHOR_EMAIL);
     }
@@ -50,25 +63,27 @@ class Feedback extends AbstractExtensibleModel implements FeedbackInterface
      *
      * @return string
      */
-    public function getMessage()
+    public function getMessage(): string
     {
         return $this->getData(self::MESSAGE);
     }
+
     /**
      * Retrieve post creation time
      *
      * @return string
      */
-    public function getCreationTime()
+    public function getCreationTime(): string
     {
         return $this->getData(self::CREATION_TIME);
     }
+
     /**
      * Retrieve post update time
      *
      * @return string
      */
-    public function getUpdateTime()
+    public function getUpdateTime(): string
     {
         return $this->getData(self::UPDATE_TIME);
     }
@@ -77,27 +92,34 @@ class Feedback extends AbstractExtensibleModel implements FeedbackInterface
      *
      * @return bool
      */
-    public function isActive()
+    public function getIsActive(): bool
     {
         return (bool)$this->getData(self::IS_ACTIVE);
+    }
+
+    public function getIsPublished() : string
+    {
+        return $this->getIsActive()
+            ? self::STATUS_ACTIVE_LABEL
+            : self::STATUS_INACTIVE_LABEL;
     }
     /**
      * Set ID
      *
-     * @param int $id
-     * @return FeedbackInterface
+     * @param int $feedbackId
+     * @return Feedback Interface
      */
-    public function setId($id)
+    public function setFeedbackId(int $feedbackId): FeedbackInterface
     {
-        return $this->setData(self::FEEDBACK_ID, $id);
+        return $this->setData(self::FEEDBACK_ID, $feedbackId);
     }
     /**
      * Set author name
      *
      * @param string $authorName
-     * @return FeedbackInterface
+     * @return Feedback Interface
      */
-    public function setAuthorName($authorName)
+    public function setAuthorName(string $authorName): FeedbackInterface
     {
         return $this->setData(self::AUTHOR_NAME, $authorName);
     }
@@ -105,9 +127,9 @@ class Feedback extends AbstractExtensibleModel implements FeedbackInterface
      * Set author email
      *
      * @param string $authorEmail
-     * @return FeedbackInterface
+     * @return Feedback Interface
      */
-    public function setAuthorEmail($authorEmail)
+    public function setAuthorEmail(string $authorEmail): FeedbackInterface
     {
         return $this->setData(self::AUTHOR_EMAIL, $authorEmail);
     }
@@ -115,19 +137,20 @@ class Feedback extends AbstractExtensibleModel implements FeedbackInterface
      * Set message
      *
      * @param string $message
-     * @return FeedbackInterface
+     * @return Feedback Interface
      */
-    public function setMessage($message)
+    public function setMessage(string $message): FeedbackInterface
     {
         return $this->setData(self::MESSAGE, $message);
     }
     /**
      * Set creation time
      *
+    * © 2018 M2Training.com.ua 4
      * @param string $creationTime
-     * @return FeedbackInterface
+     * @return Feedback Interface
      */
-    public function setCreationTime($creationTime)
+    public function setCreationTime(string $creationTime): FeedbackInterface
     {
         return $this->setData(self::CREATION_TIME, $creationTime);
     }
@@ -135,9 +158,9 @@ class Feedback extends AbstractExtensibleModel implements FeedbackInterface
      * Set update time
      *
      * @param string $updateTime
-     * @return FeedbackInterface
+     * @return Feedback Interface
      */
-    public function setUpdateTime($updateTime)
+    public function setUpdateTime(string $updateTime): FeedbackInterface
     {
         return $this->setData(self::UPDATE_TIME, $updateTime);
     }
@@ -145,30 +168,10 @@ class Feedback extends AbstractExtensibleModel implements FeedbackInterface
      * Set is active
      *
      * @param bool|int $isActive
-     * @return FeedbackInterface
+     * @return Feedback Interface
      */
-    public function setIsActive($isActive)
+    public function setIsActive($isActive): FeedbackInterface
     {
         return $this->setData(self::IS_ACTIVE, $isActive);
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @return Feedback|null
-     */
-    public function getExtensionAttributes()
-    {
-        return $this->getExtensionAttributes();
-    }
-    /**
-     * {@inheritdoc}
-     *
-     * @param FeedbackInterface $extensionAttributes
-     * @return $this
-     */
-    public function setExtensionAttributes(FeedbackInterface $extensionAttributes)
-    {
-        return $this->setExtensionAttributes($extensionAttributes);
     }
 }

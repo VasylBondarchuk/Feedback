@@ -11,7 +11,6 @@ class Index implements HttpGetActionInterface
 
     public function __construct(
         PageFactory $pageFactory
-
     ) {
         $this->pageFactory = $pageFactory;
     }

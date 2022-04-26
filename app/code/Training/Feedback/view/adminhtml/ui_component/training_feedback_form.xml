@@ -44,7 +44,6 @@
         </settings>
         <field name="feedback_id" formElement="input">
             <argument name="data" xsi:type="array">
-                © 2018 M2Training.com.ua 10
                 <item name="config" xsi:type="array">
                     <item name="source" xsi:type="string">feedback</item>
                 </item>
@@ -79,6 +78,7 @@
                 </checkbox>
             </formElements>
         </field>
+
         <field name="author_name" sortOrder="20" formElement="input">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
@@ -94,6 +94,7 @@
                 <dataScope>author_name</dataScope>
             </settings>
         </field>
+
         <field name="author_email" formElement="input">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
@@ -110,9 +111,9 @@
                 <dataScope>author_email</dataScope>
             </settings>
         </field>
+
         <field name="message" formElement="textarea">
             <argument name="data" xsi:type="array">
-                © 2018 M2Training.com.ua 11
                 <item name="config" xsi:type="array">
                     <item name="source" xsi:type="string">feedback</item>
                 </item>
@@ -125,5 +126,18 @@
                 <dataScope>message</dataScope>
             </settings>
         </field>
+
+        <field name="reply_text" formElement="textarea">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">reply_text</item>
+                </item>
+            </argument>
+            <settings>
+                <label>Reply</label>
+                <dataScope>reply_text</dataScope>
+            </settings>
+        </field>
+
     </fieldset>
 </form>

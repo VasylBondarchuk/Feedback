@@ -1,13 +1,15 @@
 <?php
 
 namespace Training\Feedback\Ui\DataProvider\Listing;
+use Training\Feedback\Model\ResourceModel\Feedback\Collection;
 use Training\Feedback\Model\ResourceModel\Feedback\CollectionFactory;
+
 class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
 {
     /**
      * Product collection
      *
-     * @var \Training\Feedback\Model\ResourceModel\Feedback\Collection
+     * @var Collection
      */
     protected $collection;
     /**

@@ -48,7 +48,7 @@ class Actions extends Column
      * @param array $dataSource
      * @return array
      */
-    public function prepareDataSource(array $dataSource)
+    public function prepareDataSource(array $dataSource): array
     {
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as & $item) {
@@ -73,7 +73,6 @@ class Actions extends Column
                             'label' => __('Delete'),
                             'confirm' => [
                                 'title' => __('Delete feedback'),
-
                                 'message' => __('Are you sure you want to delete a feedback record?')
                             ]
                         ]
