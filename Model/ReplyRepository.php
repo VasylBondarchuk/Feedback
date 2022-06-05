@@ -77,7 +77,7 @@ class ReplyRepository implements ReplyRepositoryInterface
             $this->resource->save($reply);
         } catch (\Exception $exception) {
             throw new CouldNotSaveException(
-                __('Could not save the feedback: %1', $exception->getMessage()),
+                __('Could not save the Reply: %1', $exception->getMessage()),
                 $exception
             );
         }

@@ -11,7 +11,8 @@ use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
 use Symfony\Component\Console\Helper\Table;
 
 /**
- * bin/magento feedback:display --feedbackId=71
+ * Class provides functionality to get feedback details by its id in console
+ * bin/magento feedback:display --feedbackId=<feddbackNumber>
  */
 class DisplayFeedbackDetailsById extends Command
 {

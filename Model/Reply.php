@@ -2,7 +2,6 @@
 
 namespace Training\Feedback\Model;
 
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Model\AbstractExtensibleModel;
 use Training\Feedback\Api\Data\Reply\ReplyInterface;
 
