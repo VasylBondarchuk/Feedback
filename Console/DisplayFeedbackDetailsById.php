@@ -16,10 +16,8 @@ use Symfony\Component\Console\Helper\Table;
  */
 class DisplayFeedbackDetailsById extends Command
 {
-    /**
-     *
-     */
     const FEEDBACK_ID = 'feedbackId';
+    const HEADERS = ['ID', 'Author name', 'Author Email', 'Status', 'Created' , 'Modified'];
 
     /**
      * @var FeedbackRepositoryInterface
@@ -70,7 +68,7 @@ class DisplayFeedbackDetailsById extends Command
             }
             else{
                 $table = new Table($output);
-                $table->setHeaders(['ID', 'Author name', 'Author Email', 'Status', 'Created' , 'Modified']);
+                $table->setHeaders(self::HEADERS);
                 $feedback = $this->feedbackRepository->getById($feedbackId);
                 $table->addRow([
                     $feedback->getFeedbackId(),
