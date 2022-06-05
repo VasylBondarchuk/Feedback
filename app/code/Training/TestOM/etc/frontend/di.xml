@@ -2,11 +2,9 @@
     <preference for="Training\TestOM\Model\ManagerInterface" type="Training\TestOM\Model\Manager" />
     <type name="Training\TestOM\Model\Test">
         <arguments>
-            <argument name="name" xsi:type="string">Custom String</argument>
-            <argument name="number" xsi:type="number">42</argument>
             <argument name="arrayList" xsi:type="array">
-                <item name="item_1" xsi:type="string">array text item</item>
-                <item name="item_2" xsi:type="number">6</item>
+                <item name="item_1" xsi:type="string">array custom array text item additional</item>
+                <item name="item_5" xsi:type="number">600</item>
             </argument>
         </arguments>
     </type>

@@ -9,9 +9,11 @@ class FeedbackDataLoader
 {
     const PRODUCT_ID_FIELD = 'entity_id';
     const PRODUCT_SKU_FIELD = 'sku';
+    
     private $productRepository;
     private $searchCriteriaBuilder;
     private $filterBuilder;
+    
     public function __construct(
         ProductRepositoryInterface $productRepository,
         SearchCriteriaBuilder $searchCriteriaBuilder,
@@ -22,18 +24,21 @@ class FeedbackDataLoader
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
         $this->filterBuilder = $filterBuilder;
     }
+    
     public function addProductsToFeedbackBySkus($feedback, $skus)
     {
         $feedback->getExtensionAttributes()
             ->setProducts($this->getProductsByField(self::PRODUCT_SKU_FIELD, $skus));
         return $feedback;
     }
+    
     public function addProductsToFeedbackByIds($feedback, $ids)
     {
         $feedback->getExtensionAttributes()
             ->setProducts($this->getProductsByField(self::PRODUCT_ID_FIELD, $ids));
         return $feedback;
     }
+    
     private function getProductsByField($field, $value)
     {
         if (!is_array($value) || !count($value)) {
