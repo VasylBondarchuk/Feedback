@@ -19,6 +19,7 @@ class DisplayFeedbackDetailsById extends Command
     const FEEDBACK_ID = 'feedbackId';
     const HEADERS = ['ID', 'Author name', 'Author Email', 'Status', 'Created' , 'Modified'];
 
+
     /**
      * @var FeedbackRepositoryInterface
      */
