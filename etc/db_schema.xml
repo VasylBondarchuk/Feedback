@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+
+    <table name="training_feedback" resource="default" engine="innodb" comment="Feedback Messages Table">
+        <column xsi:type="smallint" name="feedback_id" padding="5" nullable="false" identity="true"
+                comment="Feedback ID"/>
+        <column xsi:type="varchar" name="author_name" nullable="false" length="255"
+                comment="Feedback Author Name"/>
+        <column xsi:type="varchar" name="author_email" nullable="false" length="255"
+                comment="Feedback Author Email"/>
+        <column xsi:type="mediumtext" name="message" nullable="false"
+                comment="Feedback Content"/>
+        <column xsi:type="timestamp" name="creation_time" on_update="false" nullable="false"
+                default="CURRENT_TIMESTAMP"
+                comment="Feedback Creation Time"/>
+        <column xsi:type="timestamp" name="update_time" on_update="true" nullable="false"
+                default="CURRENT_TIMESTAMP"
+                comment="Feedback Modification Time"/>
+        <column xsi:type="smallint" name="is_active" padding="5" nullable="false" identity="false"
+                default="0"
+                comment="Is Feedback Active"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="feedback_id"/>
+        </constraint>
+        <index referenceId="TRAINING_FEEDBACK_IS_ACTIVE" indexType="btree">
+            <column name="is_active"/>
+        </index>
+    </table>
+
+    <table name="training_feedback_reply" resource="default" engine="innodb" comment="Feedback Replies Table">
+        <column xsi:type="smallint" name="reply_id" padding="5" nullable="false" identity="true"
+                comment="Feedback Reply ID"/>
+        <column xsi:type="smallint" name="feedback_id" padding="5" nullable="false"
+                comment="Feedback ID"/>
+        <column xsi:type="varchar" name="admin_id" nullable="false" length="255"
+                comment="Feedback Rely Admin id"/>
+        <column xsi:type="mediumtext" name="reply_text" nullable="true"
+                comment="Feedback Reply Content"/>
+        <column xsi:type="timestamp" name="reply_creation_time" on_update="false" nullable="false"
+                default="CURRENT_TIMESTAMP" comment="Feedback Reply Creation Time"/>
+        <column xsi:type="timestamp" name="reply_update_time" on_update="true" nullable="false"
+                default="CURRENT_TIMESTAMP" comment="Feedback Reply Modification Time"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="reply_id"/>
+        </constraint>
+    </table>
+
+</schema>
