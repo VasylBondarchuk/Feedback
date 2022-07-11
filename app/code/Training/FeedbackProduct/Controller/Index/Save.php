@@ -13,7 +13,7 @@ use Magento\Framework\Event\ManagerInterface as EventManager;
 use Psr\Log\LoggerInterface;
 
 
-class Save extends OverrideSave
+class Save
 {
     private $feedbackFactory;
     private $feedbackResource;
@@ -35,7 +35,7 @@ class Save extends OverrideSave
         $this->eventManager = $eventManager;
         $this->logger = $logger;
 
-        parent::__construct($context,$feedbackFactory,$feedbackResource);
+        //parent::__construct($context,$feedbackFactory,$feedbackResource);
     }
     public function execute()
     {

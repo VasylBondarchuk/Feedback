@@ -3,7 +3,7 @@
 namespace Training\FeedbackProduct\Plugin\Ui\Form\DataProvider;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Catalog\Api\Data\ProductInterface;
-use Training\Feedback\Api\Data\FeedbackRepositoryInterface;
+use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
 use Magento\Eav\Api\AttributeSetRepositoryInterface;
 use Magento\Catalog\Helper\Image as ImageHelper;
 use Magento\Catalog\Model\Product\Attribute\Source\Status;

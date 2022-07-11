@@ -2,7 +2,6 @@
 
 namespace Training\FeedbackProduct\Plugin\Model;
 use Training\Feedback\Api\Data\FeedbackExtensionInterface;
-use Training\Feedback\Api\Data\FeedbackExtensionInterfaceFactory;
 use Training\Feedback\Api\Data\FeedbackInterface;
 
 class FeedbackExtension

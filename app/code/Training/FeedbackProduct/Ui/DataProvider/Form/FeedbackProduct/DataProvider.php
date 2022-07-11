@@ -2,8 +2,8 @@
 
 namespace Training\FeedbackProduct\Ui\DataProvider\Form\FeedbackProduct;
 
-use Training\Feedback\Api\Data\FeedbackInterface;
-use Training\Feedback\Api\Data\FeedbackRepositoryInterface;
+use Training\Feedback\Api\Data\Feedback\FeedbackInterface;
+use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
 use Magento\Catalog\Ui\DataProvider\Product\ProductDataProvider;
 use Magento\Catalog\Model\ResourceModel\Product\Collection;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;

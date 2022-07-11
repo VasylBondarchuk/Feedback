@@ -2,15 +2,17 @@
 
 namespace Training\Test\Controller\Index;
 
+use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Action\HttpGetActionInterface;
+use Magento\Framework\Controller\Result\RawFactory;
 
 class Index implements HttpGetActionInterface
 {
     private $resultRawFactory;
 
     public function __construct(
-        \Magento\Framework\App\Action\Context $context,
-        \Magento\Framework\Controller\Result\RawFactory $resultRawFactory
+        Context $context,
+        RawFactory $resultRawFactory
     ) {
         $this->resultRawFactory = $resultRawFactory;
     }

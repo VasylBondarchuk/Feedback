@@ -6,7 +6,7 @@ use Magento\Backend\App\Action\Context;
 use Magento\Backend\Model\View\Result\Redirect;
 use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Framework\Exception\LocalizedException;
-use Training\Feedback\Api\Data\FeedbackRepositoryInterface;
+use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
 use Training\Feedback\Model\FeedbackFactory;
 use Training\FeedbackProduct\Model\FeedbackDataLoader;
 
