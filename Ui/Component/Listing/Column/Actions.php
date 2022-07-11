@@ -6,10 +6,10 @@ use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Ui\Component\Listing\Columns\Column;
 use Magento\Framework\Escaper;
+
 class Actions extends Column
 {
     /**
-    © 2018 M2Training.com.ua 6
      * Url path
      */
     const URL_PATH_EDIT = 'training_feedback/index/edit';

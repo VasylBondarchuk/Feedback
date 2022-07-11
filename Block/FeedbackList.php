@@ -12,6 +12,7 @@ use Training\Feedback\Model\ResourceModel\Feedback\Collection;
 use Training\Feedback\Model\ResourceModel\Feedback\CollectionFactory;
 use Training\Feedback\Model\ReplyRepository;
 use Psr\Log\LoggerInterface;
+use Magento\Customer\Model\Session;
 
 /**
  *
@@ -50,6 +51,8 @@ class FeedbackList extends Template
      */
     private $logger;
 
+    protected $customerSession;
+
     /**
      * @param Context $context
      * @param CollectionFactory $collectionFactory
@@ -64,6 +67,7 @@ class FeedbackList extends Template
         FeedbackResource  $feedbackResource,
         ReplyRepository   $replyRepository,
         LoggerInterface   $logger,
+        Session           $customerSession,
         array             $data = []
     )
     {
@@ -73,6 +77,7 @@ class FeedbackList extends Template
         $this->feedbackResource = $feedbackResource;
         $this->replyRepository = $replyRepository;
         $this->logger = $logger;
+        $this->customerSession = $customerSession;
     }
 
     /**
@@ -186,4 +191,6 @@ class FeedbackList extends Template
     {
         return 'Admin';
     }
+
+
 }

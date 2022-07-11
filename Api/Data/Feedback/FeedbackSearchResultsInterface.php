@@ -20,5 +20,5 @@ interface FeedbackSearchResultsInterface extends SearchResultsInterface
      * @param array $items
      * @return FeedbackSearchResultsInterface
      */
-    public function setItems(array $items);
+    public function setItems(array $items): FeedbackSearchResultsInterface;
 }

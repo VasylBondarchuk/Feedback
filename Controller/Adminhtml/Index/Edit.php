@@ -31,7 +31,7 @@ class Edit extends Action
      */
     private $feedbackRepository;
     /**
-     * @var LoggerInterface
+     *@v ar LoggerInterface
      */
     private $logger;
 

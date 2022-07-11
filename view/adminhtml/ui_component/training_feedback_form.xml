@@ -20,6 +20,7 @@
             <dep>training_feedback_form.training_feedback_form_data_source</dep>
         </deps>
     </settings>
+
     <dataSource name="training_feedback_form_data_source">
         <argument name="data" xsi:type="array">
             <item name="js_config" xsi:type="array">
@@ -37,6 +38,7 @@
             </settings>
         </dataProvider>
     </dataSource>
+
     <fieldset name="general">
         <settings>
             <label/>
