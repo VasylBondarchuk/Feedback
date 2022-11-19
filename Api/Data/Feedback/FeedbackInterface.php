@@ -9,7 +9,7 @@ use Magento\Framework\Api\ExtensibleDataInterface;
  */
 interface FeedbackInterface
 {
-    /**#@+
+    /**
      * Constants defined for keys of the data array. Identical to the name of the getter in snake case
      */
     const FEEDBACK_ID = 'feedback_id';
@@ -20,7 +20,7 @@ interface FeedbackInterface
     const UPDATE_TIME = 'update_time';
     const IS_ACTIVE = 'is_active';
 
-    /**#@-*/
+    /***/
     /**
      * Get FEEDBACK_ID
      *
@@ -53,8 +53,7 @@ interface FeedbackInterface
     public function getCreationTime(): ?string;
     /**
      * Get update time
-     *
-    © 2018 M2Training.com.ua 1
+     *    
      * @return string|null
      */
     public function getUpdateTime();
