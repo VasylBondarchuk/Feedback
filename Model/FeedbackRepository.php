@@ -21,8 +21,7 @@ use Training\Feedback\Api\Data\Feedback\FeedbackSearchResultsInterfaceFactory;
  */
 class FeedbackRepository implements FeedbackRepositoryInterface
 {
-    /**
-    © 2018 M2Training.com.ua 6
+    /**    
      * @var FeedbackResource
      */
     private FeedbackResource $resource;

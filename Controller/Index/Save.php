@@ -18,13 +18,8 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
  */
 class Save extends Action
 {
-    /**
-     *
-     */
     private const FEEDBACK_EDIT_PAGE_PATH = 'admin/training_feedback/index/edit/feedback_id/';
-    /**
-     *
-     */
+    
     private const PUBLISH_FEEDBACK_PATH = 'feedback_configuration/feedback_configuration_general/publish_feedback_without_moderation';
 
     /**
@@ -85,38 +80,30 @@ class Save extends Action
     public function execute()
     {
         $result = $this->resultRedirectFactory->create();
-
+        $result->setPath('*/*/index');
         if ($post = $this->getRequest()->getPostValue()) {
             try {
                 // input data validation
                 $this->validatePost($post);
-
                 // create model instance
                 $feedback = $this->feedbackFactory->create();
-
+                // set data to model
                 $this->setDataToModel($feedback, $post);
-
                 // save data
                 $this->feedbackRepository->save($feedback);
 
-                $this->email->sendEmail(
-                    $post['message'],
-                    $this->getLinkToFeedbackEditPage($feedback));
-
+                $this->email->sendEmail($post['message'],
+                        $this->getLinkToFeedbackEditPage($feedback));
+                
                 $this->messageManager->addSuccessMessage(
-                    __('Thank you for your feedback.')
-                );
-
+                    __('Thank you for your feedback.'));
             } catch (\Exception $e) {
                 $this->messageManager->addErrorMessage(
                     __('An error occurred while processing your form. Please try again later.')
                 );
-
-                $result->setPath('*/*/form');
-                return $result;
+                $result->setPath('*/*/form');                
             }
-        }
-        $result->setPath('*/*/index');
+        } 
         return $result;
     }
 

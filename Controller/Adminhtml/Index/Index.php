@@ -23,7 +23,7 @@ class Index extends Action
     /**
      *
      */
-    const ADMIN_RESOURCE = 'Training_Feedback::feedback';
+    const ADMIN_RESOURCE = 'Training_Feedback::feedback_view';
 
     /**
      * @var PageFactory

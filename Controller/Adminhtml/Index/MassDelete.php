@@ -1,9 +1,5 @@
 <?php
-/**
- *
- * Copyright © Magento, Inc. All rights reserved.
- * See COPYING.txt for license details.
- */
+
 declare(strict_types=1);
 
 namespace Training\Feedback\Controller\Adminhtml\Index;
@@ -69,7 +65,9 @@ class MassDelete extends Action implements HttpPostActionInterface
         ReplyRepositoryInterface $replyRepository,
         LoggerInterface           $logger = null
     ) {
+        
         parent::__construct($context);
+        
         $this->filter = $filter;
         $this->collectionFactory = $collectionFactory;
         $this->feedbackRepository = $feedbackRepository;
@@ -83,7 +81,6 @@ class MassDelete extends Action implements HttpPostActionInterface
      * @return Redirect
      * @throws LocalizedException
      */
-
 
     public function execute()
     {
