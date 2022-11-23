@@ -17,16 +17,12 @@ class Actions extends Column
     /**
      * @var UrlInterface
      */
-    private $urlBuilder;
-    /**
-     * @var Escaper
-     */
-    private $escaper;
+    private UrlInterface $urlBuilder;
+
     /**
      * @param ContextInterface $context
      * @param UiComponentFactory $uiComponentFactory
      * @param UrlInterface $urlBuilder
-     * @param Escaper $escaper
      * @param array $components
      * @param array $data
      */
@@ -34,12 +30,10 @@ class Actions extends Column
         ContextInterface $context,
         UiComponentFactory $uiComponentFactory,
         UrlInterface $urlBuilder,
-        Escaper $escaper,
         array $components = [],
         array $data = []
     ) {
         $this->urlBuilder = $urlBuilder;
-        $this->escaper = $escaper;
         parent::__construct($context, $uiComponentFactory, $components, $data);
     }
     /**
