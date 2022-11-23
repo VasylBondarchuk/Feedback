@@ -52,6 +52,7 @@ class Delete implements HttpGetActionInterface
     public function execute()
     {        
         $feedbackId = (int)($this->request->get('feedback_id')); 
+        $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         if ($feedbackId) {
             try {
                 $this->feedbackRepository->deleteById($feedbackId);
@@ -66,8 +67,7 @@ class Delete implements HttpGetActionInterface
                 return $resultRedirect->setPath('*/*/edit', [self::REQUEST_FIELD_NAME => $feedbackId]);
             }
         }
-        $this->messageManager->addErrorMessage(__('We can\'t find a feedback to delete.'));
-        $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
+        $this->messageManager->addErrorMessage(__('We can\'t find a feedback to delete.'));        
         return $resultRedirect->setPath('*/*/');
     }
 }
