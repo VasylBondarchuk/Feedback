@@ -21,19 +21,40 @@ class MassDelete implements HttpPostActionInterface
 {
     const ADMIN_RESOURCE = 'Training_Feedback::feedback_delete';
 
-    private $messageManager;
+    /**
+     * @var ManagerInterface
+     */
+    private ManagerInterface $messageManager;
 
-    private $resultFactory;
+    /**
+     * @var ResultFactory
+     */
+    private ResultFactory $resultFactory;
 
-    private $filter;
+    /**
+     * @var Filter
+     */
+    private Filter $filter;
 
-    private $collectionFactory;
+    /**
+     * @var CollectionFactory
+     */
+    private CollectionFactory $collectionFactory;
 
-    private $feedbackRepository;
+    /**
+     * @var FeedbackRepositoryInterface
+     */
+    private FeedbackRepositoryInterface $feedbackRepository;
 
-    private $replyRepository;
+    /**
+     * @var ReplyRepositoryInterface
+     */
+    private ReplyRepositoryInterface $replyRepository;
 
-    private $logger;
+    /**
+     * @var LoggerInterface|null
+     */
+    private ?LoggerInterface $logger;
 
     /**
      *
