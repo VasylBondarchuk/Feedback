@@ -19,9 +19,6 @@ use Magento\Customer\Model\Session;
  */
 class FeedbackList extends Template
 {
-    /**
-     *
-     */
     const PAGE_SIZE = 5;
     /**
      * @var CollectionFactory
