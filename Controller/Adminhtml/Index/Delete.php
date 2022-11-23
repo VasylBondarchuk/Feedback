@@ -17,21 +17,42 @@ use Magento\Framework\App\RequestInterface;
  */
 class Delete implements HttpGetActionInterface
 {
-
     const ADMIN_RESOURCE = 'Training_Feedback::feedback_delete';
 
     const REQUEST_FIELD_NAME = 'feedback_id';
 
-    private $feedbackRepository;
+    /**
+     * @var FeedbackRepositoryInterface
+     */
+    private FeedbackRepositoryInterface $feedbackRepository;
 
-    private $replyRepository;
+    /**
+     * @var ReplyRepositoryInterface
+     */
+    private ReplyRepositoryInterface $replyRepository;
 
-    private $messageManager;
+    /**
+     * @var ManagerInterface
+     */
+    private ManagerInterface $messageManager;
 
-    private $resultFactory;
+    /**
+     * @var ResultFactory
+     */
+    private ResultFactory $resultFactory;
 
-    private $request;
+    /**
+     * @var RequestInterface
+     */
+    private RequestInterface $request;
 
+    /**
+     * @param FeedbackRepositoryInterface $feedbackRepository
+     * @param ReplyRepositoryInterface $replyRepository
+     * @param ManagerInterface $messageManager
+     * @param ResultFactory $resultFactory
+     * @param RequestInterface $request
+     */
     public function __construct(
         FeedbackRepositoryInterface $feedbackRepository,
         ReplyRepositoryInterface $replyRepository,
