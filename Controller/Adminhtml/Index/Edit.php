@@ -17,7 +17,6 @@ use Magento\Framework\App\Action\HttpGetActionInterface;
  */
 class Edit implements HttpGetActionInterface
 {
-
     const ADMIN_RESOURCE = 'Training_Feedback::feedback_save';
 
     /**
@@ -66,7 +65,6 @@ class Edit implements HttpGetActionInterface
         $this->request = $request;
         $this->logger = $logger;
     }
-
 
     /**
      * @return ResponseInterface|\Magento\Framework\Controller\ResultInterface
