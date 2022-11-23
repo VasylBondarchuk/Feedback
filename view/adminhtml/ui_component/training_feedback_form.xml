@@ -113,7 +113,6 @@
                 <dataScope>author_email</dataScope>
             </settings>
         </field>
-
         <field name="message" formElement="textarea">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
