@@ -2,6 +2,8 @@
 
 namespace Training\Feedback\Controller\Adminhtml\Index;
 
+use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
@@ -15,17 +17,33 @@ use Magento\Framework\App\Action\HttpGetActionInterface;
  */
 class Edit implements HttpGetActionInterface
 {
+
     const ADMIN_RESOURCE = 'Training_Feedback::feedback_save';
 
-    private $messageManager;
+    /**
+     * @var ManagerInterface
+     */
+    private ManagerInterface $messageManager;
 
-    private $resultFactory;
+    /**
+     * @var ResultFactory
+     */
+    private ResultFactory $resultFactory;
 
-    private $feedbackRepository;
+    /**
+     * @var FeedbackRepositoryInterface
+     */
+    private FeedbackRepositoryInterface $feedbackRepository;
 
-    private $request;
+    /**
+     * @var RequestInterface
+     */
+    private RequestInterface $request;
 
-    private $logger;
+    /**
+     * @var LoggerInterface
+     */
+    private LoggerInterface $logger;
 
     /**
      *
@@ -49,9 +67,9 @@ class Edit implements HttpGetActionInterface
         $this->logger = $logger;
     }
 
+
     /**
-     *
-     * @return type
+     * @return ResponseInterface|\Magento\Framework\Controller\ResultInterface
      */
     public function execute()
     {
@@ -67,9 +85,11 @@ class Edit implements HttpGetActionInterface
             ->getConfig()->getTitle()->prepend(__('Edit Feedback'));
         return $resultPage;
     }
+
     /**
      * @param $feedbackId
      * @return bool
+     * @throws LocalizedException
      */
     private function isFeedbackExist($feedbackId): bool
     {
