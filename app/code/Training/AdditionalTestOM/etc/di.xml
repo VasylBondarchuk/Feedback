@@ -1,0 +1,14 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Training\TestOM\Model\ManagerInterface" type="Training\AdditionalTestOM\Model\ManagerCustom" />
+    <type name="Training\TestOM\Model\Test">
+        <arguments>
+            <argument name="name" xsi:type="string">Custom String from AdditionalTestOM</argument>
+            <argument name="number" xsi:type="number">420</argument>
+            <argument name="arrayList" xsi:type="array">
+                <item name="item_3" xsi:type="string">array text item additional</item>
+                <item name="item_4" xsi:type="number">60</item>
+            </argument>
+        </arguments>
+    </type>
+</config>
+

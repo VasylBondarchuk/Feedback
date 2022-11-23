@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
+    <event name="training_feedback_save_after">
+        <observer name="Training_FeedbackProduct"
+                  instance="Training\FeedbackProduct\Observer\SaveFeedbackProducts" />
+    </event>
+    <event name="training_feedback_load_after">
+        <observer name="Training_FeedbackProduct"
+                  instance="Training\FeedbackProduct\Observer\LoadFeedbackProducts" />
+    </event>
+</config>

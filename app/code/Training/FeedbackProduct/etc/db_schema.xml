@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="training_feedback_product" resource="default" engine="innodb"
+           comment="Feedback Products Table">
+        <column xsi:type="int" name="row_id" padding="10" nullable="false" identity="true"
+                comment="Row ID"/>
+        <column xsi:type="smallint" name="feedback_id" padding="5" nullable="false"
+                comment="Feedback ID"/>
+        <column xsi:type="int" name="product_id" padding="10" nullable="false" unsigned="true"
+                comment="Product ID"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="row_id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="TRAINING_FEEDBACK_PRODUCT_FEEDBACK_ID"
+                    table="training_feedback_product" column="feedback_id"
+                    referenceTable="training_feedback" referenceColumn="feedback_id" onDelete="CASCADE"/>
+        <constraint xsi:type="foreign" referenceId="TRAINING_FEEDBACK_PRODUCT_PRODUCT_ID"
+                    table="training_feedback_product" column="product_id"
+                    referenceTable="catalog_product_entity" referenceColumn="entity_id" onDelete="CASCADE"/>
+    </table>
+</schema>
