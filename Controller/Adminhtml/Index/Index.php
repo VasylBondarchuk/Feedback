@@ -3,7 +3,9 @@
 namespace Training\Feedback\Controller\Adminhtml\Index;
 
 use Magento\Framework\App\Request\DataPersistorInterface;
+use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\ResultFactory;
+use Magento\Framework\Controller\ResultInterface;
 use Training\Feedback\Model\Feedback;
 use Training\Feedback\Api\Data\Feedback\FeedbackInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
@@ -16,19 +18,40 @@ use Magento\Framework\App\Action\HttpGetActionInterface as HttpGetActionInterfac
  */
 class Index implements HttpGetActionInterface
 {
-
     const ADMIN_RESOURCE = 'Training_Feedback::feedback_view';
 
-    private $resultFactory;
+    /**
+     * @var ResultFactory
+     */
+    private ResultFactory $resultFactory;
 
-    private $dataPersistor;
+    /**
+     * @var DataPersistorInterface
+     */
+    private DataPersistorInterface $dataPersistor;
 
-    private $feedbackRepository;
+    /**
+     * @var FeedbackRepositoryInterface
+     */
+    private FeedbackRepositoryInterface $feedbackRepository;
 
-    private $searchCriteriaBuilder;
+    /**
+     * @var SearchCriteriaBuilder
+     */
+    private SearchCriteriaBuilder $searchCriteriaBuilder;
 
-    private $messageManager;
+    /**
+     * @var ManagerInterface
+     */
+    private ManagerInterface $messageManager;
 
+    /**
+     * @param ResultFactory $resultFactory
+     * @param DataPersistorInterface $dataPersistor
+     * @param FeedbackRepositoryInterface $feedbackRepository
+     * @param SearchCriteriaBuilder $searchCriteriaBuilder
+     * @param ManagerInterface $messageManager
+     */
     public function __construct(
         ResultFactory $resultFactory,
         DataPersistorInterface    $dataPersistor,
@@ -43,6 +66,9 @@ class Index implements HttpGetActionInterface
         $this->messageManager = $messageManager;
     }
 
+    /**
+     * @return ResponseInterface|ResultInterface
+     */
     public function execute()
     {
         $this->displayNotPublishedFeedbacksNumber();
