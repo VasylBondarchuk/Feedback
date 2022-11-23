@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
-    <menu>
-        <add id="Training_Feedback::feedback" title="Feedbacks" translate="title" module="Training_Feedback"
-             sortOrder="10" action="training_feedback/index/index"
-             resource="Training_Feedback::feedback"/>
-    </menu>
-</config>
