@@ -2,11 +2,11 @@
 
 namespace Training\Feedback\Controller\Adminhtml\Index;
 
-use Magento\Backend\App\Action;
-use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Request\DataPersistorInterface;
-use Magento\Framework\Controller\Result\Redirect;
+use Magento\Framework\Message\ManagerInterface;
+use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
 use Training\Feedback\Api\Data\Feedback\FeedbackInterface;
@@ -18,42 +18,34 @@ use Training\Feedback\Model\Reply;
 use Training\Feedback\Model\ReplyFactory;
 use Magento\Backend\Model\Auth\Session;
 use Psr\Log\LoggerInterface;
+use Magento\Framework\App\Action\HttpPostActionInterface as HttpPostActionInterface;
 
 /**
  *
  */
-class Save extends Action
+class Save implements HttpPostActionInterface
 {
     const ADMIN_RESOURCE = 'Training_Feedback::feedback_save';
-
-    /**
-     * @var DataPersistorInterface
-     */
+    
+    private $messageManager;
+    
+    private $resultFactory;
+    
     private $dataPersistor;
-    /**
-     * @var FeedbackRepositoryInterface
-     */
+    
     private $feedbackRepository;
-    /**
-     * @var FeedbackFactory
-     */
+    
     private $feedbackFactory;
-    /**
-     * @var ReplyRepositoryInterface
-     */
+    
     private $replyRepository;
-    /**
-     * @var ReplyFactory
-     */
+    
     private $replyFactory;
-    /**
-     * @var Session
-     */
+    
     private $authSession;
-    /**
-     * @var LoggerInterface
-     */
+    
     private $logger;
+    
+    private $request;
 
     /**
      * @param Context $context
@@ -66,15 +58,19 @@ class Save extends Action
      * @param LoggerInterface $logger
      */
     public function __construct(
-        Context                   $context,
+        ManagerInterface $messageManager,    
+        ResultFactory $resultFactory,    
         DataPersistorInterface    $dataPersistor,
         FeedbackRepositoryInterface $feedbackRepository,
         FeedbackFactory           $feedbackFactory,
         ReplyRepositoryInterface  $replyRepository,
         ReplyFactory              $replyFactory,
         Session                   $authSession,
-        LoggerInterface           $logger
+        LoggerInterface           $logger,
+        RequestInterface          $request    
     ) {
+        $this->messageManager = $messageManager;
+        $this->resultFactory = $resultFactory;   
         $this->dataPersistor = $dataPersistor;
         $this->feedbackRepository = $feedbackRepository;
         $this->feedbackFactory = $feedbackFactory;
@@ -82,7 +78,7 @@ class Save extends Action
         $this->replyFactory = $replyFactory;
         $this->authSession = $authSession;
         $this->logger = $logger;
-        parent::__construct($context);
+        $this->request = $request;        
     }
 
     /**
@@ -91,9 +87,9 @@ class Save extends Action
      */
     public function execute()
     {
-        $resultRedirect = $this->resultRedirectFactory->create();
-        $data = $this->getRequest()->getPostValue();
-        //print_r($data);exit;
+        $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
+        // get data from the feddback form field
+        $data = $this->request->getPostValue();        
         if ($data) {
             if (isset($data[FeedbackInterface::IS_ACTIVE]) && $data[FeedbackInterface::IS_ACTIVE] === 'true') {
                 $data[FeedbackInterface::IS_ACTIVE] = Feedback::STATUS_ACTIVE_VALUE;
@@ -102,7 +98,7 @@ class Save extends Action
                 $data[FeedbackInterface::FEEDBACK_ID] = null;
             }
 
-            $editedFeedbackId = (int)$this->getRequest()->getParam('feedback_id');
+            $editedFeedbackId = (int)($this->request->get('feedback_id'));
 
             try {
                 $feedbackModel = $this->getFeedBackModel($editedFeedbackId);

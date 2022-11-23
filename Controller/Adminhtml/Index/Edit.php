@@ -2,105 +2,85 @@
 
 namespace Training\Feedback\Controller\Adminhtml\Index;
 
-use Magento\Backend\App\Action;
-use Magento\Backend\App\Action\Context;
-use Magento\Framework\Controller\Result\Redirect;
-use Magento\Framework\Controller\ResultInterface;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\View\Result\PageFactory;
+use Magento\Framework\Message\ManagerInterface;
+use Magento\Framework\Controller\ResultFactory;
 use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
+use Magento\Framework\App\RequestInterface;
 use Psr\Log\LoggerInterface;
-use Training\Feedback\Model\Feedback;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\App\Action\HttpGetActionInterface;
 
 /**
- *
+ * Edits feedback in the admin panel
  */
-class Edit extends Action
+class Edit implements HttpGetActionInterface
 {
-    /**
-     *
-     */
+
     const ADMIN_RESOURCE = 'Training_Feedback::feedback_save';
-    /**
-     * @var PageFactory
-     */
-    private $resultPageFactory;
-    /**
-     * @var Feedback RepositoryInterface
-     */
+    
+    private $messageManager;
+    
+    private $resultFactory;     
+    
     private $feedbackRepository;
-    /**
-     *@v ar LoggerInterface
-     */
+    
+    private $request;
+    
     private $logger;
 
     /**
-     * @param Context $context
-     * @param PageFactory $resultPageFactory
+     * 
+     * @param ManagerInterface $messageManager
+     * @param ResultFactory $resultFactory
      * @param FeedbackRepositoryInterface $feedbackRepository
+     * @param RequestInterface $request
      * @param LoggerInterface $logger
      */
     public function __construct(
-        Context                   $context,
-        PageFactory               $resultPageFactory,
-        FeedbackRepositoryInterface $feedbackRepository,
-        LoggerInterface           $logger
-    ) {
-        $this->resultPageFactory = $resultPageFactory;
+        ManagerInterface $messageManager,    
+        ResultFactory $resultFactory,
+        FeedbackRepositoryInterface $feedbackRepository,        
+        RequestInterface $request,    
+        LoggerInterface  $logger
+    ) {        
+        $this->messageManager = $messageManager;
+        $this->resultFactory = $resultFactory;        
         $this->feedbackRepository = $feedbackRepository;
-        $this->logger = $logger;
-        parent::__construct($context);
+        $this->request = $request;
+        $this->logger = $logger;        
     }
 
     /**
-     * @return ResultInterface
-     * @SuppressWarnings(PHPMD.NPathComplexity)
-     * @throws LocalizedException
-     */
+     * 
+     * @return type
+     */     
     public function execute()
     {
-        $id = (int)$this->getRequest()->getParam('feedback_id');
-
-        if (!$this->isIdExist($id)) {
+        $feedbackId = (int)($this->request->get('feedback_id'));        
+        if (!$this->isFeedbackExist($feedbackId)) {
             $this->messageManager->addErrorMessage(__('This feedback does not exist.'));
-            $resultRedirect = $this->resultRedirectFactory->create();
+            $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
             return $resultRedirect->setPath('*/*/');
         }
-        $resultPage = $this->resultPageFactory->create();
+        $resultPage = $this->resultFactory->create(ResultFactory::TYPE_PAGE);
         $resultPage
-            ->setActiveMenu('Training_Feedback::feedback')
-            ->addBreadcrumb(__('Feedbacks'), __('Feedbacks'))
-            ->addBreadcrumb(
-                $id ? __('Edit Feedback') : __('New Feedback'),
-                $id ? __('Edit Feedback') : __('New Feedback')
-            )
+            ->setActiveMenu('Training_Feedback::feedback')            
             ->getConfig()->getTitle()->prepend(__('Edit Feedback'));
         return $resultPage;
     }
     /**
-     * @param $id
-     * @return bool
-     * @throws LocalizedException
+     * @param $feedbackId
+     * @return bool     
      */
-    private function isIdExist($id): bool
+    private function isFeedbackExist($feedbackId): bool
     {
-        $exist = false;
-        if (is_int($id) && $id > 0) {
+        $exist = false;        
             try {
-                $this->feedbackRepository->getById($id);
+                $this->feedbackRepository->getById($feedbackId);
                 $exist = true;
             } catch (NoSuchEntityException $e) {
                 $this->logger->error($e->getLogMessage());
-            }
-        }
+            }        
         return $exist;
-    }
-
-    private function redirectToIndexPage() : Redirect
-    {
-        $this->messageManager->addErrorMessage(__('This feedback does not exist.'));
-        $resultRedirect = $this->resultRedirectFactory->create();
-        return $resultRedirect->setPath('*/*/');
-    }
+    }    
 }

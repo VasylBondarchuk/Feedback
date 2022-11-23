@@ -2,80 +2,53 @@
 
 namespace Training\Feedback\Controller\Adminhtml\Index;
 
-use Magento\Backend\App\Action;
-use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Request\DataPersistorInterface;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\Controller\ResultInterface;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\View\Result\Page;
-use Magento\Framework\View\Result\PageFactory;
+use Magento\Framework\Controller\ResultFactory;
 use Training\Feedback\Model\Feedback;
 use Training\Feedback\Api\Data\Feedback\FeedbackInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
+use Magento\Framework\Message\ManagerInterface;
+use Magento\Framework\App\Action\HttpGetActionInterface as HttpGetActionInterface;
 
 /**
  *
  */
-class Index extends Action
+class Index implements HttpGetActionInterface
 {
-    /**
-     *
-     */
+       
     const ADMIN_RESOURCE = 'Training_Feedback::feedback_view';
-
-    /**
-     * @var PageFactory
-     */
-    private $resultPageFactory;
-    /**
-     * @var DataPersistorInterface
-     */
+    
+    private $resultFactory;
+    
     private $dataPersistor;
 
+    private $feedbackRepository;
 
-    /**
-     * @var FeedbackRepositoryInterface
-     */
-    protected $feedbackRepository;
+    private $searchCriteriaBuilder;
+    
+    private $messageManager;
 
-    /**
-     * @var SearchCriteriaBuilder
-     */
-    protected $searchCriteriaBuilder;
-
-    /**
-     * @param Context $context
-     * @param PageFactory $resultPageFactory
-     * @param DataPersistorInterface $dataPersistor
-     * @param FeedbackRepositoryInterface $feedbackRepository
-     * @param SearchCriteriaBuilder $searchCriteriaBuilder
-     */
-    public function __construct(
-        Context                   $context,
-        PageFactory               $resultPageFactory,
+    public function __construct(        
+        ResultFactory $resultFactory,
         DataPersistorInterface    $dataPersistor,
         FeedbackRepositoryInterface $feedbackRepository,
-        SearchCriteriaBuilder     $searchCriteriaBuilder
+        SearchCriteriaBuilder     $searchCriteriaBuilder,
+        ManagerInterface $messageManager   
     ) {
-        $this->resultPageFactory = $resultPageFactory;
+        $this->resultFactory = $resultFactory; 
         $this->dataPersistor = $dataPersistor;
         $this->feedbackRepository = $feedbackRepository;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
-        parent::__construct($context);
+        $this->messageManager = $messageManager;        
     }
 
-    /**
-     * @return ResponseInterface|ResultInterface|Page
-     */
     public function execute()
     {
         $this->displayNotPublishedFeedbacksNumber();
-        $resultPage = $this->resultPageFactory->create();
+        $resultPage = $this->resultFactory->create(ResultFactory::TYPE_PAGE);
         $resultPage
-            ->setActiveMenu('Training_Feedback::feedback')
-            ->addBreadcrumb(__('Feedbacks'), __('Feedbacks'))
+            ->setActiveMenu('Training_Feedback::feedback')            
             ->getConfig()->getTitle()->prepend(__('Feedback'));
         $this->dataPersistor->clear('training_feedback');
         return $resultPage;
@@ -94,7 +67,10 @@ class Index extends Action
     }
 
     /**
+     * 
+     * @return int
      */
+     
     private function getNotPublishedFeedbacksNumber(): int
     {
         $this->searchCriteriaBuilder->addFilter(

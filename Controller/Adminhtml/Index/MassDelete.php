@@ -1,73 +1,62 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Training\Feedback\Controller\Adminhtml\Index;
 
-use Magento\Backend\Model\View\Result\Redirect;
-use Magento\Framework\App\Action\HttpPostActionInterface as HttpPostActionInterface;
+use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\Controller\ResultFactory;
+use Magento\Framework\App\Action\HttpPostActionInterface as HttpPostActionInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Ui\Component\MassAction\Filter;
 use Psr\Log\LoggerInterface;
 use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
 use Training\Feedback\Api\Data\Reply\ReplyRepositoryInterface;
 use Training\Feedback\Model\ResourceModel\Feedback\CollectionFactory;
-use Magento\Backend\App\Action;
-use Magento\Backend\App\Action\Context;
 
 /**
- *
+ * Provides feedbacks mass deletion 
  */
-class MassDelete extends Action implements HttpPostActionInterface
+class MassDelete implements HttpPostActionInterface
 {
-    /**
-     * Mass-actions filter
-     *
-     * @var Filter
-     */
-    protected $filter;
-
-    /**
-     * @var CollectionFactory
-     */
-    protected $collectionFactory;
-
-
-    /**
-     * @var FeedbackRepositoryInterface
-     */
+    const ADMIN_RESOURCE = 'Training_Feedback::feedback_delete';    
+    
+    private $messageManager;
+    
+    private $resultFactory; 
+    
+    private $filter;
+    
+    private $collectionFactory;
+    
     private $feedbackRepository;
 
-    /**
-     * @var ReplyRepositoryInterface
-     */
     private $replyRepository;
-
-    /**
-     * @var LoggerInterface
-     */
+    
     private $logger;
 
-
     /**
-     * @param Context $context
+     * 
+     * @param ManagerInterface $messageManager
+     * @param ResultFactory $resultFactory
      * @param Filter $filter
      * @param CollectionFactory $collectionFactory
      * @param FeedbackRepositoryInterface $feedbackRepository
-     * @param LoggerInterface|null $logger
+     * @param ReplyRepositoryInterface $replyRepository
+     * @param LoggerInterface $logger
      */
+
     public function __construct(
-        Context                   $context,
+        ManagerInterface $messageManager,
+        ResultFactory $resultFactory,    
         Filter                    $filter,
         CollectionFactory         $collectionFactory,
         FeedbackRepositoryInterface $feedbackRepository,
         ReplyRepositoryInterface $replyRepository,
         LoggerInterface           $logger = null
-    ) {
-        
-        parent::__construct($context);
-        
+    ) {        
+        $this->messageManager = $messageManager;
+        $this->resultFactory = $resultFactory;
         $this->filter = $filter;
         $this->collectionFactory = $collectionFactory;
         $this->feedbackRepository = $feedbackRepository;
@@ -81,13 +70,11 @@ class MassDelete extends Action implements HttpPostActionInterface
      * @return Redirect
      * @throws LocalizedException
      */
-
     public function execute()
     {
         $collection = $this->filter->getCollection($this->collectionFactory->create());
-        $feedbackDeleted = 0;
-        $feedbackDeletedError = 0;
-
+        //counters for deleted feddbacks and possible errors
+        $feedbackDeleted = $feedbackDeletedError = 0;        
         foreach ($collection as $feedback) {
             try {
                 $this->feedbackRepository->delete($feedback);
@@ -98,22 +85,15 @@ class MassDelete extends Action implements HttpPostActionInterface
                 $feedbackDeletedError++;
             }
         }
-
         if ($feedbackDeleted) {
             $this->messageManager->addSuccessMessage(
-                __('A total of %1 record(s) have been deleted.', $feedbackDeleted)
-            );
+                __('A total of %1 record(s) have been deleted.', $feedbackDeleted));
         }
-
         if ($feedbackDeletedError) {
             $this->messageManager->addErrorMessage(
-                __(
-                    'A total of %1 record(s) haven\'t been deleted. Please see server logs for more details.',
-                    $feedbackDeletedError
-                )
-            );
+                __('A total of %1 record(s) haven\'t been deleted. Please see server logs for more details.',
+                    $feedbackDeletedError));
         }
-
-        return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)->setPath('training_feedback/*/index');
+        return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)->setPath('*/*/');
     }
 }

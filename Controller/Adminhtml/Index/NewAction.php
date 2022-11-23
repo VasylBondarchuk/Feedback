@@ -2,43 +2,32 @@
 
 namespace Training\Feedback\Controller\Adminhtml\Index;
 
-use Magento\Backend\App\Action;
-use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Request\DataPersistorInterface;
-use Magento\Framework\Controller\ResultInterface;
-use Magento\Framework\View\Result\PageFactory;
+use Magento\Framework\Controller\ResultFactory;
+use Magento\Framework\App\Action\HttpGetActionInterface as HttpGetActionInterface;
 
 /**
  *
  */
-class NewAction extends Action
+class NewAction implements HttpGetActionInterface
 {
-    /**
-     *
-     */
+
     const ADMIN_RESOURCE = 'Training_Feedback::feedback';
 
-    /**
-     * @var PageFactory
-     */
-    private $resultPageFactory;
-    /**
-     * @var DataPersistorInterface
-     */
+    private $resultFactory;
+    
     private $dataPersistor;
-    /**
-     * @param Context $context
+    
+    /**     * 
      * @param PageFactory $resultPageFactory
      * @param DataPersistorInterface $dataPersistor
      */
-    public function __construct(
-        Context                $context,
-        PageFactory            $resultPageFactory,
+    public function __construct(        
+        ResultFactory $resultFactory,
         DataPersistorInterface $dataPersistor
     ) {
-        $this->resultPageFactory = $resultPageFactory;
-        $this->dataPersistor = $dataPersistor;
-        parent::__construct($context);
+        $this->resultFactory = $resultFactory;
+        $this->dataPersistor = $dataPersistor;        
     }
     /**
      * Index action
@@ -47,10 +36,9 @@ class NewAction extends Action
      */
     public function execute()
     {
-        $resultPage = $this->resultPageFactory->create();
+        $resultPage = $this->resultFactory->create(ResultFactory::TYPE_PAGE);
         $resultPage
-            ->setActiveMenu('Training_Feedback::feedback')
-            ->addBreadcrumb(__('Create New Feedback'), __('Create New Feedback'))
+            ->setActiveMenu('Training_Feedback::feedback')            
             ->getConfig()->getTitle()->prepend(__('Create New Feedback'));
         $this->dataPersistor->clear('training_feedback');
         return $resultPage;

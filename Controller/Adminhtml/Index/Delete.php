@@ -2,67 +2,60 @@
 
 namespace Training\Feedback\Controller\Adminhtml\Index;
 
-use Magento\Backend\App\Action;
+use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\Controller\Result\Redirect;
+use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Backend\App\Action\Context;
 use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
 use Training\Feedback\Api\Data\Reply\ReplyRepositoryInterface;
+use Magento\Framework\App\Action\HttpGetActionInterface;
+use Magento\Framework\App\RequestInterface;
 
 /**
  *
  */
-class Delete extends Action
+class Delete implements HttpGetActionInterface
 {
-    /**
-     *
-     */
+
     const ADMIN_RESOURCE = 'Training_Feedback::feedback_delete';
-    /**
-     *
-     */
+    
     const REQUEST_FIELD_NAME = 'feedback_id';
-
-    /**
-     * @var FeedbackRepositoryInterface
-     */
+    
     private $feedbackRepository;
-
-    /**
-     * @var ReplyRepositoryInterface
-     */
+    
     private $replyRepository;
-
-    /**
-     * @param Context $context
-     * @param FeedbackRepositoryInterface $feedbackRepository
-     * @param ReplyRepositoryInterface $replyRepository
-     */
-    public function __construct(
-        Context $context,
+    
+    private $messageManager;
+    
+    private $resultFactory;
+    
+    private $request;
+    
+    public function __construct(        
         FeedbackRepositoryInterface $feedbackRepository,
-        ReplyRepositoryInterface $replyRepository
+        ReplyRepositoryInterface $replyRepository,
+        ManagerInterface $messageManager,
+        ResultFactory $resultFactory,
+        RequestInterface $request    
     ) {
         $this->feedbackRepository = $feedbackRepository;
         $this->replyRepository = $replyRepository;
-        parent::__construct($context);
+        $this->messageManager = $messageManager;
+        $this->resultFactory = $resultFactory;
+        $this->request = $request;
     }
 
     /**
      * @return ResponseInterface|Redirect|ResultInterface
      */
     public function execute()
-    {
-        $resultRedirect = $this->resultRedirectFactory->create();
-        $feedbackId = (int)$this->getRequest()->getParam(self::REQUEST_FIELD_NAME);
-
+    {        
+        $feedbackId = (int)($this->request->get('feedback_id')); 
         if ($feedbackId) {
             try {
                 $this->feedbackRepository->deleteById($feedbackId);
                 $this->replyRepository->deleteByFeedbackId($feedbackId);
-
                 $this->messageManager->addSuccessMessage(__('You deleted the feedback and related reply if existed.'));
                 return $resultRedirect->setPath('*/*/');
             } catch (LocalizedException $e) {
@@ -74,6 +67,7 @@ class Delete extends Action
             }
         }
         $this->messageManager->addErrorMessage(__('We can\'t find a feedback to delete.'));
+        $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         return $resultRedirect->setPath('*/*/');
     }
 }
