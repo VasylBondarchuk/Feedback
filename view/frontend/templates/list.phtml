@@ -1,0 +1,56 @@
+<div>
+    <!-- Display feedback statistics -->
+    <?php if ($block->getAllFeedbackNumber()):?>
+        <div class="feedback-statistic">
+            <p><?= __('Total number of submitted feedbacks: %1', '<b>'. $block->getAllFeedbackNumber() .'</b>') ?></p>
+            <p><?= __('Total number of active feedbacks: %1', '<b>'. $block->getActiveFeedbackNumber(). '</b>') ?></p>
+        </div>
+    <?php else:?>
+        <p><?= $block->escapeHtml('There are no feedbacks at the moment. Be the first to add a feedback.') ?></p>
+    <?php endif; ?>
+
+    <!-- Display feedback info -->
+    <div class="feedback-list">
+        <?php foreach ($block->getCollection() as $feedback): ?>
+            <div class="feedback-item" style="background-color: aliceblue; margin: 5px; padding: 20px;">
+                <p>
+                    <?= $block->escapeHtml($feedback->getAuthorName()) ?> |
+                    <?= $block->getFeedbackDate($feedback) ?>
+                </p>
+                <p><?= $block->escapeHtml($feedback->getMessage()) ?></p>
+            </div>
+
+            <!-- Display feedback reply if any -->
+            <?php if ($block->getReplyText($feedback)):?>
+                <div class="feedback-item" style="background-color: oldlace; margin: 20px; padding: 20px;">
+                    <div>
+                        <p>
+                            <?= $block->escapeHtml($block->getReplyAuthorName()) ?> |
+                            <?= $block->getReplyDate($feedback) ?>
+                        </p>
+                        <p>
+                            <?= $block->escapeHtml($block->getReplyText($feedback)) ?>
+                        </p>
+                    </div>
+                </div>
+            <?php endif; ?>
+            <br>
+        <?php endforeach; ?>
+    </div>
+
+    <!-- Display pagination -->
+    <?php if ($block->getPagerHtml()): ?>
+        <div class="order-products-toolbar toolbar bottom">
+            <?= $block->getPagerHtml() ?>
+        </div>
+    <?php endif ?>
+
+    <!-- Display add 'Add Feedback' button -->
+    <div class="action">
+        <button id="add" title="<?= __('Add Feedback') ?>"
+                type="button" class="action scalable primary"
+                onclick="location.href = '<?= $block->escapeUrl($block->getAddFeedbackUrl()) ?>';">
+            <span><?= __('Add Feedback') ?></span>
+        </button>
+    </div>
+</div>

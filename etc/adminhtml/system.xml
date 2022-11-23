@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="Tsg" translate="label" sortOrder="10">
+            <label>TSG EXTENSIONS</label>
+        </tab>
+        <section id="feedback_configuration" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>Feedback configuration</label>
+            <tab>Tsg</tab>
+            <resource>Tsg_Improvements::improvements_config</resource>
+            <group id="feedback_configuration_general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Feedback General Configuration</label>
+
+                <field id="top_menu_link_name" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label> Top menu link name</label>
+                    <validate>required-entry</validate>
+                </field>
+
+                <field id="admin_email_new_feedback_notification" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label> New feedback notification recipient email</label>
+                    <validate>required-entry validate-email</validate>
+                </field>
+
+                <field id="admin_name_new_feedback_notification" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label> New feedback notification recipient name</label>
+                    <validate>required-entry</validate>
+                </field>
+
+                <field id="publish_feedback_without_moderation" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label> Publish feedback without moderation</label>
+                    <validate>required-entry</validate>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
+                <field id="add_feedback_by_guests" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label> Allow not registered users (guests) to add feedback?</label>
+                    <validate>required-entry</validate>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
+            </group>
+        </section>
+    </system>
+</config>
