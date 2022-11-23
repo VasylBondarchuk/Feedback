@@ -22,20 +22,50 @@ class MassStatus implements HttpPostActionInterface
 {
     const ADMIN_RESOURCE = 'Training_Feedback::feedback_save';
 
-    private $messageManager;
+    /**
+     * @var ManagerInterface
+     */
+    private ManagerInterface $messageManager;
 
-    private $resultFactory;
+    /**
+     * @var ResultFactory
+     */
+    private ResultFactory $resultFactory;
 
-    private $filter;
+    /**
+     * @var Filter
+     */
+    private Filter $filter;
 
-    private $collectionFactory;
+    /**
+     * @var CollectionFactory
+     */
+    private CollectionFactory $collectionFactory;
 
-    private $feedbackRepository;
+    /**
+     * @var FeedbackRepositoryInterface
+     */
+    private FeedbackRepositoryInterface $feedbackRepository;
 
-    private $request;
+    /**
+     * @var RequestInterface
+     */
+    private RequestInterface $request;
 
-    private $logger;
+    /**
+     * @var LoggerInterface|null
+     */
+    private ?LoggerInterface $logger;
 
+    /**
+     * @param ManagerInterface $messageManager
+     * @param ResultFactory $resultFactory
+     * @param Filter $filter
+     * @param CollectionFactory $collectionFactory
+     * @param FeedbackRepositoryInterface $feedbackRepository
+     * @param RequestInterface $request
+     * @param LoggerInterface|null $logger
+     */
     public function __construct(
         ManagerInterface $messageManager,
         ResultFactory $resultFactory,
