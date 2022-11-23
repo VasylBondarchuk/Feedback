@@ -15,28 +15,28 @@ use Training\Feedback\Api\Data\Reply\ReplyRepositoryInterface;
 use Training\Feedback\Model\ResourceModel\Feedback\CollectionFactory;
 
 /**
- * Provides feedbacks mass deletion 
+ * Provides feedbacks mass deletion
  */
 class MassDelete implements HttpPostActionInterface
 {
-    const ADMIN_RESOURCE = 'Training_Feedback::feedback_delete';    
-    
+    const ADMIN_RESOURCE = 'Training_Feedback::feedback_delete';
+
     private $messageManager;
-    
-    private $resultFactory; 
-    
+
+    private $resultFactory;
+
     private $filter;
-    
+
     private $collectionFactory;
-    
+
     private $feedbackRepository;
 
     private $replyRepository;
-    
+
     private $logger;
 
     /**
-     * 
+     *
      * @param ManagerInterface $messageManager
      * @param ResultFactory $resultFactory
      * @param Filter $filter
@@ -45,16 +45,15 @@ class MassDelete implements HttpPostActionInterface
      * @param ReplyRepositoryInterface $replyRepository
      * @param LoggerInterface $logger
      */
-
     public function __construct(
         ManagerInterface $messageManager,
-        ResultFactory $resultFactory,    
+        ResultFactory $resultFactory,
         Filter                    $filter,
         CollectionFactory         $collectionFactory,
         FeedbackRepositoryInterface $feedbackRepository,
         ReplyRepositoryInterface $replyRepository,
         LoggerInterface           $logger = null
-    ) {        
+    ) {
         $this->messageManager = $messageManager;
         $this->resultFactory = $resultFactory;
         $this->filter = $filter;
@@ -74,7 +73,7 @@ class MassDelete implements HttpPostActionInterface
     {
         $collection = $this->filter->getCollection($this->collectionFactory->create());
         //counters for deleted feddbacks and possible errors
-        $feedbackDeleted = $feedbackDeletedError = 0;        
+        $feedbackDeleted = $feedbackDeletedError = 0;
         foreach ($collection as $feedback) {
             try {
                 $this->feedbackRepository->delete($feedback);

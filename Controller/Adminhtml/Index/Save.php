@@ -21,30 +21,30 @@ use Psr\Log\LoggerInterface;
 use Magento\Framework\App\Action\HttpPostActionInterface as HttpPostActionInterface;
 
 /**
- *
+ * Saves fedbacks
  */
 class Save implements HttpPostActionInterface
 {
     const ADMIN_RESOURCE = 'Training_Feedback::feedback_save';
-    
+
     private $messageManager;
-    
+
     private $resultFactory;
-    
+
     private $dataPersistor;
-    
+
     private $feedbackRepository;
-    
+
     private $feedbackFactory;
-    
+
     private $replyRepository;
-    
+
     private $replyFactory;
-    
+
     private $authSession;
-    
+
     private $logger;
-    
+
     private $request;
 
     /**
@@ -58,8 +58,8 @@ class Save implements HttpPostActionInterface
      * @param LoggerInterface $logger
      */
     public function __construct(
-        ManagerInterface $messageManager,    
-        ResultFactory $resultFactory,    
+        ManagerInterface $messageManager,
+        ResultFactory $resultFactory,
         DataPersistorInterface    $dataPersistor,
         FeedbackRepositoryInterface $feedbackRepository,
         FeedbackFactory           $feedbackFactory,
@@ -67,10 +67,10 @@ class Save implements HttpPostActionInterface
         ReplyFactory              $replyFactory,
         Session                   $authSession,
         LoggerInterface           $logger,
-        RequestInterface          $request    
+        RequestInterface          $request
     ) {
         $this->messageManager = $messageManager;
-        $this->resultFactory = $resultFactory;   
+        $this->resultFactory = $resultFactory;
         $this->dataPersistor = $dataPersistor;
         $this->feedbackRepository = $feedbackRepository;
         $this->feedbackFactory = $feedbackFactory;
@@ -78,7 +78,7 @@ class Save implements HttpPostActionInterface
         $this->replyFactory = $replyFactory;
         $this->authSession = $authSession;
         $this->logger = $logger;
-        $this->request = $request;        
+        $this->request = $request;
     }
 
     /**
@@ -89,7 +89,7 @@ class Save implements HttpPostActionInterface
     {
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         // get data from the feddback form field
-        $data = $this->request->getPostValue();        
+        $data = $this->request->getPostValue();
         if ($data) {
             if (isset($data[FeedbackInterface::IS_ACTIVE]) && $data[FeedbackInterface::IS_ACTIVE] === 'true') {
                 $data[FeedbackInterface::IS_ACTIVE] = Feedback::STATUS_ACTIVE_VALUE;

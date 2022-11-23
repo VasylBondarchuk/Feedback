@@ -14,31 +14,35 @@ use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
 use Training\Feedback\Model\ResourceModel\Feedback\CollectionFactory;
 use Magento\Framework\App\Action\HttpPostActionInterface as HttpPostActionInterface;
 
+
+/**
+ *
+ */
 class MassStatus implements HttpPostActionInterface
 {
     const ADMIN_RESOURCE = 'Training_Feedback::feedback_save';
-   
+
     private $messageManager;
-    
+
     private $resultFactory;
-    
+
     private $filter;
-   
+
     private $collectionFactory;
 
     private $feedbackRepository;
-    
+
     private $request;
 
     private $logger;
 
     public function __construct(
         ManagerInterface $messageManager,
-        ResultFactory $resultFactory,     
+        ResultFactory $resultFactory,
         Filter                    $filter,
         CollectionFactory         $collectionFactory,
         FeedbackRepositoryInterface $feedbackRepository,
-        RequestInterface $request,    
+        RequestInterface $request,
         LoggerInterface           $logger = null
     ) {
         $this->messageManager = $messageManager;
@@ -56,15 +60,13 @@ class MassStatus implements HttpPostActionInterface
      * @return Redirect
      * @throws LocalizedException
      */
-
-
     public function execute()
-    {        
+    {
         $collection = $this->filter->getCollection($this->collectionFactory->create());
         $feedbackStatus = 0;
         $feedbackStatusError = 0;
         $isActive = (int)($this->request->get('is_active'));
-        
+
         foreach ($collection->getItems() as $feedback) {
             try {
                 $this->feedbackRepository->save($feedback->setIsActive($isActive));

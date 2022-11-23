@@ -12,35 +12,35 @@ use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\App\Action\HttpGetActionInterface as HttpGetActionInterface;
 
 /**
- *
+ * Index page
  */
 class Index implements HttpGetActionInterface
 {
-       
+
     const ADMIN_RESOURCE = 'Training_Feedback::feedback_view';
-    
+
     private $resultFactory;
-    
+
     private $dataPersistor;
 
     private $feedbackRepository;
 
     private $searchCriteriaBuilder;
-    
+
     private $messageManager;
 
-    public function __construct(        
+    public function __construct(
         ResultFactory $resultFactory,
         DataPersistorInterface    $dataPersistor,
         FeedbackRepositoryInterface $feedbackRepository,
         SearchCriteriaBuilder     $searchCriteriaBuilder,
-        ManagerInterface $messageManager   
+        ManagerInterface $messageManager
     ) {
-        $this->resultFactory = $resultFactory; 
+        $this->resultFactory = $resultFactory;
         $this->dataPersistor = $dataPersistor;
         $this->feedbackRepository = $feedbackRepository;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
-        $this->messageManager = $messageManager;        
+        $this->messageManager = $messageManager;
     }
 
     public function execute()
@@ -48,7 +48,7 @@ class Index implements HttpGetActionInterface
         $this->displayNotPublishedFeedbacksNumber();
         $resultPage = $this->resultFactory->create(ResultFactory::TYPE_PAGE);
         $resultPage
-            ->setActiveMenu('Training_Feedback::feedback')            
+            ->setActiveMenu('Training_Feedback::feedback')
             ->getConfig()->getTitle()->prepend(__('Feedback'));
         $this->dataPersistor->clear('training_feedback');
         return $resultPage;
@@ -67,10 +67,10 @@ class Index implements HttpGetActionInterface
     }
 
     /**
-     * 
+     *
      * @return int
      */
-     
+
     private function getNotPublishedFeedbacksNumber(): int
     {
         $this->searchCriteriaBuilder->addFilter(

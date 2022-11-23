@@ -15,21 +15,20 @@ use Magento\Framework\App\Action\HttpGetActionInterface;
  */
 class Edit implements HttpGetActionInterface
 {
-
     const ADMIN_RESOURCE = 'Training_Feedback::feedback_save';
-    
+
     private $messageManager;
-    
-    private $resultFactory;     
-    
+
+    private $resultFactory;
+
     private $feedbackRepository;
-    
+
     private $request;
-    
+
     private $logger;
 
     /**
-     * 
+     *
      * @param ManagerInterface $messageManager
      * @param ResultFactory $resultFactory
      * @param FeedbackRepositoryInterface $feedbackRepository
@@ -37,26 +36,26 @@ class Edit implements HttpGetActionInterface
      * @param LoggerInterface $logger
      */
     public function __construct(
-        ManagerInterface $messageManager,    
+        ManagerInterface $messageManager,
         ResultFactory $resultFactory,
-        FeedbackRepositoryInterface $feedbackRepository,        
-        RequestInterface $request,    
+        FeedbackRepositoryInterface $feedbackRepository,
+        RequestInterface $request,
         LoggerInterface  $logger
-    ) {        
+    ) {
         $this->messageManager = $messageManager;
-        $this->resultFactory = $resultFactory;        
+        $this->resultFactory = $resultFactory;
         $this->feedbackRepository = $feedbackRepository;
         $this->request = $request;
-        $this->logger = $logger;        
+        $this->logger = $logger;
     }
 
     /**
-     * 
+     *
      * @return type
-     */     
+     */
     public function execute()
     {
-        $feedbackId = (int)($this->request->get('feedback_id'));        
+        $feedbackId = (int)($this->request->get('feedback_id'));
         if (!$this->isFeedbackExist($feedbackId)) {
             $this->messageManager->addErrorMessage(__('This feedback does not exist.'));
             $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
@@ -64,23 +63,23 @@ class Edit implements HttpGetActionInterface
         }
         $resultPage = $this->resultFactory->create(ResultFactory::TYPE_PAGE);
         $resultPage
-            ->setActiveMenu('Training_Feedback::feedback')            
+            ->setActiveMenu('Training_Feedback::feedback')
             ->getConfig()->getTitle()->prepend(__('Edit Feedback'));
         return $resultPage;
     }
     /**
      * @param $feedbackId
-     * @return bool     
+     * @return bool
      */
     private function isFeedbackExist($feedbackId): bool
     {
-        $exist = false;        
+        $exist = false;
             try {
                 $this->feedbackRepository->getById($feedbackId);
                 $exist = true;
             } catch (NoSuchEntityException $e) {
                 $this->logger->error($e->getLogMessage());
-            }        
+            }
         return $exist;
-    }    
+    }
 }

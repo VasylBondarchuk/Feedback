@@ -13,31 +13,31 @@ use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\App\RequestInterface;
 
 /**
- *
+ * Deletes a feedback
  */
 class Delete implements HttpGetActionInterface
 {
 
     const ADMIN_RESOURCE = 'Training_Feedback::feedback_delete';
-    
+
     const REQUEST_FIELD_NAME = 'feedback_id';
-    
+
     private $feedbackRepository;
-    
+
     private $replyRepository;
-    
+
     private $messageManager;
-    
+
     private $resultFactory;
-    
+
     private $request;
-    
-    public function __construct(        
+
+    public function __construct(
         FeedbackRepositoryInterface $feedbackRepository,
         ReplyRepositoryInterface $replyRepository,
         ManagerInterface $messageManager,
         ResultFactory $resultFactory,
-        RequestInterface $request    
+        RequestInterface $request
     ) {
         $this->feedbackRepository = $feedbackRepository;
         $this->replyRepository = $replyRepository;
@@ -50,8 +50,8 @@ class Delete implements HttpGetActionInterface
      * @return ResponseInterface|Redirect|ResultInterface
      */
     public function execute()
-    {        
-        $feedbackId = (int)($this->request->get('feedback_id')); 
+    {
+        $feedbackId = (int)($this->request->get('feedback_id'));
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         if ($feedbackId) {
             try {
@@ -67,7 +67,7 @@ class Delete implements HttpGetActionInterface
                 return $resultRedirect->setPath('*/*/edit', [self::REQUEST_FIELD_NAME => $feedbackId]);
             }
         }
-        $this->messageManager->addErrorMessage(__('We can\'t find a feedback to delete.'));        
+        $this->messageManager->addErrorMessage(__('We can\'t find a feedback to delete.'));
         return $resultRedirect->setPath('*/*/');
     }
 }

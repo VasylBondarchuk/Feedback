@@ -11,23 +11,22 @@ use Magento\Framework\App\Action\HttpGetActionInterface as HttpGetActionInterfac
  */
 class NewAction implements HttpGetActionInterface
 {
-
     const ADMIN_RESOURCE = 'Training_Feedback::feedback';
 
     private $resultFactory;
-    
+
     private $dataPersistor;
-    
-    /**     * 
+
+    /**     *
      * @param PageFactory $resultPageFactory
      * @param DataPersistorInterface $dataPersistor
      */
-    public function __construct(        
+    public function __construct(
         ResultFactory $resultFactory,
         DataPersistorInterface $dataPersistor
     ) {
         $this->resultFactory = $resultFactory;
-        $this->dataPersistor = $dataPersistor;        
+        $this->dataPersistor = $dataPersistor;
     }
     /**
      * Index action
@@ -38,7 +37,7 @@ class NewAction implements HttpGetActionInterface
     {
         $resultPage = $this->resultFactory->create(ResultFactory::TYPE_PAGE);
         $resultPage
-            ->setActiveMenu('Training_Feedback::feedback')            
+            ->setActiveMenu('Training_Feedback::feedback')
             ->getConfig()->getTitle()->prepend(__('Create New Feedback'));
         $this->dataPersistor->clear('training_feedback');
         return $resultPage;
