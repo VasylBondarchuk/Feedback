@@ -1,11 +1,18 @@
 <?php
 
 namespace Training\Feedback\Block\Adminhtml\Feedback\Edit;
+
 use Magento\Framework\View\Element\UiComponent\Control\ButtonProviderInterface;
 
+/**
+ * Provides data for 'Delete' button
+ */
 class DeleteButton extends GenericButton implements ButtonProviderInterface
 {
-    public function getButtonData()
+    /**
+     * @return array
+     */
+    public function getButtonData(): array
     {
         $data = [];
         if ($this->getFeedbackId()) {
@@ -20,7 +27,11 @@ class DeleteButton extends GenericButton implements ButtonProviderInterface
         }
         return $data;
     }
-    public function getDeleteUrl()
+
+    /**
+     * @return string
+     */
+    public function getDeleteUrl(): string
     {
         return $this->getUrl('*/*/delete', ['feedback_id' => $this->getFeedbackId()]);
     }
