@@ -23,27 +23,27 @@ class ReplyRepository implements ReplyRepositoryInterface
     /**
      * @var ReplyResource
      */
-    private $resource;
+    private ReplyResource $resource;
 
     /**
      * @var ReplyInterfaceFactory
      */
-    private $replyFactory;
+    private ReplyInterfaceFactory $replyFactory;
 
     /**
      * @var ReplyCollectionFactory
      */
-    private $replyCollectionFactory;
+    private ReplyCollectionFactory $replyCollectionFactory;
 
     /**
      * @var ReplySearchResultsInterfaceFactory
      */
-    private $searchResultsFactory;
+    private ReplySearchResultsInterfaceFactory $searchResultsFactory;
 
     /**
      * @var CollectionProcessorInterface
      */
-    private $collectionProcessor;
+    private CollectionProcessorInterface $collectionProcessor;
 
     /**
      * @param ReplyResource $resource
