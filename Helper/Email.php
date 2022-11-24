@@ -49,10 +49,6 @@ class Email extends AbstractHelper
      * @var StoreManagerInterface
      */
     protected StoreManagerInterface $storeManager;
-    /**
-     * @var
-     */
-    protected $urlInterface;
 
     /**
      * @param Context $context
