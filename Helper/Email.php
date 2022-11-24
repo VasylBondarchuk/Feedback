@@ -12,43 +12,35 @@ use Magento\Framework\Mail\Template\TransportBuilder;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Store\Model\ScopeInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  *
  */
 class Email extends AbstractHelper
 {
-    /**
-     *
-     */
     private const NEW_FEEDBACK_NOTIFICATION_EMAIL_PATH =
         'feedback_configuration/feedback_configuration_general/admin_email_new_feedback_notification';
-    /**
-     *
-     */
     private const NEW_FEEDBACK_NOTIFICATION_NAME_PATH =
         'feedback_configuration/feedback_configuration_general/admin_name_new_feedback_notification';
-    /**
-     *
-     */
     private const TEMPLATE_ID = 'frontend_new_feedback_notification';
 
     /**
      * @var StateInterface
      */
-    protected $inlineTranslation;
+    protected StateInterface $inlineTranslation;
     /**
      * @var Escaper
      */
-    protected $escaper;
+    protected Escaper $escaper;
     /**
      * @var TransportBuilder
      */
-    protected $transportBuilder;
+    protected TransportBuilder $transportBuilder;
     /**
-     * @var \Psr\Log\LoggerInterface
+     * @var LoggerInterface
      */
-    protected $logger;
+    protected LoggerInterface $logger;
     /**
      * @var ScopeConfigInterface
      */
@@ -56,7 +48,7 @@ class Email extends AbstractHelper
     /**
      * @var StoreManagerInterface
      */
-    protected $storeManager;
+    protected StoreManagerInterface $storeManager;
     /**
      * @var
      */

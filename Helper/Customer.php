@@ -20,12 +20,12 @@ class Customer extends AbstractHelper
     /**
      * @var UrlInterface
      */
-    private $urlInterface;
+    private UrlInterface $urlInterface;
 
     /**
      * @var ManagerInterface
      */
-    private $messageManager;
+    private ManagerInterface $messageManager;
 
     /**
      * @param Context $context
