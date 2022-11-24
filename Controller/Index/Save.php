@@ -2,8 +2,12 @@
 
 namespace Training\Feedback\Controller\Index;
 
-use Magento\Framework\App\Action\Action;
-use Magento\Framework\App\Action\Context;
+use Magento\Framework\App\Action\HttpPostActionInterface as HttpPostActionInterface;
+use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\Message\ManagerInterface;
+use Magento\Framework\App\RequestInterface;
+use Magento\Framework\Controller\ResultFactory;
+use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Training\Feedback\Model\FeedbackFactory;
 use Training\Feedback\Model\Feedback as FeedbackModel;
@@ -16,16 +20,28 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 /**
  *
  */
-class Save extends Action
+class Save implements HttpPostActionInterface
 {
     private const FEEDBACK_EDIT_PAGE_PATH = 'admin/training_feedback/index/edit/feedback_id/';
-    
+
     private const PUBLISH_FEEDBACK_PATH = 'feedback_configuration/feedback_configuration_general/publish_feedback_without_moderation';
 
     /**
+     * @var ManagerInterface
+     */
+    private $messageManager;
+    /**
+     * @var ResultFactory
+     */
+    private $resultFactory;
+    /**
      * @var FeedbackFactory
      */
-    private $feedbackFactory;
+    private FeedbackFactory $feedbackFactory;
+    /**
+     * @var RequestInterface
+     */
+    private $request;
     /**
      * @var Feedback
      */
@@ -37,27 +53,30 @@ class Save extends Action
     /**
      * @var UrlInterface
      */
-    private $urlInterface;
+    private UrlInterface $urlInterface;
 
     /**
      * @var ScopeConfigInterface
      */
-    protected $scopeConfig;
+    protected ScopeConfigInterface $scopeConfig;
 
     /**
      * @var FeedbackRepositoryInterface
      */
-    private $feedbackRepository;
+    private FeedbackRepositoryInterface $feedbackRepository;
 
     /**
-     * @param Context $context
      * @param FeedbackFactory $feedbackFactory
      * @param Feedback $feedbackResource
      * @param Email $email
      * @param UrlInterface $urlInterface
+     * @param ScopeConfigInterface $scopeConfig
+     * @param FeedbackRepositoryInterface $feedbackRepository
      */
     public function __construct(
-        Context $context,
+        ManagerInterface $messageManager,
+        ResultFactory $resultFactory,
+        RequestInterface $request,
         FeedbackFactory $feedbackFactory,
         Feedback $feedbackResource,
         Email $email,
@@ -65,23 +84,25 @@ class Save extends Action
         ScopeConfigInterface $scopeConfig,
         FeedbackRepositoryInterface $feedbackRepository
     ) {
+        $this->messageManager = $messageManager;
+        $this->resultFactory = $resultFactory;
+        $this->request = $request;
         $this->feedbackFactory = $feedbackFactory;
         $this->feedbackResource = $feedbackResource;
         $this->email = $email;
         $this->urlInterface = $urlInterface;
         $this->scopeConfig = $scopeConfig;
         $this->feedbackRepository = $feedbackRepository;
-        parent::__construct($context);
     }
 
     /**
-     * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\Result\Redirect|\Magento\Framework\Controller\ResultInterface
+     * @return ResponseInterface|\Magento\Framework\Controller\Result\Redirect|ResultInterface
      */
     public function execute()
     {
-        $result = $this->resultRedirectFactory->create();
-        $result->setPath('*/*/index');
-        if ($post = $this->getRequest()->getPostValue()) {
+        $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
+        $resultRedirect->setPath('*/*/index');
+        if ($post = $this->request->getPostValue()) {
             try {
                 // input data validation
                 $this->validatePost($post);
@@ -94,17 +115,17 @@ class Save extends Action
 
                 $this->email->sendEmail($post['message'],
                         $this->getLinkToFeedbackEditPage($feedback));
-                
+
                 $this->messageManager->addSuccessMessage(
                     __('Thank you for your feedback.'));
             } catch (\Exception $e) {
                 $this->messageManager->addErrorMessage(
                     __('An error occurred while processing your form. Please try again later.')
                 );
-                $result->setPath('*/*/form');                
+                $resultRedirect->setPath('*/*/form');
             }
-        } 
-        return $result;
+        }
+        return $resultRedirect;
     }
 
     /**
@@ -123,7 +144,7 @@ class Save extends Action
         if (!isset($post['author_email']) || false === \strpos($post['author_email'], '@')) {
             throw new LocalizedException(__('Invalid email address'));
         }
-        if (trim($this->getRequest()->getParam('hideit')) !== '') {
+        if (trim($this->request->getParam('hideit')) !== '') {
             throw new \Exception();
         }
     }

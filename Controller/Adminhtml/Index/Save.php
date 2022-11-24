@@ -27,28 +27,59 @@ class Save implements HttpPostActionInterface
 {
     const ADMIN_RESOURCE = 'Training_Feedback::feedback_save';
 
+    /**
+     * @var ManagerInterface
+     */
     private $messageManager;
 
+    /**
+     * @var ResultFactory
+     */
     private $resultFactory;
 
+    /**
+     * @var DataPersistorInterface
+     */
     private $dataPersistor;
 
+    /**
+     * @var FeedbackRepositoryInterface
+     */
     private $feedbackRepository;
 
+    /**
+     * @var FeedbackFactory
+     */
     private $feedbackFactory;
 
+    /**
+     * @var ReplyRepositoryInterface
+     */
     private $replyRepository;
 
+    /**
+     * @var ReplyFactory
+     */
     private $replyFactory;
 
+    /**
+     * @var Session
+     */
     private $authSession;
 
+    /**
+     * @var LoggerInterface
+     */
     private $logger;
 
+    /**
+     * @var RequestInterface
+     */
     private $request;
 
     /**
-     * @param Context $context
+     * @param ManagerInterface $messageManager
+     * @param ResultFactory $resultFactory
      * @param DataPersistorInterface $dataPersistor
      * @param FeedbackRepositoryInterface $feedbackRepository
      * @param FeedbackFactory $feedbackFactory
@@ -56,6 +87,7 @@ class Save implements HttpPostActionInterface
      * @param ReplyFactory $replyFactory
      * @param Session $authSession
      * @param LoggerInterface $logger
+     * @param RequestInterface $request
      */
     public function __construct(
         ManagerInterface $messageManager,

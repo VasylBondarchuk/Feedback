@@ -75,7 +75,7 @@ class Index implements HttpGetActionInterface
         $resultPage = $this->resultFactory->create(ResultFactory::TYPE_PAGE);
         $resultPage
             ->setActiveMenu('Training_Feedback::feedback')
-            ->getConfig()->getTitle()->prepend(__('Feedback'));
+            ->getConfig()->getTitle()->prepend(__('Feedbacks'));
         $this->dataPersistor->clear('training_feedback');
         return $resultPage;
     }

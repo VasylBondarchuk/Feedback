@@ -16,7 +16,7 @@ class Customer extends AbstractHelper
     /**
      * @var Session
      */
-    private $customerSession;
+    private Session $customerSession;
     /**
      * @var UrlInterface
      */
