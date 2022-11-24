@@ -20,15 +20,15 @@ class Form implements HttpGetActionInterface
     /**
      * @var PageFactory
      */
-    private $pageFactory;
+    private PageFactory $pageFactory;
     /**
      * @var Customer
      */
-    private $customerRedirect;
+    private Customer $customerRedirect;
     /**
      * @var ScopeConfigInterface
      */
-    protected $scopeConfig;
+    protected ScopeConfigInterface $scopeConfig;
 
     /**
      *

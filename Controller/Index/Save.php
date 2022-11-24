@@ -18,7 +18,7 @@ use Magento\Framework\UrlInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 
 /**
- *
+ * Saves new feedback
  */
 class Save implements HttpPostActionInterface
 {
@@ -66,6 +66,9 @@ class Save implements HttpPostActionInterface
     private FeedbackRepositoryInterface $feedbackRepository;
 
     /**
+     * @param ManagerInterface $messageManager
+     * @param ResultFactory $resultFactory
+     * @param RequestInterface $request
      * @param FeedbackFactory $feedbackFactory
      * @param Feedback $feedbackResource
      * @param Email $email
@@ -106,16 +109,16 @@ class Save implements HttpPostActionInterface
             try {
                 // input data validation
                 $this->validatePost($post);
-                // create model instance
+                // create feedback model instance
                 $feedback = $this->feedbackFactory->create();
                 // set data to model
                 $this->setDataToModel($feedback, $post);
                 // save data
                 $this->feedbackRepository->save($feedback);
-
-                $this->email->sendEmail($post['message'],
-                        $this->getLinkToFeedbackEditPage($feedback));
-
+                // sends email notification about submitting new feedback
+                $this->email->sendEmail(
+                    $post['message'], $this->getLinkToFeedbackEditPage($feedback)
+                );
                 $this->messageManager->addSuccessMessage(
                     __('Thank you for your feedback.'));
             } catch (\Exception $e) {
