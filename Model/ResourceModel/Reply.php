@@ -5,7 +5,7 @@ namespace Training\Feedback\Model\ResourceModel;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 
 /**
- *
+ * Reply resource model
  */
 class Reply extends AbstractDb
 {

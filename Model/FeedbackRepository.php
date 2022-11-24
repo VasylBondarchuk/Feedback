@@ -21,20 +21,20 @@ use Training\Feedback\Api\Data\Feedback\FeedbackSearchResultsInterfaceFactory;
  */
 class FeedbackRepository implements FeedbackRepositoryInterface
 {
-    /**    
+    /**
      * @var FeedbackResource
      */
     private FeedbackResource $resource;
     /**
      * @var FeedbackFactory
      */
-    private $feedbackFactory;
+    private FeedbackFactory $feedbackFactory;
     /**
      * @var FeedbackCollectionFactory
      */
-    private $feedbackCollectionFactory;
+    private FeedbackCollectionFactory $feedbackCollectionFactory;
 
-    private $searchResultsFactory;
+    private FeedbackSearchResultsInterfaceFactory $searchResultsFactory;
     /**
      * @var CollectionProcessorInterface
      */

@@ -16,7 +16,7 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 
 /**
- *
+ * Reply repository
  */
 class ReplyRepository implements ReplyRepositoryInterface
 {

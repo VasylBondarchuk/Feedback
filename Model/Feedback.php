@@ -6,7 +6,7 @@ use Magento\Framework\Model\AbstractExtensibleModel;
 use Training\Feedback\Api\Data\Feedback\FeedbackInterface;
 
 /**
- *
+ * Feedback model
  */
 class Feedback extends AbstractExtensibleModel implements FeedbackInterface
 {
@@ -164,6 +164,7 @@ class Feedback extends AbstractExtensibleModel implements FeedbackInterface
     {
         return $this->setData(self::UPDATE_TIME, $updateTime);
     }
+
     /**
      * Set is active
      *

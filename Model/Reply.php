@@ -6,11 +6,10 @@ use Magento\Framework\Model\AbstractExtensibleModel;
 use Training\Feedback\Api\Data\Reply\ReplyInterface;
 
 /**
- *
+ * Reply model
  */
-class Reply extends AbstractExtensibleModel implements ReplyInterface{
-
-
+class Reply extends AbstractExtensibleModel implements ReplyInterface
+{
     /**
      * @return void
      */
@@ -76,7 +75,6 @@ class Reply extends AbstractExtensibleModel implements ReplyInterface{
         return $this->setData(self::REPLY_ID, $replyId);
     }
 
-
     /**
      * @param int $feedbackId
      * @return ReplyInterface
@@ -93,7 +91,6 @@ class Reply extends AbstractExtensibleModel implements ReplyInterface{
     {
         return $this->setData(self::ADMIN_ID, $adminId);
     }
-
 
     /**
      * @param string $replyText
