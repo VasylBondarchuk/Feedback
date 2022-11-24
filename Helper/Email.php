@@ -15,7 +15,7 @@ use Magento\Store\Model\ScopeInterface;
 use Psr\Log\LoggerInterface;
 
 /**
- *
+ * Sends email notification in the case new feedback is submitted
  */
 class Email extends AbstractHelper
 {
