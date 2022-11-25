@@ -35,47 +35,47 @@ class Save implements HttpPostActionInterface
     /**
      * @var ResultFactory
      */
-    private $resultFactory;
+    private ResultFactory $resultFactory;
 
     /**
      * @var DataPersistorInterface
      */
-    private $dataPersistor;
+    private DataPersistorInterface $dataPersistor;
 
     /**
      * @var FeedbackRepositoryInterface
      */
-    private $feedbackRepository;
+    private FeedbackRepositoryInterface $feedbackRepository;
 
     /**
      * @var FeedbackFactory
      */
-    private $feedbackFactory;
+    private FeedbackFactory $feedbackFactory;
 
     /**
      * @var ReplyRepositoryInterface
      */
-    private $replyRepository;
+    private ReplyRepositoryInterface $replyRepository;
 
     /**
      * @var ReplyFactory
      */
-    private $replyFactory;
+    private ReplyFactory $replyFactory;
 
     /**
      * @var Session
      */
-    private $authSession;
+    private Session $authSession;
 
     /**
      * @var LoggerInterface
      */
-    private $logger;
+    private LoggerInterface $logger;
 
     /**
      * @var RequestInterface
      */
-    private $request;
+    private RequestInterface $request;
 
     /**
      * @param ManagerInterface $messageManager
@@ -120,7 +120,7 @@ class Save implements HttpPostActionInterface
     public function execute()
     {
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
-        // get data from the feddback form field
+        // get data from the feedback form field
         $data = $this->request->getPostValue();
         if ($data) {
             if (isset($data[FeedbackInterface::IS_ACTIVE]) && $data[FeedbackInterface::IS_ACTIVE] === 'true') {
@@ -129,9 +129,7 @@ class Save implements HttpPostActionInterface
             if (empty($data[FeedbackInterface::FEEDBACK_ID])) {
                 $data[FeedbackInterface::FEEDBACK_ID] = null;
             }
-
             $editedFeedbackId = (int)($this->request->get('feedback_id'));
-
             try {
                 $feedbackModel = $this->getFeedBackModel($editedFeedbackId);
                 $replyModel = $this->getReplyModel($editedFeedbackId);
@@ -212,8 +210,8 @@ class Save implements HttpPostActionInterface
         $replyModel
             ->setFeedbackId($feedBackId)
             ->setAdminId($this->getAdminId())
-            ->setReplyText($data[ReplyInterface::REPLY_TEXT]);
-
+            ->setReplyText($data[ReplyInterface::REPLY_TEXT])
+            ->setReplyCreationTime(date("F j, Y, g:i a"));
         $this->replyRepository->save($replyModel);
     }
 
