@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Training\Feedback\ViewModel;
 
+use Magento\Customer\Api\CustomerRepositoryInterface;
+use Magento\Customer\Model\Session;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
-use Magento\Customer\Model\Session;
-use Magento\Customer\Api\CustomerRepositoryInterface;
 
 /**
  *
@@ -38,8 +38,7 @@ class FeedbackForm implements ArgumentInterface
         UrlInterface $urlBuilder,
         Session $customerSession,
         CustomerRepositoryInterface $customerRepository
-    )
-    {
+    ) {
         $this->urlBuilder = $urlBuilder;
         $this->customerSession = $customerSession;
         $this->customerRepository = $customerRepository;
@@ -52,8 +51,7 @@ class FeedbackForm implements ArgumentInterface
         try {
             $customerId =  (int)$this->customerSession->getCustomer()->getId();
             $customerName = $this->customerRepository->getById($customerId)->getFirstname();
-        }
-        catch (\Exception $exception) {
+        } catch (\Exception $exception) {
             $customerName = '';
         }
         return $customerName;

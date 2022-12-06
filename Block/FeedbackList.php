@@ -2,17 +2,17 @@
 
 namespace Training\Feedback\Block;
 
+use Magento\Customer\Model\Session;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Stdlib\DateTime\Timezone;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
-use Training\Feedback\Model\ResourceModel\Feedback as FeedbackResource;
+use Psr\Log\LoggerInterface;
 use Training\Feedback\Model\Feedback as FeedbackModel;
+use Training\Feedback\Model\ReplyRepository;
+use Training\Feedback\Model\ResourceModel\Feedback as FeedbackResource;
 use Training\Feedback\Model\ResourceModel\Feedback\Collection;
 use Training\Feedback\Model\ResourceModel\Feedback\CollectionFactory;
-use Training\Feedback\Model\ReplyRepository;
-use Psr\Log\LoggerInterface;
-use Magento\Customer\Model\Session;
 
 /**
  *
@@ -23,7 +23,7 @@ class FeedbackList extends Template
     /**
      * @var CollectionFactory
      */
-    private $collectionFactory;
+    private CollectionFactory $collectionFactory;
     /**
      * @var
      */
@@ -66,8 +66,7 @@ class FeedbackList extends Template
         LoggerInterface   $logger,
         Session           $customerSession,
         array             $data = []
-    )
-    {
+    ) {
         parent::__construct($context, $data);
         $this->collectionFactory = $collectionFactory;
         $this->timezone = $timezone;
@@ -188,6 +187,4 @@ class FeedbackList extends Template
     {
         return 'Admin';
     }
-
-
 }

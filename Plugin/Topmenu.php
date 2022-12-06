@@ -38,8 +38,7 @@ class Topmenu
         NodeFactory $nodeFactory,
         UrlInterface $urlBuilder,
         ScopeConfigInterface $scopeConfig
-    )
-    {
+    ) {
         $this->nodeFactory = $nodeFactory;
         $this->urlBuilder = $urlBuilder;
         $this->scopeConfig = $scopeConfig;
@@ -47,16 +46,18 @@ class Topmenu
 
     /**
      * @param \Magento\Theme\Block\Html\Topmenu $subject
-     * @param $outermostClass
-     * @param $childrenWrapClass
-     * @param $limit
+     * @param string $outermostClass
+     * @param string $childrenWrapClass
+     * @param int $limit
      * @return void
      */
-    public function beforeGetHtml(\Magento\Theme\Block\Html\Topmenu $subject, $outermostClass = '', $childrenWrapClass = '', $limit = 0)
+    public function beforeGetHtml(\Magento\Theme\Block\Html\Topmenu $subject, string $outermostClass = '', string $childrenWrapClass = '', int $limit = 0): void
     {
         $menuNode = $this->nodeFactory->create(
             ['data' => $this->getNodeAsArray(
-            $this->getTopMenuLinkName(), "index"),
+                $this->getTopMenuLinkName(),
+                "index"
+            ),
             'idField' => 'id',
             'tree' => $subject->getMenu()->getTree()]
         );
@@ -84,9 +85,9 @@ class Topmenu
     /**
      * Gets name of the link in the top menu
      *
-     * @return string
+     * @return string|null
      */
-    public function getTopMenuLinkName(): string
+    public function getTopMenuLinkName(): ?string
     {
         return $this->scopeConfig->getValue(self::TOP_MENU_LINK_NAME_PATH, ScopeInterface::SCOPE_STORE);
     }

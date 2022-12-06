@@ -2,8 +2,8 @@
     <!-- Display feedback statistics -->
     <?php if ($block->getAllFeedbackNumber()):?>
         <div class="feedback-statistic">
-            <p><?= __('Total number of submitted feedbacks: %1', '<b>'. $block->getAllFeedbackNumber() .'</b>') ?></p>
-            <p><?= __('Total number of active feedbacks: %1', '<b>'. $block->getActiveFeedbackNumber(). '</b>') ?></p>
+            <p><?= __('Total number of submitted feedbacks: %1', '<b>' . $block->getAllFeedbackNumber() . '</b>') ?></p>
+            <p><?= __('Total number of active feedbacks: %1', '<b>' . $block->getActiveFeedbackNumber() . '</b>') ?></p>
         </div>
     <?php else:?>
         <p><?= $block->escapeHtml('There are no feedbacks at the moment. Be the first to add a feedback.') ?></p>
