@@ -3,19 +3,19 @@
 namespace Training\Feedback\Controller\Index;
 
 use Magento\Framework\App\Action\HttpPostActionInterface as HttpPostActionInterface;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\Message\ManagerInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\RequestInterface;
+use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
-use Training\Feedback\Model\FeedbackFactory;
-use Training\Feedback\Model\Feedback as FeedbackModel;
-use Training\Feedback\Model\ResourceModel\Feedback;
+use Magento\Framework\Message\ManagerInterface;
+use Magento\Framework\UrlInterface;
 use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
 use Training\Feedback\Helper\Email;
-use Magento\Framework\UrlInterface;
-use Magento\Framework\App\Config\ScopeConfigInterface;
+use Training\Feedback\Model\Feedback as FeedbackModel;
+use Training\Feedback\Model\FeedbackFactory;
+use Training\Feedback\Model\ResourceModel\Feedback;
 
 /**
  * Saves new feedback
@@ -29,11 +29,11 @@ class Save implements HttpPostActionInterface
     /**
      * @var ManagerInterface
      */
-    private $messageManager;
+    private ManagerInterface $messageManager;
     /**
      * @var ResultFactory
      */
-    private $resultFactory;
+    private ResultFactory $resultFactory;
     /**
      * @var FeedbackFactory
      */
@@ -117,10 +117,12 @@ class Save implements HttpPostActionInterface
                 $this->feedbackRepository->save($feedback);
                 // sends email notification about submitting new feedback
                 $this->email->sendEmail(
-                    $post['message'], $this->getLinkToFeedbackEditPage($feedback)
+                    $post['message'],
+                    $this->getLinkToFeedbackEditPage($feedback)
                 );
                 $this->messageManager->addSuccessMessage(
-                    __('Thank you for your feedback.'));
+                    __('Thank you for your feedback.')
+                );
             } catch (\Exception $e) {
                 $this->messageManager->addErrorMessage(
                     __('An error occurred while processing your form. Please try again later.')
@@ -166,7 +168,7 @@ class Save implements HttpPostActionInterface
      * @param array $post
      * @return void
      */
-    private function setDataToModel(FeedbackModel $feedback, array $post)
+    private function setDataToModel(FeedbackModel $feedback, array $post): void
     {
         $feedback
             ->setData($post)

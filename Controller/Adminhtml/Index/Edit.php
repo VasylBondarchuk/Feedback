@@ -2,15 +2,16 @@
 
 namespace Training\Feedback\Controller\Adminhtml\Index;
 
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Message\ManagerInterface;
-use Magento\Framework\Controller\ResultFactory;
-use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
-use Magento\Framework\App\RequestInterface;
-use Psr\Log\LoggerInterface;
-use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\App\Action\HttpGetActionInterface;
+use Magento\Framework\App\RequestInterface;
+use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\Controller\ResultFactory;
+use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Message\ManagerInterface;
+use Psr\Log\LoggerInterface;
+use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
 
 /**
  * Edits feedback in the admin panel
@@ -67,7 +68,8 @@ class Edit implements HttpGetActionInterface
     }
 
     /**
-     * @return ResponseInterface|\Magento\Framework\Controller\ResultInterface
+     * @return ResponseInterface|ResultInterface
+     * @throws LocalizedException
      */
     public function execute()
     {
@@ -92,12 +94,12 @@ class Edit implements HttpGetActionInterface
     private function isFeedbackExist($feedbackId): bool
     {
         $exist = false;
-            try {
-                $this->feedbackRepository->getById($feedbackId);
-                $exist = true;
-            } catch (NoSuchEntityException $e) {
-                $this->logger->error($e->getLogMessage());
-            }
+        try {
+            $this->feedbackRepository->getById($feedbackId);
+            $exist = true;
+        } catch (NoSuchEntityException $e) {
+            $this->logger->error($e->getLogMessage());
+        }
         return $exist;
     }
 }

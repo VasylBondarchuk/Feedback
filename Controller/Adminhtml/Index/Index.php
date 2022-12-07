@@ -2,16 +2,16 @@
 
 namespace Training\Feedback\Controller\Adminhtml\Index;
 
+use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\App\Action\HttpGetActionInterface as HttpGetActionInterface;
 use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
-use Training\Feedback\Model\Feedback;
-use Training\Feedback\Api\Data\Feedback\FeedbackInterface;
-use Magento\Framework\Api\SearchCriteriaBuilder;
-use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
 use Magento\Framework\Message\ManagerInterface;
-use Magento\Framework\App\Action\HttpGetActionInterface as HttpGetActionInterface;
+use Training\Feedback\Api\Data\Feedback\FeedbackInterface;
+use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
+use Training\Feedback\Model\Feedback;
 
 /**
  * Index page
@@ -83,9 +83,9 @@ class Index implements HttpGetActionInterface
     /**
      * @return void
      */
-    private function displayNotPublishedFeedbacksNumber()
+    private function displayNotPublishedFeedbacksNumber(): void
     {
-        if($this->getNotPublishedFeedbacksNumber()){
+        if ($this->getNotPublishedFeedbacksNumber()) {
             $this->messageManager->addSuccessMessage(
                 __('%1 Feedback(s) are submitted but not published yet.', $this->getNotPublishedFeedbacksNumber())
             );

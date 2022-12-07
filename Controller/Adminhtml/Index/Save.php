@@ -2,26 +2,26 @@
 
 namespace Training\Feedback\Controller\Adminhtml\Index;
 
+use Magento\Backend\Model\Auth\Session;
+use Magento\Framework\App\Action\HttpPostActionInterface as HttpPostActionInterface;
 use Magento\Framework\App\Request\DataPersistorInterface;
-use Magento\Framework\Message\ManagerInterface;
+use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
-use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Exception\LocalizedException;
-use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
+use Magento\Framework\Message\ManagerInterface;
+use Psr\Log\LoggerInterface;
 use Training\Feedback\Api\Data\Feedback\FeedbackInterface;
+use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
 use Training\Feedback\Api\Data\Reply\ReplyInterface;
+use Training\Feedback\Api\Data\Reply\ReplyRepositoryInterface;
 use Training\Feedback\Model\Feedback;
 use Training\Feedback\Model\FeedbackFactory;
-use Training\Feedback\Api\Data\Reply\ReplyRepositoryInterface;
 use Training\Feedback\Model\Reply;
 use Training\Feedback\Model\ReplyFactory;
-use Magento\Backend\Model\Auth\Session;
-use Psr\Log\LoggerInterface;
-use Magento\Framework\App\Action\HttpPostActionInterface as HttpPostActionInterface;
 
 /**
- * Saves fedbacks
+ * Saves feedbacks
  */
 class Save implements HttpPostActionInterface
 {
@@ -236,7 +236,7 @@ class Save implements HttpPostActionInterface
         $redirect = $data['back'] ?? 'close';
         if ($redirect ==='continue') {
             $resultRedirect->setPath('*/*/edit', ['feedback_id' => $model->getId()]);
-        } else if ($redirect === 'close') {
+        } elseif ($redirect === 'close') {
             $resultRedirect->setPath('*/*/');
         }
         return $resultRedirect;

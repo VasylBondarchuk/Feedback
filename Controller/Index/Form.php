@@ -3,12 +3,12 @@
 namespace Training\Feedback\Controller\Index;
 
 use Magento\Framework\App\Action\HttpGetActionInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\View\Result\Page;
 use Magento\Framework\View\Result\PageFactory;
-use Training\Feedback\Helper\Customer;
 use Magento\Store\Model\ScopeInterface;
-use Magento\Framework\App\Config\ScopeConfigInterface;
+use Training\Feedback\Helper\Customer;
 
 /**
  *
@@ -52,8 +52,8 @@ class Form implements HttpGetActionInterface
      */
     public function execute()
     {
-        if(!$this->isGuestAllowedToAddFeedback()){
-            $this->customerRedirect->redirectIfNotLoggedIn('You must login or register to add your feedback');;
+        if (!$this->isGuestAllowedToAddFeedback()) {
+            $this->customerRedirect->redirectIfNotLoggedIn('You must login or register to add your feedback');
         }
         $page = $this->pageFactory->create();
         $page->getConfig()->getTitle()->prepend(__('Feedback form'));
@@ -61,7 +61,7 @@ class Form implements HttpGetActionInterface
     }
 
     /**
-     * @return bool
+     * @return bool|null
      */
     public function isGuestAllowedToAddFeedback(): ?bool
     {

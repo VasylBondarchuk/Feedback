@@ -13,12 +13,12 @@ class NewAction implements HttpGetActionInterface
 {
     const ADMIN_RESOURCE = 'Training_Feedback::feedback';
 
-    private $resultFactory;
+    private ResultFactory $resultFactory;
 
-    private $dataPersistor;
+    private DataPersistorInterface $dataPersistor;
 
-    /**     *
-     * @param PageFactory $resultPageFactory
+    /**
+     * @param ResultFactory $resultFactory
      * @param DataPersistorInterface $dataPersistor
      */
     public function __construct(

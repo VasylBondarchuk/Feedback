@@ -4,16 +4,15 @@ declare(strict_types = 1);
 
 namespace Training\Feedback\Controller\Adminhtml\Index;
 
-use Magento\Framework\Message\ManagerInterface;
+use Magento\Framework\App\Action\HttpPostActionInterface as HttpPostActionInterface;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Message\ManagerInterface;
 use Magento\Ui\Component\MassAction\Filter;
 use Psr\Log\LoggerInterface;
 use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
 use Training\Feedback\Model\ResourceModel\Feedback\CollectionFactory;
-use Magento\Framework\App\Action\HttpPostActionInterface as HttpPostActionInterface;
-
 
 /**
  *

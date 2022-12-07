@@ -33,7 +33,7 @@ class Index implements HttpGetActionInterface
     public function execute()
     {
         $page = $this->pageFactory->create();
-        $page ->getConfig()->getTitle()->prepend(__('Feedbacks list'));
+        $page->getConfig()->getTitle()->prepend(__('Feedbacks list'));
         return $page;
     }
 }

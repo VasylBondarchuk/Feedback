@@ -4,10 +4,10 @@ declare(strict_types = 1);
 
 namespace Training\Feedback\Controller\Adminhtml\Index;
 
-use Magento\Framework\Message\ManagerInterface;
-use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\App\Action\HttpPostActionInterface as HttpPostActionInterface;
+use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Message\ManagerInterface;
 use Magento\Ui\Component\MassAction\Filter;
 use Psr\Log\LoggerInterface;
 use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
@@ -64,7 +64,7 @@ class MassDelete implements HttpPostActionInterface
      * @param CollectionFactory $collectionFactory
      * @param FeedbackRepositoryInterface $feedbackRepository
      * @param ReplyRepositoryInterface $replyRepository
-     * @param LoggerInterface $logger
+     * @param LoggerInterface|null $logger
      */
     public function __construct(
         ManagerInterface $messageManager,
@@ -93,7 +93,7 @@ class MassDelete implements HttpPostActionInterface
     public function execute()
     {
         $collection = $this->filter->getCollection($this->collectionFactory->create());
-        //counters for deleted feddbacks and possible errors
+        //counters for deleted feedbacks and possible errors
         $feedbackDeleted = $feedbackDeletedError = 0;
         foreach ($collection as $feedback) {
             try {
@@ -107,12 +107,16 @@ class MassDelete implements HttpPostActionInterface
         }
         if ($feedbackDeleted) {
             $this->messageManager->addSuccessMessage(
-                __('A total of %1 record(s) have been deleted.', $feedbackDeleted));
+                __('A total of %1 record(s) have been deleted.', $feedbackDeleted)
+            );
         }
         if ($feedbackDeletedError) {
             $this->messageManager->addErrorMessage(
-                __('A total of %1 record(s) haven\'t been deleted. Please see server logs for more details.',
-                    $feedbackDeletedError));
+                __(
+                    'A total of %1 record(s) haven\'t been deleted. Please see server logs for more details.',
+                    $feedbackDeletedError
+                )
+            );
         }
         return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)->setPath('*/*/');
     }
