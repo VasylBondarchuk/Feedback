@@ -19,6 +19,7 @@ use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
 class Edit implements HttpGetActionInterface
 {
     const ADMIN_RESOURCE = 'Training_Feedback::feedback_save';
+    const REQUEST_FIELD_NAME = 'feedback_id';
 
     /**
      * @var ManagerInterface
@@ -73,7 +74,7 @@ class Edit implements HttpGetActionInterface
      */
     public function execute()
     {
-        $feedbackId = (int)($this->request->get('feedback_id'));
+        $feedbackId = (int)($this->request->get(self::REQUEST_FIELD_NAME));
         if (!$this->isFeedbackExist($feedbackId)) {
             $this->messageManager->addErrorMessage(__('This feedback does not exist.'));
             $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
