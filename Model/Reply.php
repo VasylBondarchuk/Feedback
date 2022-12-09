@@ -93,7 +93,7 @@ class Reply extends AbstractExtensibleModel implements ReplyInterface
     }
 
     /**
-     * @param string $replyText
+     * @param string|null $replyText
      * @return ReplyInterface
      */
     public function setReplyText(?string $replyText) : ReplyInterface
