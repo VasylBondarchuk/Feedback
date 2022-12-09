@@ -5,6 +5,7 @@ namespace Training\Feedback\Controller\Index;
 use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\Exception\SessionException;
 use Magento\Framework\View\Result\Page;
 use Magento\Framework\View\Result\PageFactory;
 use Magento\Store\Model\ScopeInterface;
@@ -49,6 +50,7 @@ class Form implements HttpGetActionInterface
 
     /**
      * @return Page|ResultInterface
+     * @throws SessionException
      */
     public function execute()
     {

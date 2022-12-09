@@ -231,7 +231,7 @@ class Save implements HttpPostActionInterface
      * @param $resultRedirect
      * @return mixed
      */
-    private function processRedirect($model, $data, $resultRedirect)
+    private function processRedirect($model, $data, $resultRedirect): mixed
     {
         $redirect = $data['back'] ?? 'close';
         if ($redirect ==='continue') {
