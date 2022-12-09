@@ -71,7 +71,7 @@ class Delete implements HttpGetActionInterface
      */
     public function execute()
     {
-        $feedbackId = (int)($this->request->get('feedback_id'));
+        $feedbackId = (int)($this->request->get(self::REQUEST_FIELD_NAME));
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         if ($feedbackId) {
             try {
