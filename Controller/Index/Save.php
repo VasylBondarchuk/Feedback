@@ -6,6 +6,7 @@ use Magento\Framework\App\Action\HttpPostActionInterface as HttpPostActionInterf
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
@@ -41,7 +42,7 @@ class Save implements HttpPostActionInterface
     /**
      * @var RequestInterface
      */
-    private $request;
+    private RequestInterface $request;
     /**
      * @var Feedback
      */
@@ -49,7 +50,7 @@ class Save implements HttpPostActionInterface
     /**
      * @var Email
      */
-    private $email;
+    private Email $email;
     /**
      * @var UrlInterface
      */
@@ -99,7 +100,8 @@ class Save implements HttpPostActionInterface
     }
 
     /**
-     * @return ResponseInterface|\Magento\Framework\Controller\Result\Redirect|ResultInterface
+     * @return ResponseInterface|Redirect|ResultInterface
+     * @throws LocalizedException
      */
     public function execute()
     {
@@ -132,7 +134,6 @@ class Save implements HttpPostActionInterface
         }
         return $resultRedirect;
     }
-
     /**
      * @param $post
      * @return void
@@ -192,3 +193,4 @@ class Save implements HttpPostActionInterface
         return $this->urlInterface->getUrl(self::FEEDBACK_EDIT_PAGE_PATH) . $this->getFeedbackId($feedback);
     }
 }
+

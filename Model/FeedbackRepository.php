@@ -2,19 +2,19 @@
 
 namespace Training\Feedback\Model;
 
-use Magento\Framework\Api\SearchCriteriaInterface;
-use Training\Feedback\Api\Data;
-use Training\Feedback\Api\Data\Feedback\FeedbackInterface;
-use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
+use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Exception\CouldNotDeleteException;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Training\Feedback\Api\Data\Feedback\FeedbackSearchResultsInterface;
-use Training\Feedback\Model\ResourceModel\Feedback as FeedbackResource;
+use Training\Feedback\Api\Data;
+use Training\Feedback\Api\Data\Feedback\FeedbackInterface;
 use Training\Feedback\Api\Data\Feedback\FeedbackInterfaceFactory as FeedbackFactory;
-use Training\Feedback\Model\ResourceModel\Feedback\CollectionFactory as FeedbackCollectionFactory;
+use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
+use Training\Feedback\Api\Data\Feedback\FeedbackSearchResultsInterface;
 use Training\Feedback\Api\Data\Feedback\FeedbackSearchResultsInterfaceFactory;
+use Training\Feedback\Model\ResourceModel\Feedback as FeedbackResource;
+use Training\Feedback\Model\ResourceModel\Feedback\CollectionFactory as FeedbackCollectionFactory;
 
 /**
  *

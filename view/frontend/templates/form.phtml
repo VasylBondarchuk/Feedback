@@ -41,6 +41,14 @@
                 </textarea>
             </div>
         </div>
+    <div class="field email notification">
+        <label class="label" for="message">
+            <span><?= $block->escapeHtml(__('Notify me about reply')) ?></span>
+        </label>
+        <div class="control">
+            <input type="checkbox" name="reply_notification" value="1">
+        </div>
+    </div>
     </fieldset>
     <div class="actions-toolbar">
         <div class="primary">

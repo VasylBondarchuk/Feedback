@@ -14,6 +14,7 @@ class Feedback extends AbstractExtensibleModel implements FeedbackInterface
     const STATUS_INACTIVE_VALUE = 0;
     const STATUS_ACTIVE_LABEL = 'Published';
     const STATUS_INACTIVE_LABEL = 'Not published';
+
     /**
      * @var string
      */
@@ -67,6 +68,17 @@ class Feedback extends AbstractExtensibleModel implements FeedbackInterface
     {
         return $this->getData(self::MESSAGE);
     }
+
+    /**
+     * Get message
+     *
+     * @return string
+     */
+    public function getReplyNotification(): string
+    {
+        return $this->getData(self::REPLY_NOTIFICATION);
+    }
+
 
     /**
      * Retrieve post creation time
@@ -142,6 +154,11 @@ class Feedback extends AbstractExtensibleModel implements FeedbackInterface
     public function setMessage(string $message): FeedbackInterface
     {
         return $this->setData(self::MESSAGE, $message);
+    }
+
+    public function setReplyNotification(string $replyNotification): FeedbackInterface
+    {
+        return $this->setData(self::REPLY_NOTIFICATION, $replyNotification);
     }
     /**
      * Set creation time

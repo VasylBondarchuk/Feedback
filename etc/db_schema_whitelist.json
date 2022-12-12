@@ -7,10 +7,24 @@
             "message": true,
             "creation_time": true,
             "update_time": true,
-            "is_active": true
+            "is_active": true,
+            "reply_notification": true
         },
         "index": {
             "TRAINING_FEEDBACK_IS_ACTIVE": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    },
+    "training_feedback_reply": {
+        "column": {
+            "reply_id": true,
+            "feedback_id": true,
+            "admin_id": true,
+            "reply_text": true,
+            "reply_creation_time": true,
+            "reply_update_time": true
         },
         "constraint": {
             "PRIMARY": true
