@@ -150,7 +150,9 @@ class Save implements HttpPostActionInterface
                 $this->messageManager
                     ->addExceptionMessage($e, __('Something went wrong while saving the feedback.'));
             }
+
             $this->dataPersistor->set('training_feedback', $data);
+
             return $resultRedirect->setPath(
                 '*/*/edit',
                 ['feedback_id' => $editedFeedbackId]
@@ -207,6 +209,7 @@ class Save implements HttpPostActionInterface
     private function saveReply(ReplyInterface $replyModel, FeedbackInterface $feedbackModel, array $data)
     {
         $feedBackId = $feedbackModel->getFeedbackId();
+
         $replyModel
             ->setFeedbackId($feedBackId)
             ->setAdminId($this->getAdminId())

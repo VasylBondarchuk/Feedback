@@ -15,7 +15,7 @@ interface FeedbackRepositoryInterface
      * @return FeedbackInterface
      * @throws LocalizedException
      */
-    public function save(FeedbackInterface $feedback);
+    public function save(FeedbackInterface $feedback): FeedbackInterface;
     /**
      * Retrieve feedback.
      *
@@ -23,7 +23,7 @@ interface FeedbackRepositoryInterface
      * @return FeedbackInterface
      * @throws LocalizedException
      */
-    public function getById($feedbackId);
+    public function getById(int $feedbackId): FeedbackInterface;
     /**
      * Retrieve feedbacks matching the specified criteria.
      *
@@ -31,7 +31,7 @@ interface FeedbackRepositoryInterface
      * @return FeedbackSearchResultsInterface
      * @throws LocalizedException
      */
-    public function getList(SearchCriteriaInterface $searchCriteria);
+    public function getList(SearchCriteriaInterface $searchCriteria): FeedbackSearchResultsInterface;
     /**
      * Delete feedback.
      *
@@ -39,7 +39,7 @@ interface FeedbackRepositoryInterface
      * @return bool true on success
      * @throws LocalizedException
      */
-    public function delete(FeedbackInterface $feedback);
+    public function delete(FeedbackInterface $feedback): bool;
     /**
      * Delete feedback by ID.
      *
@@ -48,5 +48,5 @@ interface FeedbackRepositoryInterface
      * @throws NoSuchEntityException
      * @throws LocalizedException
      */
-    public function deleteById($feedbackId);
+    public function deleteById(int $feedbackId): bool;
 }

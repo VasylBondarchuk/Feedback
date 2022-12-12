@@ -117,4 +117,5 @@ class Reply extends AbstractExtensibleModel implements ReplyInterface
     {
         return $this->setData(self::REPLY_UPDATE_TIME, $replyUpdateTime);
     }
+
 }

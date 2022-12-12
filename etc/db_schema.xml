@@ -11,6 +11,8 @@
                 comment="Feedback Author Email"/>
         <column xsi:type="mediumtext" name="message" nullable="false"
                 comment="Feedback Content"/>
+        <column xsi:type="tinyint" name="reply_notification" nullable="true"
+                comment="Reply notification"/>
         <column xsi:type="timestamp" name="creation_time" on_update="false" nullable="false"
                 default="CURRENT_TIMESTAMP"
                 comment="Feedback Creation Time"/>

@@ -4,15 +4,41 @@ namespace Training\Feedback\Api\Data;
 
 use Magento\Framework\Api\ExtensibleDataInterface;
 
+/**
+ *
+ */
 interface FeedbackInterface extends ExtensibleDataInterface
 {
     /**#@+*/
     const FEEDBACK_ID = 'feedback_id';
+    /**
+     *
+     */
     const AUTHOR_NAME = 'author_name';
+    /**
+     *
+     */
     const AUTHOR_EMAIL = 'author_email';
+    /**
+     *
+     */
     const MESSAGE = 'message';
+    /**
+     *
+     */
+    const REPLY_NOTIFICATION = 'reply_notification';
+    /**
+     *
+     */
     const CREATION_TIME = 'creation_time';
+    /**
+     *
+     */
     const UPDATE_TIME = 'update_time';
+
+    /**
+     *
+     */
     const IS_ACTIVE = 'is_active';
     /**#@-*/
     /**
@@ -26,19 +52,24 @@ interface FeedbackInterface extends ExtensibleDataInterface
      *
      * @return string
      */
-    public function getAuthorName();
+    public function getAuthorName(): string;
     /**
      * Get author email
      *
-     * @return string|null
+     * @return string
      */
-    public function getAuthorEmail();
+    public function getAuthorEmail(): string;
     /**
      * Get message
      *
-     * @return string|null
+     * @return string
      */
-    public function getMessage();
+    public function getMessage(): string;
+
+    /**
+     * @return string
+     */
+    public function getReplyNotification(): string;
     /**
      * Get creation time
      *
@@ -78,28 +109,28 @@ interface FeedbackInterface extends ExtensibleDataInterface
      * @param string $authorEmail
      * @return FeedbackInterface
      */
-    public function setAuthorEmail($authorEmail): FeedbackInterface;
+    public function setAuthorEmail(string $authorEmail): FeedbackInterface;
     /**
      * Set message
      *
      * @param string $message
      * @return FeedbackInterface
      */
-    public function setMessage($message): FeedbackInterface;
+    public function setMessage(string $message): FeedbackInterface;
     /**
      * Set creation time
      *
      * @param string $creationTime
      * @return FeedbackInterface
      */
-    public function setCreationTime($creationTime): FeedbackInterface;
+    public function setCreationTime(string $creationTime): FeedbackInterface;
     /**
      * Set update time
      *
      * @param string $updateTime
      * @return FeedbackInterface
      */
-    public function setUpdateTime($updateTime): FeedbackInterface;
+    public function setUpdateTime(string $updateTime): FeedbackInterface;
     /**
      * Set is active
      *
