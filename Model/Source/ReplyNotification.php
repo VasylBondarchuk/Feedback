@@ -8,7 +8,7 @@ use Training\Feedback\Model\Feedback;
 /**
  *
  */
-class IsActive implements OptionSourceInterface
+class ReplyNotification implements OptionSourceInterface
 {
     /**
      * Get options
@@ -16,8 +16,8 @@ class IsActive implements OptionSourceInterface
      * @return array
      */
 
-    const OPTION_VALUES = [Feedback::STATUS_ACTIVE_VALUE, Feedback::STATUS_INACTIVE_VALUE];
-    const OPTION_LABELS = [Feedback::STATUS_ACTIVE_LABEL, Feedback::STATUS_INACTIVE_LABEL];
+    const OPTION_VALUES = [Feedback::REPLY_NOTIFY, Feedback::REPLY_DO_NOT_NOTIFY];
+    const OPTION_LABELS = [Feedback::REPLY_NOTIFY_LABEL, Feedback::REPLY_DO_NOT_NOTIFY_LABEL];
 
     /**
      * @return array
