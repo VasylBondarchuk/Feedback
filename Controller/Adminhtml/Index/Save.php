@@ -30,7 +30,7 @@ class Save implements HttpPostActionInterface
     /**
      * @var ManagerInterface
      */
-    private $messageManager;
+    private ManagerInterface $messageManager;
 
     /**
      * @var ResultFactory
