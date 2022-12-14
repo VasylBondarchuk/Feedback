@@ -17,7 +17,7 @@ use Psr\Log\LoggerInterface;
 /**
  * Sends email notification in the case new feedback is submitted
  */
-class Email extends AbstractHelper
+class FeedbackEmailNotification extends AbstractHelper
 {
     private const NEW_FEEDBACK_NOTIFICATION_EMAIL_PATH =
         'feedback_configuration/feedback_configuration_general/admin_email_new_feedback_notification';

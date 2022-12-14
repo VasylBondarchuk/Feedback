@@ -17,7 +17,7 @@ use Symfony\Component\Console\Helper\Table;
 class DisplayFeedbackDetailsById extends Command
 {
     const FEEDBACK_ID = 'feedbackId';
-    const HEADERS = ['ID', 'Author name', 'Author Email', 'Status', 'Created' , 'Modified'];
+    const HEADERS = ['ID', 'Author name', 'Author FeedbackEmail', 'Status', 'Created' , 'Modified'];
 
     /**
      * @var FeedbackRepositoryInterface
