@@ -15,6 +15,7 @@ use Training\Feedback\Api\Data\Feedback\FeedbackInterface;
 use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
 use Training\Feedback\Api\Data\Reply\ReplyInterface;
 use Training\Feedback\Api\Data\Reply\ReplyRepositoryInterface;
+use Training\Feedback\Helper\ReplyEmailNotification;
 use Training\Feedback\Model\Feedback;
 use Training\Feedback\Model\FeedbackFactory;
 use Training\Feedback\Model\Reply;
@@ -25,6 +26,9 @@ use Training\Feedback\Model\ReplyFactory;
  */
 class Save implements HttpPostActionInterface
 {
+    /**
+     *
+     */
     const ADMIN_RESOURCE = 'Training_Feedback::feedback_save';
 
     /**
@@ -78,6 +82,11 @@ class Save implements HttpPostActionInterface
     private RequestInterface $request;
 
     /**
+     * @var ReplyEmailNotification
+     */
+    private ReplyEmailNotification $email;
+
+    /**
      * @param ManagerInterface $messageManager
      * @param ResultFactory $resultFactory
      * @param DataPersistorInterface $dataPersistor
@@ -88,6 +97,7 @@ class Save implements HttpPostActionInterface
      * @param Session $authSession
      * @param LoggerInterface $logger
      * @param RequestInterface $request
+     * @param ReplyEmailNotification $email
      */
     public function __construct(
         ManagerInterface $messageManager,
@@ -99,7 +109,8 @@ class Save implements HttpPostActionInterface
         ReplyFactory              $replyFactory,
         Session                   $authSession,
         LoggerInterface           $logger,
-        RequestInterface          $request
+        RequestInterface          $request,
+        ReplyEmailNotification $email
     ) {
         $this->messageManager = $messageManager;
         $this->resultFactory = $resultFactory;
@@ -111,6 +122,7 @@ class Save implements HttpPostActionInterface
         $this->authSession = $authSession;
         $this->logger = $logger;
         $this->request = $request;
+        $this->email = $email;
     }
 
     /**
@@ -216,6 +228,7 @@ class Save implements HttpPostActionInterface
             ->setReplyText($data[ReplyInterface::REPLY_TEXT])
             ->setReplyCreationTime(date("F j, Y, g:i a"));
         $this->replyRepository->save($replyModel);
+        $this->email->sendEmail($feedbackModel->getAuthorEmail(), $feedbackModel->getAuthorName(), $replyModel->getReplyText());
     }
 
     /**

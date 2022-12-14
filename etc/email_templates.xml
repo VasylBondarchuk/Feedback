@@ -6,4 +6,10 @@
               file="frontend_new_feedback_notification.html"
               type="html"
               area="adminhtml"/>
+    <template id="frontend_reply_notification"
+              label="reply_notification"
+              module="Training_Feedback"
+              file="reply_notification.html"
+              type="html"
+              area="adminhtml"/>
 </config>

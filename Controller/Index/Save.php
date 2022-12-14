@@ -16,7 +16,6 @@ use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
 use Training\Feedback\Helper\Email;
 use Training\Feedback\Model\Feedback as FeedbackModel;
 use Training\Feedback\Model\FeedbackFactory;
-use Training\Feedback\Model\ResourceModel\Feedback;
 
 /**
  * Saves new feedback
@@ -43,10 +42,7 @@ class Save implements HttpPostActionInterface
      * @var RequestInterface
      */
     private RequestInterface $request;
-    /**
-     * @var Feedback
-     */
-    private $feedbackResource;
+
     /**
      * @var Email
      */
@@ -71,7 +67,6 @@ class Save implements HttpPostActionInterface
      * @param ResultFactory $resultFactory
      * @param RequestInterface $request
      * @param FeedbackFactory $feedbackFactory
-     * @param Feedback $feedbackResource
      * @param Email $email
      * @param UrlInterface $urlInterface
      * @param ScopeConfigInterface $scopeConfig
@@ -82,7 +77,6 @@ class Save implements HttpPostActionInterface
         ResultFactory $resultFactory,
         RequestInterface $request,
         FeedbackFactory $feedbackFactory,
-        Feedback $feedbackResource,
         Email $email,
         UrlInterface $urlInterface,
         ScopeConfigInterface $scopeConfig,
@@ -92,7 +86,6 @@ class Save implements HttpPostActionInterface
         $this->resultFactory = $resultFactory;
         $this->request = $request;
         $this->feedbackFactory = $feedbackFactory;
-        $this->feedbackResource = $feedbackResource;
         $this->email = $email;
         $this->urlInterface = $urlInterface;
         $this->scopeConfig = $scopeConfig;
@@ -193,4 +186,3 @@ class Save implements HttpPostActionInterface
         return $this->urlInterface->getUrl(self::FEEDBACK_EDIT_PAGE_PATH) . $this->getFeedbackId($feedback);
     }
 }
-
