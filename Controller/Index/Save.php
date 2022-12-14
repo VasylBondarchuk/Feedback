@@ -13,7 +13,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\UrlInterface;
 use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
-use Training\Feedback\Helper\Email;
+use Training\Feedback\Helper\FeedbackEmailNotification;
 use Training\Feedback\Model\Feedback as FeedbackModel;
 use Training\Feedback\Model\FeedbackFactory;
 
@@ -43,10 +43,7 @@ class Save implements HttpPostActionInterface
      */
     private RequestInterface $request;
 
-    /**
-     * @var Email
-     */
-    private Email $email;
+       private FeedbackEmailNotification $email;
     /**
      * @var UrlInterface
      */
@@ -67,7 +64,7 @@ class Save implements HttpPostActionInterface
      * @param ResultFactory $resultFactory
      * @param RequestInterface $request
      * @param FeedbackFactory $feedbackFactory
-     * @param Email $email
+     * @param FeedbackEmailNotification$email
      * @param UrlInterface $urlInterface
      * @param ScopeConfigInterface $scopeConfig
      * @param FeedbackRepositoryInterface $feedbackRepository
@@ -77,7 +74,7 @@ class Save implements HttpPostActionInterface
         ResultFactory $resultFactory,
         RequestInterface $request,
         FeedbackFactory $feedbackFactory,
-        Email $email,
+        FeedbackEmailNotification $email,
         UrlInterface $urlInterface,
         ScopeConfigInterface $scopeConfig,
         FeedbackRepositoryInterface $feedbackRepository
