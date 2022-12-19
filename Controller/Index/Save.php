@@ -13,7 +13,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\UrlInterface;
 use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
-use Training\Feedback\Helper\FeedbackEmailNotification;
+use Training\Feedback\Helper\EmailNotifications\FeedbackEmailNotification;
 use Training\Feedback\Model\Feedback as FeedbackModel;
 use Training\Feedback\Model\FeedbackFactory;
 
@@ -43,7 +43,7 @@ class Save implements HttpPostActionInterface
      */
     private RequestInterface $request;
 
-       private FeedbackEmailNotification $email;
+    private FeedbackEmailNotification $email;
     /**
      * @var UrlInterface
      */
@@ -109,8 +109,9 @@ class Save implements HttpPostActionInterface
                 $this->feedbackRepository->save($feedback);
                 // sends email notification about submitting new feedback
                 $this->email->sendEmail(
-                    $post['message'],
-                    $this->getLinkToFeedbackEditPage($feedback)
+                    $this->email->getNotificationRecipientEmail(),
+                    [$this->email->getNotificationRecipientName(),
+                    $post['message'], $this->getLinkToFeedbackEditPage($feedback)]
                 );
                 $this->messageManager->addSuccessMessage(
                     __('Thank you for your feedback.')

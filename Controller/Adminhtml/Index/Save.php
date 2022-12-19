@@ -15,7 +15,7 @@ use Training\Feedback\Api\Data\Feedback\FeedbackInterface;
 use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
 use Training\Feedback\Api\Data\Reply\ReplyInterface;
 use Training\Feedback\Api\Data\Reply\ReplyRepositoryInterface;
-use Training\Feedback\Helper\ReplyEmailNotification;
+use Training\Feedback\Helper\EmailNotifications\ReplyEmailNotification;
 use Training\Feedback\Model\Feedback;
 use Training\Feedback\Model\FeedbackFactory;
 use Training\Feedback\Model\Reply;
@@ -228,7 +228,7 @@ class Save implements HttpPostActionInterface
             ->setReplyText($data[ReplyInterface::REPLY_TEXT])
             ->setReplyCreationTime(date("F j, Y, g:i a"));
         $this->replyRepository->save($replyModel);
-        $this->email->sendEmail($feedbackModel->getAuthorEmail(), $feedbackModel->getAuthorName(), $replyModel->getReplyText());
+        $this->email->sendEmail($feedbackModel->getAuthorEmail(), [$feedbackModel->getAuthorName(),$replyModel->getReplyText()]);
     }
 
     /**
