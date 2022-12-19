@@ -17,9 +17,9 @@ use Psr\Log\LoggerInterface;
 /**
  * Sends email notification in the case new feedback is submitted
  */
-abstract class EmailNotification extends AbstractHelper
+class EmailNotification extends AbstractHelper
 {
-    protected const TEMPLATE_ID = [];
+    protected const TEMPLATE_ID = '';
     protected const SENDER_DETAILS_NAMES = ['name','email'];
     protected const TEMPLATE_VARS_NAMES = [];
     /**
@@ -76,7 +76,7 @@ abstract class EmailNotification extends AbstractHelper
      * @param string $path
      * @return string
      */
-    public function getConfigsValue(string $path): string
+    protected function getConfigsValue(string $path): string
     {
         return $this->scopeConfig->getValue($path, ScopeInterface::SCOPE_STORE);
     }

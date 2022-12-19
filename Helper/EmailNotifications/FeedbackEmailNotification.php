@@ -18,15 +18,6 @@ class FeedbackEmailNotification extends EmailNotification
     protected const TEMPLATE_VARS_NAMES= ['recipientName','feedbackText','link'];
 
     /**
-     * @param string $path
-     * @return string
-     */
-    public function getConfigsValue(string $path): string
-    {
-        return $this->scopeConfig->getValue($path, ScopeInterface::SCOPE_STORE);
-    }
-
-    /**
      * @return string
      */
     public function getNotificationRecipientEmail(): string
