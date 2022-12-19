@@ -1,25 +1,27 @@
 <?php
 
-namespace Training\Feedback\Helper;
+namespace Training\Feedback\Helper\EmailNotifications;
 
 use Magento\Framework\App\Area;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
-use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\Translate\Inline\StateInterface;
 use Magento\Framework\Escaper;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Mail\Template\TransportBuilder;
-use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\Translate\Inline\StateInterface;
+use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Psr\Log\LoggerInterface;
 
 /**
  * Sends email notification in the case new feedback is submitted
  */
-class ReplyEmailNotification extends AbstractHelper
+abstract class EmailNotification extends AbstractHelper
 {
-    private const TEMPLATE_ID = 'frontend_reply_notification';
-
+    protected const TEMPLATE_ID = [];
+    protected const SENDER_DETAILS_NAMES = ['name','email'];
+    protected const TEMPLATE_VARS_NAMES = [];
     /**
      * @var StateInterface
      */
@@ -70,6 +72,14 @@ class ReplyEmailNotification extends AbstractHelper
         parent::__construct($context);
     }
 
+    /**
+     * @param string $path
+     * @return string
+     */
+    public function getConfigsValue(string $path): string
+    {
+        return $this->scopeConfig->getValue($path, ScopeInterface::SCOPE_STORE);
+    }
 
     /**
      * @param array $emailDetailsNames
@@ -87,7 +97,7 @@ class ReplyEmailNotification extends AbstractHelper
      */
     public function getSenderDetails(array $senderDetailsValues) : array
     {
-        return $this->getEmailDetails(['name','email'], $senderDetailsValues);
+        return $this->getEmailDetails(self::SENDER_DETAILS_NAMES, $senderDetailsValues);
     }
 
     /**
@@ -96,7 +106,7 @@ class ReplyEmailNotification extends AbstractHelper
      */
     public function getTemplateVars(array $templateVarValues) : array
     {
-        return $this->getEmailDetails(['recipientName','replyText'], $templateVarValues);
+        return $this->getEmailDetails(static::TEMPLATE_VARS_NAMES, $templateVarValues);
     }
 
     /**
@@ -114,20 +124,21 @@ class ReplyEmailNotification extends AbstractHelper
     /**
      * @return void
      */
-    public function sendEmail(string $recipientEmail, string $recipientName, string $replyText)
-    {
+    public function sendEmail(
+        string $recipientEmail,
+        array $templateVarValues
+    ) {
         try {
             $this->inlineTranslation->suspend();
             $transport = $this->transportBuilder
-                ->setTemplateIdentifier(self::TEMPLATE_ID)
+                ->setTemplateIdentifier(static::TEMPLATE_ID)
                 ->setTemplateOptions($this->getTemplateOptions())
-                ->setTemplateVars($this->getTemplateVars([$recipientName, $replyText]))
+                ->setTemplateVars($this->getTemplateVars($templateVarValues))
                 ->setFromByScope($this->getSenderDetails(['Online Store','online@gmail.com']))
                 ->addTo($recipientEmail)
                 ->getTransport();
             $transport->sendMessage();
             $this->inlineTranslation->resume();
-
         } catch (\Exception $e) {
             $this->logger->debug($e->getMessage());
         }
