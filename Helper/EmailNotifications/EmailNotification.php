@@ -122,12 +122,14 @@ class EmailNotification extends AbstractHelper
     }
 
     /**
+     * @param string $recipientEmail
+     * @param array $templateVarValues
      * @return void
      */
     public function sendEmail(
         string $recipientEmail,
         array $templateVarValues
-    ) {
+    ): void {
         try {
             $this->inlineTranslation->suspend();
             $transport = $this->transportBuilder

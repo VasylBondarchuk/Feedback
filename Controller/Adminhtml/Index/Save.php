@@ -152,6 +152,7 @@ class Save implements HttpPostActionInterface
             try {
                 $this->saveFeedback($feedbackModel, $data);
                 $this->saveReply($replyModel, $feedbackModel, $data);
+                $this->email->sendEmail($feedbackModel->getAuthorEmail(), [$feedbackModel->getAuthorName(),$replyModel->getReplyText()]);
 
                 $this->messageManager->addSuccessMessage(__('You saved the feedback.'));
                 $this->dataPersistor->clear('training_feedback');
@@ -191,6 +192,7 @@ class Save implements HttpPostActionInterface
      */
     private function getReplyModel(int $editedFeedbackId) : ReplyInterface
     {
+        //echo $this->replyRepository->isReplyExist(1);exit;
         return $this->replyRepository->isReplyExist($editedFeedbackId)
             ? $this->replyRepository->getByFeedbackId($editedFeedbackId)
             : $this->replyFactory->create();
@@ -228,7 +230,6 @@ class Save implements HttpPostActionInterface
             ->setReplyText($data[ReplyInterface::REPLY_TEXT])
             ->setReplyCreationTime(date("F j, Y, g:i a"));
         $this->replyRepository->save($replyModel);
-        $this->email->sendEmail($feedbackModel->getAuthorEmail(), [$feedbackModel->getAuthorName(),$replyModel->getReplyText()]);
     }
 
     /**

@@ -2,13 +2,12 @@
 
 namespace Training\Feedback\Ui\DataProvider\Form;
 
+use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Ui\DataProvider\AbstractDataProvider;
-use Training\Feedback\Model\Feedback;
+use Training\Feedback\Api\Data\Reply\ReplyRepositoryInterface;
 use Training\Feedback\Model\ResourceModel\Feedback\Collection;
 use Training\Feedback\Model\ResourceModel\Feedback\CollectionFactory;
-use Magento\Framework\App\Request\DataPersistorInterface;
-use Training\Feedback\Api\Data\Reply\ReplyRepositoryInterface;
 
 /**
  *
@@ -22,7 +21,7 @@ class DataProvider extends AbstractDataProvider
     /**
      * @var DataPersistorInterface
      */
-    protected $dataPersistor;
+    protected DataPersistorInterface $dataPersistor;
     /**
      * @var
      */
@@ -31,7 +30,7 @@ class DataProvider extends AbstractDataProvider
     /**
      * @var ReplyRepositoryInterface
      */
-    private $replyRepository;
+    private ReplyRepositoryInterface $replyRepository;
 
     /**
      * @param string $name
@@ -51,8 +50,7 @@ class DataProvider extends AbstractDataProvider
         ReplyRepositoryInterface $replyRepository,
         array                    $meta = [],
         array                    $data = []
-    )
-    {
+    ) {
         $this->collection = $collectionFactory->create();
         $this->dataPersistor = $dataPersistor;
         $this->replyRepository = $replyRepository;
@@ -78,7 +76,6 @@ class DataProvider extends AbstractDataProvider
             return $this->loadedData;
         }
         $items = $this->collection->getItems();
-
 
         foreach ($items as $feedback) {
             $this->loadedData[$feedback->getId()] = $feedback->getData();

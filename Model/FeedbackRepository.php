@@ -38,7 +38,7 @@ class FeedbackRepository implements FeedbackRepositoryInterface
     /**
      * @var CollectionProcessorInterface
      */
-    private $collectionProcessor;
+    private CollectionProcessorInterface $collectionProcessor;
 
     /**
      * @param FeedbackResource $resource

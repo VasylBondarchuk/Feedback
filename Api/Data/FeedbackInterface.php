@@ -75,34 +75,34 @@ interface FeedbackInterface extends ExtensibleDataInterface
      *
      * @return string|null
      */
-    public function getCreationTime();
+    public function getCreationTime(): ?string;
     /**
      * Get update time
      *
     © 2018 M2Training.com.ua 1
      * @return string|null
      */
-    public function getUpdateTime();
+    public function getUpdateTime(): ?string;
     /**
      * Is active
      *
      * @return bool|null
      */
-    public function isActive();
+    public function isActive(): ?bool;
     /**
      * Set ID
      *
      * @param int $id
      * @return FeedbackInterface
      */
-    public function setId($id);
+    public function setId($id): FeedbackInterface;
     /**
      * Set author name
      *
      * @param string $authorName
      * @return FeedbackInterface
      */
-    public function setAuthorName($authorName);
+    public function setAuthorName(string $authorName): FeedbackInterface;
     /**
      * Set author email
      *
@@ -137,6 +137,6 @@ interface FeedbackInterface extends ExtensibleDataInterface
      * @param bool|int $isActive
      * @return FeedbackInterface
      */
-    public function setIsActive($isActive): FeedbackInterface;
+    public function setIsActive(bool|int $isActive): FeedbackInterface;
 
 }

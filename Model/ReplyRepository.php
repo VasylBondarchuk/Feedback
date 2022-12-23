@@ -2,18 +2,18 @@
 
 namespace Training\Feedback\Model;
 
+use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Api\SearchCriteriaInterface;
-use Training\Feedback\Api\Data\Reply\ReplyRepositoryInterface;
-use Training\Feedback\Api\Data\Reply\ReplyInterface;
-use Training\Feedback\Api\Data\Reply\ReplySearchResultsInterface;
-use Training\Feedback\Api\Data\Reply\ReplySearchResultsInterfaceFactory;
-use Training\Feedback\Model\ResourceModel\Reply as ReplyResource;
-use Training\Feedback\Api\Data\Reply\ReplyInterfaceFactory as ReplyInterfaceFactory;
-use Training\Feedback\Model\ResourceModel\Reply\CollectionFactory as ReplyCollectionFactory;
 use Magento\Framework\Exception\CouldNotDeleteException;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
+use Training\Feedback\Api\Data\Reply\ReplyInterface;
+use Training\Feedback\Api\Data\Reply\ReplyInterfaceFactory as ReplyInterfaceFactory;
+use Training\Feedback\Api\Data\Reply\ReplyRepositoryInterface;
+use Training\Feedback\Api\Data\Reply\ReplySearchResultsInterface;
+use Training\Feedback\Api\Data\Reply\ReplySearchResultsInterfaceFactory;
+use Training\Feedback\Model\ResourceModel\Reply as ReplyResource;
+use Training\Feedback\Model\ResourceModel\Reply\CollectionFactory as ReplyCollectionFactory;
 
 /**
  * Reply repository
@@ -99,14 +99,13 @@ class ReplyRepository implements ReplyRepositoryInterface
         return $reply;
     }
 
-
     /**
      * @throws NoSuchEntityException
      */
     public function getByFeedbackId(int $feedbackId): ReplyInterface
     {
         $reply = $this->replyFactory->create();
-        $this->resource->load($reply, $feedbackId,ReplyInterface::FEEDBACK_ID);
+        $this->resource->load($reply, $feedbackId, ReplyInterface::FEEDBACK_ID);
         if (!$reply->getId()) {
             throw new NoSuchEntityException(__('Reply with feedback id "%1" does not exist.', $feedbackId));
         }
@@ -163,8 +162,9 @@ class ReplyRepository implements ReplyRepositoryInterface
      */
     public function deleteByFeedbackId(int $feedbackId): bool
     {
-        if($this->isReplyExist($feedbackId)){
-            return $this->delete($this->getByFeedbackId($feedbackId));}
+        if ($this->isReplyExist($feedbackId)) {
+            return $this->delete($this->getByFeedbackId($feedbackId));
+        }
         return false;
     }
 
@@ -176,6 +176,20 @@ class ReplyRepository implements ReplyRepositoryInterface
     {
         try {
             $result = (bool)$this->getByFeedbackId($feedbackId);
+        } catch (\Exception $e) {
+            $result = false;
+        }
+        return $result;
+    }
+
+    /**
+     * @param int $feedbackId
+     * @return bool
+     */
+    public function isFeedbackReplied(int $feedbackId): bool
+    {
+        try {
+            $result = (bool)$this->getByFeedbackId($feedbackId)->getReplyText();
         } catch (\Exception $e) {
             $result = false;
         }
