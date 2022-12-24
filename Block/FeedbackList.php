@@ -2,7 +2,6 @@
 
 namespace Training\Feedback\Block;
 
-use Magento\Customer\Model\Session;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Stdlib\DateTime\Timezone;
 use Magento\Framework\View\Element\Template;
@@ -13,6 +12,7 @@ use Training\Feedback\Model\ReplyRepository;
 use Training\Feedback\Model\ResourceModel\Feedback as FeedbackResource;
 use Training\Feedback\Model\ResourceModel\Feedback\Collection;
 use Training\Feedback\Model\ResourceModel\Feedback\CollectionFactory;
+use Magento\User\Model\UserFactory;
 
 /**
  *
@@ -31,30 +31,33 @@ class FeedbackList extends Template
     /**
      * @var Timezone
      */
-    private $timezone;
+    private Timezone $timezone;
 
     /**
      * @var FeedbackResource
      */
-    private $feedbackResource;
+    private FeedbackResource $feedbackResource;
 
     /**
      * @var ReplyRepository
      */
-    private $replyRepository;
+    private ReplyRepository $replyRepository;
 
     /**
      * @var LoggerInterface
      */
-    private $logger;
+    private LoggerInterface $logger;
 
-    protected $customerSession;
+    protected UserFactory $userFactory;
 
     /**
      * @param Context $context
      * @param CollectionFactory $collectionFactory
      * @param Timezone $timezone
      * @param FeedbackResource $feedbackResource
+     * @param ReplyRepository $replyRepository
+     * @param LoggerInterface $logger
+     * @param UserFactory $userFactory
      * @param array $data
      */
     public function __construct(
@@ -64,7 +67,7 @@ class FeedbackList extends Template
         FeedbackResource  $feedbackResource,
         ReplyRepository   $replyRepository,
         LoggerInterface   $logger,
-        Session           $customerSession,
+        UserFactory $userFactory,
         array             $data = []
     ) {
         parent::__construct($context, $data);
@@ -73,7 +76,7 @@ class FeedbackList extends Template
         $this->feedbackResource = $feedbackResource;
         $this->replyRepository = $replyRepository;
         $this->logger = $logger;
-        $this->customerSession = $customerSession;
+        $this->userFactory = $userFactory;
     }
 
     /**
@@ -169,7 +172,7 @@ class FeedbackList extends Template
 
     /**
      * @param FeedbackModel $feedback
-     * @return string
+     * @return string|null
      */
     public function getReplyText(FeedbackModel $feedback): ?string
     {
@@ -183,8 +186,17 @@ class FeedbackList extends Template
         return $replyText;
     }
 
-    public function getReplyAuthorName(): string
+    public function getReplyAuthorName(FeedbackModel $feedback): string
     {
-        return 'Admin';
+        $replyAuthorName = '';
+        try {
+            $replyAuthorId =  $this->replyRepository->getByFeedbackId($feedback->getFeedbackId())->getAdminId();
+            $replyAuthorName = $this->userFactory->create()->load($replyAuthorId)->getName();
+        } catch (LocalizedException $e) {
+            $this->logger->error($e->getLogMessage());
+        }
+        return $replyAuthorName;
     }
+
+
 }

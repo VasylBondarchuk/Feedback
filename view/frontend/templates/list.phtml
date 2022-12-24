@@ -25,7 +25,7 @@
                 <div class="feedback-item" style="background-color: oldlace; margin: 20px; padding: 20px;">
                     <div>
                         <p>
-                            <?= $block->escapeHtml($block->getReplyAuthorName()) ?> |
+                            <?= $block->escapeHtml($block->getReplyAuthorName($feedback)) ?> |
                             <?= $block->getReplyDate($feedback) ?>
                         </p>
                         <p>
