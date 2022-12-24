@@ -29,9 +29,9 @@ class Reply extends AbstractExtensibleModel implements ReplyInterface
     /**
      * @return mixed
      */
-    public function getFeedbackId()
+    public function getFeedbackId() : int
     {
-        return $this->getData(self::FEEDBACK_ID);
+        return (int)$this->getData(self::FEEDBACK_ID);
     }
 
     /**
