@@ -19,7 +19,6 @@ use Magento\User\Model\UserFactory;
  */
 class FeedbackList extends Template
 {
-    const PAGE_SIZE = 5;
     /**
      * @var CollectionFactory
      */
@@ -104,7 +103,6 @@ class FeedbackList extends Template
             'feedback.list.pager'
         )->setCollection($this->getCollection());
         $this->setChild('pager', $pager);
-
         return $this;
     }
 
@@ -158,8 +156,8 @@ class FeedbackList extends Template
     public function getReplyDate(FeedbackModel $feedback)
     {
         $replyDate = '';
-        $feedbackId = $feedback->getFeedbackId();
         try {
+            $feedbackId = $feedback->getFeedbackId();
             $replyDate =
                 $this->timezone->formatDateTime(
                     $this->replyRepository->getByFeedbackId($feedbackId)->getReplyCreationTime()
