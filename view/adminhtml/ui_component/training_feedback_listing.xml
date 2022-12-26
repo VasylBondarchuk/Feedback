@@ -57,57 +57,65 @@
                 </item>
             </argument>
         </exportButton>
-                <filters name="listing_filters">
+        <filters name="listing_filters">
         <settings>
             <templates>
                 <filters>
                     <select>
                         <param name="template"
-                                   xsi:type="string">ui/grid/filters/elements/ui-select</param>
+                               xsi:type="string">ui/grid/filters/elements/ui-select</param>
                         <param name="component"
-                                   xsi:type="string">Magento_Ui/js/form/element/ui-select</param>
+                               xsi:type="string">Magento_Ui/js/form/element/ui-select</param>
                     </select>
                 </filters>
             </templates>
         </settings>
-    </filters>
-    <massaction name="listing_massaction" component="Magento_Ui/js/grid/tree-massactions">
-        <action name="delete">
-            <settings>
-                <confirm>
-                    <message translate="true">Are you sure you want to delete the selected items?</message>
-                    <title translate="true">Delete items</title>
-                </confirm>
-                <url path="training_feedback/index/massDelete"/>
-                <type>delete</type>
-                <label translate="true">Delete</label>
-            </settings>
-        </action>
+            <filterSelect name="store_id" provider="${ $.parentName }">
+                <settings>
+                    <options class="Magento\Store\Ui\Component\Listing\Column\Store\Options"/>
+                    <caption translate="true">All Store Views</caption>
+                    <label translate="true">Store View</label>
+                    <dataScope>store_id</dataScope>
+                </settings>
+            </filterSelect>
+        </filters>
+        <massaction name="listing_massaction" component="Magento_Ui/js/grid/tree-massactions">
+            <action name="delete">
+                <settings>
+                    <confirm>
+                        <message translate="true">Are you sure you want to delete the selected items?</message>
+                        <title translate="true">Delete items</title>
+                    </confirm>
+                    <url path="training_feedback/index/massDelete"/>
+                    <type>delete</type>
+                    <label translate="true">Delete</label>
+                </settings>
+            </action>
 
-        <action name="status">
-            <settings>
-                <type>status</type>
-                <label translate="true">Change status</label>
-                <actions>
-                    <action name="0">
-                        <type>active</type>
-                        <label translate="true">Published</label>
-                        <url path="training_feedback/index/massStatus">
-                            <param name="is_active">1</param>
-                        </url>
-                    </action>
-                    <action name="1">
-                        <type>not_active</type>
-                        <label translate="true">Not Published</label>
-                        <url path="training_feedback/index/massStatus">
-                            <param name="is_active">0</param>
-                        </url>
-                    </action>
-                </actions>
-            </settings>
-        </action>
-    </massaction>
-    <paging name="listing_paging"/>
+            <action name="status">
+                <settings>
+                    <type>status</type>
+                    <label translate="true">Change status</label>
+                    <actions>
+                        <action name="0">
+                            <type>active</type>
+                            <label translate="true">Published</label>
+                            <url path="training_feedback/index/massStatus">
+                                <param name="is_active">1</param>
+                            </url>
+                        </action>
+                        <action name="1">
+                            <type>not_active</type>
+                            <label translate="true">Not Published</label>
+                            <url path="training_feedback/index/massStatus">
+                                <param name="is_active">0</param>
+                            </url>
+                        </action>
+                    </actions>
+                </settings>
+            </action>
+        </massaction>
+        <paging name="listing_paging"/>
     </listingToolbar>
     <columns name="training_feedback_columns">
         <settings>

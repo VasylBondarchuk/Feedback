@@ -17,17 +17,17 @@ class FeedbackForm implements ArgumentInterface
     /**
      * @var UrlInterface
      */
-    private $urlBuilder;
+    private UrlInterface $urlBuilder;
 
     /**
      * @var Session
      */
-    private $customerSession;
+    private Session $customerSession;
 
     /**
      * @var CustomerRepositoryInterface
      */
-    private $customerRepository;
+    private CustomerRepositoryInterface $customerRepository;
 
     /**
      * @param UrlInterface $urlBuilder
