@@ -35,11 +35,11 @@ class Reply extends AbstractExtensibleModel implements ReplyInterface
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getAdminId()
+    public function getAdminId(): int
     {
-        return $this->getData(self::ADMIN_ID);
+        return (int)$this->getData(self::ADMIN_ID);
     }
 
     /**
