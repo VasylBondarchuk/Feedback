@@ -79,6 +79,8 @@ class FeedbackList extends Template
     }
 
     /**
+     * Gets only active feedbacks
+     *
      * @return Collection
      */
     public function getCollection(): Collection
@@ -98,10 +100,9 @@ class FeedbackList extends Template
     protected function _prepareLayout()
     {
         parent::_prepareLayout();
-        $pager = $this->getLayout()->createBlock(
-            CustomPager::class,
-            'feedback.list.pager'
-        )->setCollection($this->getCollection());
+        $pager = $this->getLayout()
+            ->createBlock(CustomPager::class,'feedback.list.pager')
+            ->setCollection($this->getCollection());
         $this->setChild('pager', $pager);
         return $this;
     }
@@ -126,9 +127,9 @@ class FeedbackList extends Template
 
     /**
      * @param $feedback
-     * @return false|string
+     * @return string
      */
-    public function getFeedbackDate($feedback)
+    public function getFeedbackDate(FeedbackModel $feedback) : string
     {
         return $this->timezone->formatDateTime($feedback->getCreationTime());
     }
@@ -151,9 +152,9 @@ class FeedbackList extends Template
 
     /**
      * @param FeedbackModel $feedback
-     * @return false|string
+     * @return string
      */
-    public function getReplyDate(FeedbackModel $feedback)
+    public function getReplyDate(FeedbackModel $feedback) : string
     {
         $replyDate = '';
         try {
@@ -175,9 +176,10 @@ class FeedbackList extends Template
     public function getReplyText(FeedbackModel $feedback): ?string
     {
         $replyText = '';
-        $feedbackId = $feedback->getFeedbackId();
         try {
-            $replyText =  $this->replyRepository->getByFeedbackId($feedbackId)->getReplyText();
+            $replyText =  $this->replyRepository
+                ->getByFeedbackId($feedback->getFeedbackId())
+                ->getReplyText();
         } catch (LocalizedException $e) {
             $this->logger->error($e->getLogMessage());
         }
@@ -186,7 +188,7 @@ class FeedbackList extends Template
 
     public function getReplyAuthorName(FeedbackModel $feedback): string
     {
-        $replyAuthorName = '';
+        $replyAuthorName = 'Admin';
         try {
             $replyAuthorId =  $this->replyRepository->getByFeedbackId($feedback->getFeedbackId())->getAdminId();
             $replyAuthorName = $this->userFactory->create()->load($replyAuthorId)->getName();
@@ -195,6 +197,4 @@ class FeedbackList extends Template
         }
         return $replyAuthorName;
     }
-
-
 }
