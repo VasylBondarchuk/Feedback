@@ -13,8 +13,8 @@ use Training\Feedback\Model\ReplyRepository;
 use Training\Feedback\Model\ResourceModel\Feedback as FeedbackResource;
 use Training\Feedback\Model\ResourceModel\Feedback\Collection;
 use Training\Feedback\Model\ResourceModel\Feedback\CollectionFactory;
-use Magento\User\Model\UserFactory;
-use \Training\Feedback\Model\ResourceModel\Reply\Collection as ReplyCollection;
+use Training\Feedback\Model\ResourceModel\Reply\Collection as ReplyCollection;
+use Magento\Customer\Api\CustomerRepositoryInterface;
 
 /**
  *
@@ -53,10 +53,7 @@ class FeedbackList extends Template
      */
     private LoggerInterface $logger;
 
-    /**
-     * @var UserFactory
-     */
-    protected UserFactory $userFactory;
+    protected $customerRepositoryInterface;
 
     /**
      * @param Context $context
@@ -65,7 +62,7 @@ class FeedbackList extends Template
      * @param FeedbackResource $feedbackResource
      * @param ReplyRepository $replyRepository
      * @param LoggerInterface $logger
-     * @param UserFactory $userFactory
+     * @param CustomerRepositoryInterface $customerRepositoryInterface
      * @param array $data
      */
     public function __construct(
@@ -75,7 +72,7 @@ class FeedbackList extends Template
         FeedbackResource  $feedbackResource,
         ReplyRepository   $replyRepository,
         LoggerInterface   $logger,
-        UserFactory $userFactory,
+        CustomerRepositoryInterface $customerRepositoryInterface,
         array             $data = []
     ) {
         parent::__construct($context, $data);
@@ -84,7 +81,7 @@ class FeedbackList extends Template
         $this->feedbackResource = $feedbackResource;
         $this->replyRepository = $replyRepository;
         $this->logger = $logger;
-        $this->userFactory = $userFactory;
+        $this->customerRepositoryInterface = $customerRepositoryInterface;
     }
 
     /**
@@ -177,8 +174,8 @@ class FeedbackList extends Template
     {
         $replyAuthorName = self::DEFAULT_ADMIN_NAME;
         try {
-            $replyAuthorId =  $reply->getAdminId();
-            $replyAuthorName = $this->userFactory->create()->load($replyAuthorId)->getName();
+            $author = $this->customerRepositoryInterface->getById($reply->getAdminId());
+            $replyAuthorName = $author->getFirstname() . ' ' . $author->getLastname();
         } catch (LocalizedException $e) {
             $this->logger->error($e->getLogMessage());
         }
