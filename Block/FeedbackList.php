@@ -8,17 +8,23 @@ use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use Psr\Log\LoggerInterface;
 use Training\Feedback\Model\Feedback as FeedbackModel;
+use Training\Feedback\Model\Reply as ReplyModel;
 use Training\Feedback\Model\ReplyRepository;
 use Training\Feedback\Model\ResourceModel\Feedback as FeedbackResource;
 use Training\Feedback\Model\ResourceModel\Feedback\Collection;
 use Training\Feedback\Model\ResourceModel\Feedback\CollectionFactory;
 use Magento\User\Model\UserFactory;
+use \Training\Feedback\Model\ResourceModel\Reply\Collection as ReplyCollection;
 
 /**
  *
  */
 class FeedbackList extends Template
 {
+
+    private const ADD_FEEDBACK_FORM_PATH = 'training_feedback/index/form';
+
+    private const DEFAULT_ADMIN_NAME = 'Admin';
     /**
      * @var CollectionFactory
      */
@@ -26,7 +32,7 @@ class FeedbackList extends Template
     /**
      * @var
      */
-    private $collection;
+    private Collection $collection;
     /**
      * @var Timezone
      */
@@ -47,6 +53,9 @@ class FeedbackList extends Template
      */
     private LoggerInterface $logger;
 
+    /**
+     * @var UserFactory
+     */
     protected UserFactory $userFactory;
 
     /**
@@ -85,11 +94,6 @@ class FeedbackList extends Template
      */
     public function getCollection(): Collection
     {
-        if (!$this->collection) {
-            $this->collection = $this->collectionFactory->create();
-            $this->collection->addFieldToFilter('is_active', 1);
-            $this->collection->setOrder('creation_time', 'DESC');
-        }
         return $this->collection;
     }
 
@@ -122,11 +126,11 @@ class FeedbackList extends Template
      */
     public function getAddFeedbackUrl(): string
     {
-        return $this->getUrl('training_feedback/index/form');
+        return $this->getUrl(self::ADD_FEEDBACK_FORM_PATH);
     }
 
     /**
-     * @param $feedback
+     * @param FeedbackModel $feedback
      * @return string
      */
     public function getFeedbackDate(FeedbackModel $feedback) : string
@@ -151,46 +155,23 @@ class FeedbackList extends Template
     }
 
     /**
-     * @param FeedbackModel $feedback
-     * @return string
+     * @param int $feedbackId
+     * @return ReplyCollection
      */
-    public function getReplyDate(FeedbackModel $feedback) : string
+    public function getRepliesByFeedbackId(int $feedbackId): ReplyCollection
     {
-        $replyDate = '';
-        try {
-            $feedbackId = $feedback->getFeedbackId();
-            $replyDate =
-                $this->timezone->formatDateTime(
-                    $this->replyRepository->getByFeedbackId($feedbackId)->getReplyCreationTime()
-                );
-        } catch (LocalizedException $e) {
-            $this->logger->error($e->getLogMessage());
-        }
-        return $replyDate;
+        return $this->replyRepository->getRepliesByFeedbackId($feedbackId);
     }
 
     /**
-     * @param FeedbackModel $feedback
-     * @return string|null
+     * @param ReplyModel $reply
+     * @return string
      */
-    public function getReplyText(FeedbackModel $feedback): ?string
+    public function getReplyAuthorName(ReplyModel $reply): string
     {
-        $replyText = '';
+        $replyAuthorName = self::DEFAULT_ADMIN_NAME;
         try {
-            $replyText =  $this->replyRepository
-                ->getByFeedbackId($feedback->getFeedbackId())
-                ->getReplyText();
-        } catch (LocalizedException $e) {
-            $this->logger->error($e->getLogMessage());
-        }
-        return $replyText;
-    }
-
-    public function getReplyAuthorName(FeedbackModel $feedback): string
-    {
-        $replyAuthorName = 'Admin';
-        try {
-            $replyAuthorId =  $this->replyRepository->getByFeedbackId($feedback->getFeedbackId())->getAdminId();
+            $replyAuthorId =  $reply->getAdminId();
             $replyAuthorName = $this->userFactory->create()->load($replyAuthorId)->getName();
         } catch (LocalizedException $e) {
             $this->logger->error($e->getLogMessage());

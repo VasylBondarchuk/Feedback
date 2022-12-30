@@ -215,4 +215,15 @@ class ReplyRepository implements ReplyRepositoryInterface
         }
         return $result;
     }
+
+    /**
+     * @param int $feedbackId
+     * @return ReplyResource\Collection
+     */
+    public function getRepliesByFeedbackId(int $feedbackId): ReplyResource\Collection
+    {
+        $replyCollection = $this->replyCollectionFactory->create();
+        return $replyCollection
+            ->addFieldToFilter(ReplyInterface::FEEDBACK_ID, $feedbackId);
+    }
 }
