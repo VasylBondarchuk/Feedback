@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
     <menu>
-        <add id="Training_Feedback::feedbacks" title="Store Feedbacks" translate="title" module="Training_Feedback" resource="Training_Feedback::feedback"/>
-        <add id="Training_Feedback::feedbacks_manage" title="All Feedbacks" translate="title" module="Training_Feedback" sortOrder="10" parent="Training_Feedback::feedbacks" action="training_feedback/index/index" resource="Training_Feedback::feedback"/>
-        <add id="Training_Feedback::feedbacks_configs" title="Configuration" module="Training_Feedback" sortOrder="20" parent="Training_Feedback::feedbacks" action="adminhtml/system_config/edit/section/feedback_configuration" resource="Training_Feedback::feedback"/>
+        <add id="Training_Feedback::menu" title="Store Feedbacks" translate="title" module="Training_Feedback" resource="Training_Feedback::menu"/>
+        <add id="Training_Feedback::feedback_view" title="All Feedbacks" translate="title" module="Training_Feedback" sortOrder="10" parent="Training_Feedback::menu" action="training_feedback/index/index" resource="Training_Feedback::feedback_view"/>
+        <add id="Training_Feedback::feedback_configs" title="Configuration" translate="title" module="Training_Feedback" sortOrder="20" parent="Training_Feedback::menu" action="adminhtml/system_config/edit/section/feedback_configuration" resource="Training_Feedback::menu"/>
     </menu>
 </config>

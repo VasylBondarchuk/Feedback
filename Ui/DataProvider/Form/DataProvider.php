@@ -3,11 +3,13 @@
 namespace Training\Feedback\Ui\DataProvider\Form;
 
 use Magento\Framework\App\Request\DataPersistorInterface;
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Ui\DataProvider\AbstractDataProvider;
 use Training\Feedback\Api\Data\Reply\ReplyRepositoryInterface;
 use Training\Feedback\Model\ResourceModel\Feedback\Collection;
+use Training\Feedback\Model\ResourceModel\Reply\CollectionFactory as ReplyCollectionFactory;
 use Training\Feedback\Model\ResourceModel\Feedback\CollectionFactory;
+use Training\Feedback\Api\Data\Reply\ReplyInterface;
+use Magento\Backend\Model\Auth\Session;
 
 /**
  *
@@ -18,6 +20,7 @@ class DataProvider extends AbstractDataProvider
      * @var Collection
      */
     protected $collection;
+
     /**
      * @var DataPersistorInterface
      */
@@ -33,11 +36,19 @@ class DataProvider extends AbstractDataProvider
     private ReplyRepositoryInterface $replyRepository;
 
     /**
+     * @var Session
+     */
+    protected Session $authSession;
+
+    /**
      * @param string $name
      * @param string $primaryFieldName
      * @param string $requestFieldName
      * @param CollectionFactory $collectionFactory
+     * @param ReplyCollectionFactory $replyCollectionFactory
      * @param DataPersistorInterface $dataPersistor
+     * @param ReplyRepositoryInterface $replyRepository
+     * @param Session $authSession
      * @param array $meta
      * @param array $data
      */
@@ -46,14 +57,17 @@ class DataProvider extends AbstractDataProvider
         string                   $primaryFieldName,
         string                   $requestFieldName,
         CollectionFactory        $collectionFactory,
+        ReplyCollectionFactory   $replyCollectionFactory,
         DataPersistorInterface   $dataPersistor,
         ReplyRepositoryInterface $replyRepository,
+        Session $authSession,
         array                    $meta = [],
         array                    $data = []
     ) {
         $this->collection = $collectionFactory->create();
         $this->dataPersistor = $dataPersistor;
         $this->replyRepository = $replyRepository;
+        $this->authSession = $authSession;
         parent::__construct($name, $primaryFieldName, $requestFieldName, $meta, $data);
     }
 
@@ -76,15 +90,10 @@ class DataProvider extends AbstractDataProvider
             return $this->loadedData;
         }
         $items = $this->collection->getItems();
-
         foreach ($items as $feedback) {
             $this->loadedData[$feedback->getId()] = $feedback->getData();
-            try {
-                $this->loadedData[$feedback->getId()]['reply_text'] =
+                $this->loadedData[$feedback->getId()][ReplyInterface::REPLY_TEXT] =
                     $this->replyRepository->getByFeedbackId($feedback->getId())->getReplyText();
-            } catch (LocalizedException $e) {
-                $this->loadedData[$feedback->getId()]['reply_text'] = '';
-            }
         }
         return $this->loadedData ?? [];
     }

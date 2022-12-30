@@ -107,13 +107,13 @@ class MassDelete implements HttpPostActionInterface
         }
         if ($feedbackDeleted) {
             $this->messageManager->addSuccessMessage(
-                __('A total of %1 record(s) have been deleted.', $feedbackDeleted)
+                __('%1 record(s) have been deleted.', $feedbackDeleted)
             );
         }
         if ($feedbackDeletedError) {
             $this->messageManager->addErrorMessage(
                 __(
-                    'A total of %1 record(s) haven\'t been deleted. Please see server logs for more details.',
+                    '%1 record(s) haven\'t been deleted. Please see server logs for more details.',
                     $feedbackDeletedError
                 )
             );

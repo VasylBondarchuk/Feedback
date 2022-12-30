@@ -14,6 +14,7 @@ use Training\Feedback\Api\Data\Reply\ReplySearchResultsInterface;
 use Training\Feedback\Api\Data\Reply\ReplySearchResultsInterfaceFactory;
 use Training\Feedback\Model\ResourceModel\Reply as ReplyResource;
 use Training\Feedback\Model\ResourceModel\Reply\CollectionFactory as ReplyCollectionFactory;
+use Magento\Backend\Model\Auth\Session;
 
 /**
  * Reply repository
@@ -46,24 +47,32 @@ class ReplyRepository implements ReplyRepositoryInterface
     private CollectionProcessorInterface $collectionProcessor;
 
     /**
+     * @var Session
+     */
+    protected Session $authSession;
+
+    /**
      * @param ReplyResource $resource
      * @param ReplyInterfaceFactory $replyFactory
      * @param ReplyCollectionFactory $replyCollectionFactory
      * @param ReplySearchResultsInterfaceFactory $searchResultsFactory
      * @param CollectionProcessorInterface $collectionProcessor
+     * @param Session $authSession
      */
     public function __construct(
         ReplyResource $resource,
         ReplyInterfaceFactory $replyFactory,
         ReplyCollectionFactory $replyCollectionFactory,
         ReplySearchResultsInterfaceFactory $searchResultsFactory,
-        CollectionProcessorInterface $collectionProcessor
+        CollectionProcessorInterface $collectionProcessor,
+        Session $authSession,
     ) {
         $this->resource = $resource;
         $this->replyFactory = $replyFactory;
         $this->replyCollectionFactory = $replyCollectionFactory;
         $this->searchResultsFactory = $searchResultsFactory;
         $this->collectionProcessor = $collectionProcessor;
+        $this->authSession = $authSession;
     }
 
     /**
@@ -104,12 +113,23 @@ class ReplyRepository implements ReplyRepositoryInterface
      */
     public function getByFeedbackId(int $feedbackId): ReplyInterface
     {
-        $reply = $this->replyFactory->create();
-        $this->resource->load($reply, $feedbackId, ReplyInterface::FEEDBACK_ID);
+        $replyCollection = $this->replyCollectionFactory->create();
+        $reply = $replyCollection
+                ->addFieldToFilter(ReplyInterface::FEEDBACK_ID, $feedbackId)
+                ->addFieldToFilter(ReplyInterface::ADMIN_ID, $this->getCurrentAdminId())->getFirstItem();
+
         if (!$reply->getId()) {
             throw new NoSuchEntityException(__('Reply with feedback id "%1" does not exist.', $feedbackId));
         }
         return $reply;
+    }
+
+    /**
+     * @return int
+     */
+    private function getCurrentAdminId() : int
+    {
+        return (int)$this->authSession->getUser()->getId();
     }
 
     /**

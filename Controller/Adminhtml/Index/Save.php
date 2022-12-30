@@ -192,7 +192,6 @@ class Save implements HttpPostActionInterface
      */
     private function getReplyModel(int $editedFeedbackId) : ReplyInterface
     {
-        //echo $this->replyRepository->isReplyExist(1);exit;
         return $this->replyRepository->isReplyExist($editedFeedbackId)
             ? $this->replyRepository->getByFeedbackId($editedFeedbackId)
             : $this->replyFactory->create();

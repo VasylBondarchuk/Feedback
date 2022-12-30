@@ -11,7 +11,7 @@ use Magento\Framework\App\Action\HttpGetActionInterface as HttpGetActionInterfac
  */
 class NewAction implements HttpGetActionInterface
 {
-    const ADMIN_RESOURCE = 'Training_Feedback::feedback';
+    const ADMIN_RESOURCE = 'Training_Feedback::menu';
 
     private ResultFactory $resultFactory;
 

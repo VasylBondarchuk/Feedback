@@ -8,7 +8,7 @@
             <class>separator-top</class>
             <label>Feedback configuration</label>
             <tab>Tsg</tab>
-            <resource>Tsg_Improvements::improvements_config</resource>
+            <resource>Training_Feedback::menu</resource>
             <group id="feedback_configuration_general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Feedback General Configuration</label>
 
