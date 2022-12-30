@@ -15,7 +15,7 @@ use Training\Feedback\Model\ResourceModel\Feedback\Collection;
 use Training\Feedback\Model\ResourceModel\Feedback\CollectionFactory;
 use Training\Feedback\Model\ResourceModel\Reply\Collection as ReplyCollection;
 use Training\Feedback\Api\Data\FeedbackInterface;
-use Magento\Customer\Api\CustomerRepositoryInterface;
+use \Magento\User\Model\UserFactory;
 
 /**
  *
@@ -50,7 +50,7 @@ class FeedbackList extends Template
      */
     private LoggerInterface $logger;
 
-    protected CustomerRepositoryInterface $customerRepositoryInterface;
+    protected $userFactory;
 
     /**
      * @param Context $context
@@ -59,7 +59,6 @@ class FeedbackList extends Template
      * @param FeedbackResource $feedbackResource
      * @param ReplyRepository $replyRepository
      * @param LoggerInterface $logger
-     * @param CustomerRepositoryInterface $customerRepositoryInterface
      * @param array $data
      */
     public function __construct(
@@ -69,7 +68,7 @@ class FeedbackList extends Template
         FeedbackResource  $feedbackResource,
         ReplyRepository   $replyRepository,
         LoggerInterface   $logger,
-        CustomerRepositoryInterface $customerRepositoryInterface,
+        UserFactory $userFactory,
         array             $data = []
     ) {
         parent::__construct($context, $data);
@@ -78,7 +77,7 @@ class FeedbackList extends Template
         $this->feedbackResource = $feedbackResource;
         $this->replyRepository = $replyRepository;
         $this->logger = $logger;
-        $this->customerRepositoryInterface = $customerRepositoryInterface;
+        $this->userFactory = $userFactory;
     }
 
     /**
@@ -170,11 +169,11 @@ class FeedbackList extends Template
     {
         $replyAuthorName = self::DEFAULT_ADMIN_NAME;
         try {
-            $replyAuthor = $this->customerRepositoryInterface->getById($reply->getAdminId());
-            $replyAuthorName = $replyAuthor->getFirstname() . ' ' . $replyAuthor->getLastname();
+            $replyAuthor = $this->userFactory->create()->load($reply->getAdminId());
+            $replyAuthorName = $replyAuthor->getName();
         } catch (LocalizedException $e) {
             $this->logger->error($e->getLogMessage());
         }
-        return $replyAuthorName;
+        return $replyAuthorName ? self::DEFAULT_ADMIN_NAME : $replyAuthorName;
     }
 }
