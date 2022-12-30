@@ -14,6 +14,7 @@ use Training\Feedback\Model\ResourceModel\Feedback as FeedbackResource;
 use Training\Feedback\Model\ResourceModel\Feedback\Collection;
 use Training\Feedback\Model\ResourceModel\Feedback\CollectionFactory;
 use Training\Feedback\Model\ResourceModel\Reply\Collection as ReplyCollection;
+use Training\Feedback\Api\Data\FeedbackInterface;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 
 /**
@@ -29,10 +30,6 @@ class FeedbackList extends Template
      * @var CollectionFactory
      */
     private CollectionFactory $collectionFactory;
-    /**
-     * @var
-     */
-    private Collection $collection;
     /**
      * @var Timezone
      */
@@ -53,7 +50,7 @@ class FeedbackList extends Template
      */
     private LoggerInterface $logger;
 
-    protected $customerRepositoryInterface;
+    protected CustomerRepositoryInterface $customerRepositoryInterface;
 
     /**
      * @param Context $context
@@ -94,10 +91,9 @@ class FeedbackList extends Template
      */
     public function getCollection(): Collection
     {
-        $this->collection = $this->collectionFactory->create();
-        $this->collection->addFieldToFilter('is_active', 1);
-        $this->collection->setOrder('creation_time', 'DESC');
-        return $this->collection;
+        return $this->collectionFactory->create()
+            ->addFieldToFilter(FeedbackInterface::IS_ACTIVE, 1)
+            ->setOrder(FeedbackInterface::CREATION_TIME, 'DESC');
     }
 
     /**
@@ -174,8 +170,8 @@ class FeedbackList extends Template
     {
         $replyAuthorName = self::DEFAULT_ADMIN_NAME;
         try {
-            $author = $this->customerRepositoryInterface->getById($reply->getAdminId());
-            $replyAuthorName = $author->getFirstname() . ' ' . $author->getLastname();
+            $replyAuthor = $this->customerRepositoryInterface->getById($reply->getAdminId());
+            $replyAuthorName = $replyAuthor->getFirstname() . ' ' . $replyAuthor->getLastname();
         } catch (LocalizedException $e) {
             $this->logger->error($e->getLogMessage());
         }
