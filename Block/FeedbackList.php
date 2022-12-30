@@ -8,6 +8,7 @@ use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use Psr\Log\LoggerInterface;
 use Training\Feedback\Model\Feedback as FeedbackModel;
+use Training\Feedback\Model\Reply as ReplyModel;
 use Training\Feedback\Model\ReplyRepository;
 use Training\Feedback\Model\ResourceModel\Feedback as FeedbackResource;
 use Training\Feedback\Model\ResourceModel\Feedback\Collection;
@@ -19,6 +20,9 @@ use Magento\User\Model\UserFactory;
  */
 class FeedbackList extends Template
 {
+
+    private const ADD_FEEDBACK_FORM_PATH = 'training_feedback/index/form';
+    private const DEFAULT_ADMIN_NAME = 'Admin';
     /**
      * @var CollectionFactory
      */
@@ -26,7 +30,7 @@ class FeedbackList extends Template
     /**
      * @var
      */
-    private $collection;
+    private Collection $collection;
     /**
      * @var Timezone
      */
@@ -122,11 +126,11 @@ class FeedbackList extends Template
      */
     public function getAddFeedbackUrl(): string
     {
-        return $this->getUrl('training_feedback/index/form');
+        return $this->getUrl(self::ADD_FEEDBACK_FORM_PATH);
     }
 
     /**
-     * @param $feedback
+     * @param FeedbackModel $feedback
      * @return string
      */
     public function getFeedbackDate(FeedbackModel $feedback) : string
@@ -150,47 +154,16 @@ class FeedbackList extends Template
         return $this->feedbackResource->getActiveFeedbackNumber();
     }
 
-    /**
-     * @param FeedbackModel $feedback
-     * @return string
-     */
-    public function getReplyDate(FeedbackModel $feedback) : string
+    public function getRepliesByFeedbackId(int $feedbackId): \Training\Feedback\Model\ResourceModel\Reply\Collection
     {
-        $replyDate = '';
-        try {
-            $feedbackId = $feedback->getFeedbackId();
-            $replyDate =
-                $this->timezone->formatDateTime(
-                    $this->replyRepository->getByFeedbackId($feedbackId)->getReplyCreationTime()
-                );
-        } catch (LocalizedException $e) {
-            $this->logger->error($e->getLogMessage());
-        }
-        return $replyDate;
+        return $this->replyRepository->getRepliesByFeedbackId($feedbackId);
     }
 
-    /**
-     * @param FeedbackModel $feedback
-     * @return string|null
-     */
-    public function getReplyText(FeedbackModel $feedback): ?string
+    public function getReplyAuthorName(ReplyModel $reply): string
     {
-        $replyText = '';
+        $replyAuthorName = self::DEFAULT_ADMIN_NAME;
         try {
-            $replyText =  $this->replyRepository
-                ->getByFeedbackId($feedback->getFeedbackId())
-                ->getReplyText();
-        } catch (LocalizedException $e) {
-            $this->logger->error($e->getLogMessage());
-        }
-        return $replyText;
-    }
-
-    public function getReplyAuthorName(FeedbackModel $feedback): string
-    {
-        $replyAuthorName = 'Admin';
-        try {
-            $replyAuthorId =  $this->replyRepository->getByFeedbackId($feedback->getFeedbackId())->getAdminId();
+            $replyAuthorId =  $reply->getAdminId();
             $replyAuthorName = $this->userFactory->create()->load($replyAuthorId)->getName();
         } catch (LocalizedException $e) {
             $this->logger->error($e->getLogMessage());
