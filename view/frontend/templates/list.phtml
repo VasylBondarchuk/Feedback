@@ -22,18 +22,20 @@
 
             <!-- Display feedback replies if any -->
             <?php foreach ($block->getRepliesByFeedbackId($feedback->getId()) as $reply): ?>
-                <div class="feedback-item" style="background-color: oldlace; margin: 20px; padding: 20px;">
-                    <div>
-                        <p>
-                            <?= $block->escapeHtml($block->getReplyAuthorName($reply)) ?> |
-                            <?= $reply->getReplyCreationTime() ?>
-                        </p>
-                        <p>
-                            <?= $block->escapeHtml($reply->getReplyText()) ?>
-                        </p>
+                <?php if ($reply->getReplyText()): ?>
+                    <div class="feedback-item" style="background-color: oldlace; margin: 20px; padding: 20px;">
+                        <div>
+                            <p>
+                                <?= $block->escapeHtml($block->getReplyAuthorName($reply)) ?> |
+                                <?= $reply->getReplyCreationTime() ?>
+                            </p>
+                            <p>
+                                <?= $block->escapeHtml($reply->getReplyText()) ?>
+                            </p>
+                        </div>
                     </div>
-                </div>
-                <?php endforeach; ?>
+                <?php endif ?>
+            <?php endforeach; ?>
             <br>
         <?php endforeach; ?>
     </div>

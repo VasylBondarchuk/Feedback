@@ -92,8 +92,14 @@ class FeedbackList extends Template
      *
      * @return Collection
      */
+    /**
+     * @return Collection
+     */
     public function getCollection(): Collection
     {
+        $this->collection = $this->collectionFactory->create();
+        $this->collection->addFieldToFilter('is_active', 1);
+        $this->collection->setOrder('creation_time', 'DESC');
         return $this->collection;
     }
 
