@@ -15,9 +15,12 @@ interface FeedbackInterface
     const FEEDBACK_ID = 'feedback_id';
     const AUTHOR_NAME = 'author_name';
     const AUTHOR_EMAIL = 'author_email';
+
     const MESSAGE = 'message';
+
     const CREATION_TIME = 'creation_time';
     const UPDATE_TIME = 'update_time';
+
     const IS_ACTIVE = 'is_active';
 
     /***/
@@ -53,10 +56,10 @@ interface FeedbackInterface
     public function getCreationTime(): ?string;
     /**
      * Get update time
-     *    
+     *
      * @return string|null
      */
-    public function getUpdateTime();
+    public function getUpdateTime(): ?string;
     /**
      * Is active
      *
@@ -67,7 +70,7 @@ interface FeedbackInterface
     /**
      * Set ID
      *
-     * @param $feedbackId
+     * @param int $feedbackId
      * @return FeedbackInterface
      */
     public function setFeedbackId(int $feedbackId): FeedbackInterface;
@@ -106,10 +109,11 @@ interface FeedbackInterface
      * @return FeedbackInterface
      */
     public function setUpdateTime(string $updateTime): FeedbackInterface;
+
     /**
      * Set is active
      *
-     * @param bool|int $isActive
+     * @param int $isActive
      * @return FeedbackInterface
      */
     public function setIsActive(int $isActive): FeedbackInterface;

@@ -7,7 +7,6 @@ use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Exception\CouldNotDeleteException;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Training\Feedback\Api\Data;
 use Training\Feedback\Api\Data\Feedback\FeedbackInterface;
 use Training\Feedback\Api\Data\Feedback\FeedbackInterfaceFactory as FeedbackFactory;
 use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;

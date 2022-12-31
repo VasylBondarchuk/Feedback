@@ -3,12 +3,14 @@
 namespace Training\Feedback\Block\Adminhtml\Feedback\Edit;
 
 use Magento\Framework\View\Element\UiComponent\Control\ButtonProviderInterface;
+use Training\Feedback\Api\Data\Feedback\FeedbackInterface;
 
 /**
  * Provides data for 'Delete' button
  */
 class DeleteButton extends GenericButton implements ButtonProviderInterface
 {
+    private const DELETE_PATH = 'training_feedback/index/delete';
     /**
      * @return array
      */
@@ -33,6 +35,6 @@ class DeleteButton extends GenericButton implements ButtonProviderInterface
      */
     public function getDeleteUrl(): string
     {
-        return $this->getUrl('training_feedback/index/delete', ['feedback_id' => $this->getFeedbackId()]);
+        return $this->getUrl(self::DELETE_PATH, [FeedbackInterface:: FEEDBACK_ID => $this->getFeedbackId()]);
     }
 }

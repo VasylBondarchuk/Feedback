@@ -14,7 +14,7 @@ use Training\Feedback\Model\ResourceModel\Feedback as FeedbackResource;
 use Training\Feedback\Model\ResourceModel\Feedback\Collection;
 use Training\Feedback\Model\ResourceModel\Feedback\CollectionFactory;
 use Training\Feedback\Model\ResourceModel\Reply\Collection as ReplyCollection;
-use Training\Feedback\Api\Data\FeedbackInterface;
+use Training\Feedback\Api\Data\Feedback\FeedbackInterface;
 use Magento\User\Model\UserFactory;
 use Magento\User\Model\ResourceModel\User as UserResourceModel;
 
