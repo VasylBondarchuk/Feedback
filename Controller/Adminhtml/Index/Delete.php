@@ -10,6 +10,7 @@ use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Message\ManagerInterface;
+use Training\Feedback\Api\Data\Feedback\FeedbackInterface;
 use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
 use Training\Feedback\Api\Data\Reply\ReplyRepositoryInterface;
 
@@ -78,14 +79,14 @@ class Delete implements HttpPostActionInterface, HttpGetActionInterface
             try {
                 $this->feedbackRepository->deleteById($feedbackId);
                 $this->replyRepository->deleteByFeedbackId($feedbackId);
-                $this->messageManager->addSuccessMessage(__('You deleted the feedback and related reply if existed.'));
+                $this->messageManager->addSuccessMessage(__('You deleted the feedback and related replies if existed.'));
                 return $resultRedirect->setPath('*/*/');
             } catch (LocalizedException $e) {
                 $this->messageManager->addErrorMessage($e->getMessage());
-                return $resultRedirect->setPath('*/*/edit', [self::REQUEST_FIELD_NAME => $feedbackId]);
+                return $resultRedirect->setPath('*/*/edit', [FeedbackInterface:: FEEDBACK_ID => $feedbackId]);
             } catch (\Exception $e) {
                 $this->messageManager->addErrorMessage(__('We can\'t delete the feedback.'));
-                return $resultRedirect->setPath('*/*/edit', [self::REQUEST_FIELD_NAME => $feedbackId]);
+                return $resultRedirect->setPath('*/*/edit', [FeedbackInterface:: FEEDBACK_ID => $feedbackId]);
             }
         }
         $this->messageManager->addErrorMessage(__('We can\'t find a feedback to delete.'));

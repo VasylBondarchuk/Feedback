@@ -16,6 +16,7 @@ use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
 use Training\Feedback\Helper\EmailNotifications\FeedbackEmailNotification;
 use Training\Feedback\Model\Feedback as FeedbackModel;
 use Training\Feedback\Model\FeedbackFactory;
+use Magento\Customer\Model\Session;
 
 /**
  * Saves new feedback
@@ -59,15 +60,18 @@ class Save implements HttpPostActionInterface
      */
     private FeedbackRepositoryInterface $feedbackRepository;
 
+    private Session $customerSession;
+
     /**
      * @param ManagerInterface $messageManager
      * @param ResultFactory $resultFactory
      * @param RequestInterface $request
      * @param FeedbackFactory $feedbackFactory
-     * @param FeedbackEmailNotification$email
+     * @param FeedbackEmailNotification $email
      * @param UrlInterface $urlInterface
      * @param ScopeConfigInterface $scopeConfig
      * @param FeedbackRepositoryInterface $feedbackRepository
+     * @param Session $customerSession
      */
     public function __construct(
         ManagerInterface $messageManager,
@@ -77,7 +81,8 @@ class Save implements HttpPostActionInterface
         FeedbackEmailNotification $email,
         UrlInterface $urlInterface,
         ScopeConfigInterface $scopeConfig,
-        FeedbackRepositoryInterface $feedbackRepository
+        FeedbackRepositoryInterface $feedbackRepository,
+        Session $customerSession
     ) {
         $this->messageManager = $messageManager;
         $this->resultFactory = $resultFactory;
@@ -87,6 +92,7 @@ class Save implements HttpPostActionInterface
         $this->urlInterface = $urlInterface;
         $this->scopeConfig = $scopeConfig;
         $this->feedbackRepository = $feedbackRepository;
+        $this->customerSession = $customerSession;
     }
 
     /**
@@ -104,6 +110,7 @@ class Save implements HttpPostActionInterface
                 // create feedback model instance
                 $feedback = $this->feedbackFactory->create();
                 // set data to model
+
                 $this->setDataToModel($feedback, $post);
                 // save data
                 $this->feedbackRepository->save($feedback);
@@ -165,6 +172,9 @@ class Save implements HttpPostActionInterface
         $feedback
             ->setData($post)
             ->setIsActive($this->publishFeedbackWithoutModeration());
+        if($this->customerSession->isLoggedIn()) {
+            $feedback->setCustomerId($this->customerSession->getCustomerId());
+        }
     }
 
     /**
@@ -183,4 +193,6 @@ class Save implements HttpPostActionInterface
     {
         return $this->urlInterface->getUrl(self::FEEDBACK_EDIT_PAGE_PATH) . $this->getFeedbackId($feedback);
     }
+
+
 }

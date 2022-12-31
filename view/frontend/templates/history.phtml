@@ -1,25 +1,15 @@
-<?php $viewModel = $block->getData('feedback_list_view_model');?>
+<?php $viewModel = $block->getData('feedback_history_view_model');?>
 <div>
-    <!-- Display feedback statistics -->
-    <?php if ($viewModel->getAllFeedbackNumber()):?>
-        <div class="feedback-statistic">
-            <p><?= __('Total number of submitted feedbacks: %1', '<b>' . $viewModel ->getAllFeedbackNumber() . '</b>') ?></p>
-            <p><?= __('Total number of active feedbacks: %1', '<b>' . $viewModel ->getActiveFeedbackNumber() . '</b>') ?></p>
-        </div>
-    <?php else:?>
-        <p><?= $block->escapeHtml('There are no feedbacks at the moment. Be the first to add a feedback.') ?></p>
-    <?php endif; ?>
-
     <!-- Display feedback info -->
     <div class="feedback-list">
         <?php foreach ($block->getCollection() as $feedback): ?>
-            <div class="feedback-item" style="background-color: aliceblue; margin: 5px; padding: 20px;">
-                <p>
-                    <?= $block->escapeHtml($feedback->getAuthorName()) ?> |
-                    <?= $viewModel->getFeedbackDate($feedback) ?>
-                </p>
-                <p><?= $block->escapeHtml($feedback->getMessage()) ?></p>
-            </div>
+                <div class="feedback-item" style="background-color: aliceblue; margin: 5px; padding: 20px;">
+                    <p>
+                        <?= $block->escapeHtml($feedback->getAuthorName()) ?> |
+                        <?= $viewModel->getFeedbackDate($feedback) ?>
+                    </p>
+                    <p><?= $block->escapeHtml($feedback->getMessage()) ?></p>
+                </div>
 
             <!-- Display feedback replies if any -->
             <?php foreach ($viewModel ->getRepliesByFeedbackId($feedback->getId()) as $reply): ?>

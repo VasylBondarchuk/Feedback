@@ -10,13 +10,37 @@ use Training\Feedback\Api\Data\Feedback\FeedbackInterface;
  */
 class Feedback extends AbstractExtensibleModel implements FeedbackInterface
 {
+    /**
+     *
+     */
     const STATUS_ACTIVE_VALUE = 1;
+    /**
+     *
+     */
     const STATUS_INACTIVE_VALUE = 0;
+    /**
+     *
+     */
     const STATUS_ACTIVE_LABEL = 'Published';
+    /**
+     *
+     */
     const STATUS_INACTIVE_LABEL = 'Not published';
+    /**
+     *
+     */
     const REPLY_NOTIFY = 1;
+    /**
+     *
+     */
     const REPLY_DO_NOT_NOTIFY = 0;
+    /**
+     *
+     */
     const REPLY_NOTIFY_LABEL = 'Yes';
+    /**
+     *
+     */
     const REPLY_DO_NOT_NOTIFY_LABEL = 'No';
 
     /**
@@ -45,6 +69,16 @@ class Feedback extends AbstractExtensibleModel implements FeedbackInterface
     {
         return $this->getData(self::FEEDBACK_ID);
     }
+
+
+    /**
+     * @return int|null
+     */
+    public function getCustomerId(): ?int
+    {
+        return $this->getData(self::CUSTOMER_ID);
+    }
+
     /**
      * Get author name
      *
@@ -112,6 +146,9 @@ class Feedback extends AbstractExtensibleModel implements FeedbackInterface
         return (bool)$this->getData(self::IS_ACTIVE);
     }
 
+    /**
+     * @return string
+     */
     public function getIsPublished() : string
     {
         return $this->getIsActive()
@@ -128,6 +165,17 @@ class Feedback extends AbstractExtensibleModel implements FeedbackInterface
     {
         return $this->setData(self::FEEDBACK_ID, $feedbackId);
     }
+
+
+    /**
+     * @param int $customerId
+     * @return FeedbackInterface
+     */
+    public function setCustomerId(int $customerId): FeedbackInterface
+    {
+        return $this->setData(self::CUSTOMER_ID, $customerId);
+    }
+
     /**
      * Set author name
      *
@@ -159,6 +207,10 @@ class Feedback extends AbstractExtensibleModel implements FeedbackInterface
         return $this->setData(self::MESSAGE, $message);
     }
 
+    /**
+     * @param string $replyNotification
+     * @return FeedbackInterface
+     */
     public function setReplyNotification(string $replyNotification): FeedbackInterface
     {
         return $this->setData(self::REPLY_NOTIFICATION, $replyNotification);

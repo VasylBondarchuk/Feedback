@@ -6,10 +6,10 @@ use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Ui\DataProvider\AbstractDataProvider;
 use Training\Feedback\Api\Data\Reply\ReplyRepositoryInterface;
 use Training\Feedback\Model\ResourceModel\Feedback\Collection;
-use Training\Feedback\Model\ResourceModel\Reply\CollectionFactory as ReplyCollectionFactory;
 use Training\Feedback\Model\ResourceModel\Feedback\CollectionFactory;
 use Training\Feedback\Api\Data\Reply\ReplyInterface;
 use Magento\Backend\Model\Auth\Session;
+use Psr\Log\LoggerInterface;
 
 /**
  *
@@ -41,14 +41,19 @@ class DataProvider extends AbstractDataProvider
     protected Session $authSession;
 
     /**
+     * @var LoggerInterface
+     */
+    protected LoggerInterface $logger;
+
+    /**
      * @param string $name
      * @param string $primaryFieldName
      * @param string $requestFieldName
      * @param CollectionFactory $collectionFactory
-     * @param ReplyCollectionFactory $replyCollectionFactory
      * @param DataPersistorInterface $dataPersistor
      * @param ReplyRepositoryInterface $replyRepository
      * @param Session $authSession
+     * @param LoggerInterface $logger
      * @param array $meta
      * @param array $data
      */
@@ -57,10 +62,10 @@ class DataProvider extends AbstractDataProvider
         string                   $primaryFieldName,
         string                   $requestFieldName,
         CollectionFactory        $collectionFactory,
-        ReplyCollectionFactory   $replyCollectionFactory,
         DataPersistorInterface   $dataPersistor,
         ReplyRepositoryInterface $replyRepository,
         Session $authSession,
+        LoggerInterface $logger,
         array                    $meta = [],
         array                    $data = []
     ) {
@@ -68,6 +73,7 @@ class DataProvider extends AbstractDataProvider
         $this->dataPersistor = $dataPersistor;
         $this->replyRepository = $replyRepository;
         $this->authSession = $authSession;
+        $this->logger  = $logger;
         parent::__construct($name, $primaryFieldName, $requestFieldName, $meta, $data);
     }
 
@@ -92,9 +98,24 @@ class DataProvider extends AbstractDataProvider
         $items = $this->collection->getItems();
         foreach ($items as $feedback) {
             $this->loadedData[$feedback->getId()] = $feedback->getData();
-                $this->loadedData[$feedback->getId()][ReplyInterface::REPLY_TEXT] =
-                    $this->replyRepository->getByFeedbackId($feedback->getId())->getReplyText();
+            $this->loadedData[$feedback->getId()][ReplyInterface::REPLY_TEXT] =
+                $this->getReplyText((int)$feedback->getId());
         }
         return $this->loadedData ?? [];
+    }
+
+    /**
+     * @param int $feedbackId
+     * @return string
+     */
+    private function getReplyText(int $feedbackId) : string
+    {
+        $replyText = '';
+        try {
+            $replyText = $this->replyRepository->getByFeedbackId($feedbackId)->getReplyText();
+        } catch (\Exception $e) {
+            $this->logger->debug($e->getMessage());
+        }
+        return $replyText;
     }
 }

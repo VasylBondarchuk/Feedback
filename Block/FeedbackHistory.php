@@ -2,6 +2,7 @@
 
 namespace Training\Feedback\Block;
 
+use Magento\Customer\Model\SessionFactory;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
@@ -14,7 +15,7 @@ use Magento\User\Model\ResourceModel\User as UserResourceModel;
 /**
  *
  */
-class FeedbackList extends Template
+class FeedbackHistory extends Template
 {
     /**
      * @var CollectionFactory
@@ -31,11 +32,14 @@ class FeedbackList extends Template
      */
     protected UserResourceModel $resourceModel;
 
+    private SessionFactory $customerSessionFactory;
+
     /**
      * @param Context $context
      * @param CollectionFactory $collectionFactory
      * @param UserFactory $userFactory
      * @param UserResourceModel $resourceModel
+     * @param SessionFactory $customerSessionFactory
      * @param array $data
      */
     public function __construct(
@@ -43,12 +47,14 @@ class FeedbackList extends Template
         CollectionFactory $collectionFactory,
         UserFactory $userFactory,
         UserResourceModel $resourceModel,
+        SessionFactory $customerSessionFactory,
         array             $data = []
     ) {
         parent::__construct($context, $data);
         $this->collectionFactory = $collectionFactory;
         $this->userFactory = $userFactory;
         $this->resourceModel = $resourceModel;
+        $this->customerSessionFactory = $customerSessionFactory;
     }
 
     /**
@@ -63,6 +69,7 @@ class FeedbackList extends Template
     {
         return $this->collectionFactory->create()
             ->addFieldToFilter(FeedbackInterface::IS_ACTIVE, 1)
+            ->addFieldToFilter(FeedbackInterface::CUSTOMER_ID, $this->getLoggedCustomerId())
             ->setOrder(FeedbackInterface::CREATION_TIME, 'DESC');
     }
 
@@ -88,5 +95,12 @@ class FeedbackList extends Template
     public function getPagerHtml(): string
     {
         return $this->getChildHtml('pager');
+    }
+
+    public function getLoggedCustomerId()
+    {
+        $customerSession = $this->customerSessionFactory->create();
+        $customer = $customerSession->getCustomer();
+        return $customer->getId();
     }
 }

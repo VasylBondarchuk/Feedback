@@ -5,6 +5,8 @@
     <table name="training_feedback" resource="default" engine="innodb" comment="Feedback Messages Table">
         <column xsi:type="smallint" name="feedback_id" padding="5" nullable="false" identity="true"
                 comment="Feedback ID"/>
+        <column xsi:type="smallint" name="customer_id" padding="5" nullable="true"
+                comment="Customer ID"/>
         <column xsi:type="varchar" name="author_name" nullable="false" length="255"
                 comment="Feedback Author Name"/>
         <column xsi:type="varchar" name="author_email" nullable="false" length="255"

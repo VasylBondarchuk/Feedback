@@ -1,4 +1,4 @@
-<?php $viewModel = $block->getData('view_model');?>
+<?php $viewModel = $block->getData('feedback_form_view_model');?>
 
 <form class="form contact"
       action="<?= $block->escapeUrl($viewModel->getActionUrl()) ?>"
@@ -22,7 +22,7 @@
         </div>
         <div class="field email required">
             <label class="label" for="author_email">
-                <span><?= $block->escapeHtml(__('FeedbackEmail')) ?></span>
+                <span><?= $block->escapeHtml(__('Email')) ?></span>
             </label>
             <div class="control">
                 <input name="author_email" id="author_email"

@@ -13,23 +13,44 @@ interface FeedbackInterface
      * Constants defined for keys of the data array. Identical to the name of the getter in snake case
      */
     const FEEDBACK_ID = 'feedback_id';
+
+    const CUSTOMER_ID = 'customer_id';
+    /**
+     *
+     */
     const AUTHOR_NAME = 'author_name';
+    /**
+     *
+     */
     const AUTHOR_EMAIL = 'author_email';
-
+    /**
+     *
+     */
     const MESSAGE = 'message';
-
+    /**
+     *
+     */
     const CREATION_TIME = 'creation_time';
+    /**
+     *
+     */
     const UPDATE_TIME = 'update_time';
-
+    /**
+     *
+     */
     const IS_ACTIVE = 'is_active';
 
-    /***/
     /**
      * Get FEEDBACK_ID
      *
      * @return int|null
      */
     public function getFeedbackId(): ?int;
+
+    /**
+     * @return int|null
+     */
+    public function getCustomerId(): ?int;
     /**
      * Get author name
      *
@@ -74,6 +95,13 @@ interface FeedbackInterface
      * @return FeedbackInterface
      */
     public function setFeedbackId(int $feedbackId): FeedbackInterface;
+
+    /**
+     * @param int $customerId
+     * @return FeedbackInterface
+     */
+    public function setCustomerId(int $customerId): FeedbackInterface;
+
     /**
      * Set author name
      *

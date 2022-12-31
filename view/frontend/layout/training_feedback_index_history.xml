@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="customer_account"/>
+    <body>
+        <referenceContainer name="content">
+            <block class="Training\Feedback\Block\FeedbackHistory" name="feedback_history" template="Training_Feedback::history.phtml">
+                <arguments>
+                    <argument name="feedback_history_view_model" xsi:type="object">Training\Feedback\ViewModel\FeedbackHistory</argument>
+                </arguments>
+                <block class="Magento\Theme\Block\Html\Pager" name="feedback_list_pager"/>
+            </block>
+        </referenceContainer>
+    </body>
+</page>
