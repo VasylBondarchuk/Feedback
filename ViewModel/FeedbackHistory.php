@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Training\Feedback\ViewModel;
 
-use Magento\Customer\Model\Session;
+use Magento\Customer\Model\SessionFactory;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Stdlib\DateTime\Timezone;
 use Magento\Framework\UrlInterface;
@@ -12,10 +12,13 @@ use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\User\Model\ResourceModel\User as UserResourceModel;
 use Magento\User\Model\UserFactory;
 use Psr\Log\LoggerInterface;
+use Training\Feedback\Api\Data\Feedback\FeedbackInterface;
 use Training\Feedback\Model\Feedback as FeedbackModel;
 use Training\Feedback\Model\Reply as ReplyModel;
 use Training\Feedback\Model\ReplyRepository;
 use Training\Feedback\Model\ResourceModel\Feedback as FeedbackResource;
+use Training\Feedback\Model\ResourceModel\Feedback\Collection;
+use Training\Feedback\Model\ResourceModel\Feedback\CollectionFactory;
 use Training\Feedback\Model\ResourceModel\Reply\Collection as ReplyCollection;
 
 /**
@@ -27,7 +30,13 @@ class FeedbackHistory implements ArgumentInterface
      * @var UrlInterface
      */
     private UrlInterface $urlBuilder;
+    /**
+     *
+     */
     private const ADD_FEEDBACK_FORM_PATH = 'training_feedback/index/form';
+    /**
+     *
+     */
     private const DEFAULT_ADMIN_NAME = 'Admin';
 
     /**
@@ -50,11 +59,25 @@ class FeedbackHistory implements ArgumentInterface
      */
     private LoggerInterface $logger;
 
+    /**
+     * @var UserFactory
+     */
     protected UserFactory $userFactory;
 
+    /**
+     * @var UserResourceModel
+     */
     protected UserResourceModel $resourceModel;
 
-    private Session $customerSession;
+    /**
+     * @var CollectionFactory
+     */
+    private CollectionFactory $collectionFactory;
+
+    /**
+     * @var SessionFactory
+     */
+    private SessionFactory $customerSessionFactory;
 
     /**
      * @param UrlInterface $urlBuilder
@@ -64,7 +87,8 @@ class FeedbackHistory implements ArgumentInterface
      * @param LoggerInterface $logger
      * @param UserFactory $userFactory
      * @param UserResourceModel $resourceModel
-     * @param Session $customerSession
+     * @param SessionFactory $customerSessionFactory
+     * @param CollectionFactory $collectionFactory
      */
     public function __construct(
         UrlInterface $urlBuilder,
@@ -74,7 +98,8 @@ class FeedbackHistory implements ArgumentInterface
         LoggerInterface   $logger,
         UserFactory $userFactory,
         UserResourceModel $resourceModel,
-        Session $customerSession
+        SessionFactory $customerSessionFactory,
+        CollectionFactory $collectionFactory,
     ) {
         $this->urlBuilder = $urlBuilder;
         $this->timezone = $timezone;
@@ -83,7 +108,19 @@ class FeedbackHistory implements ArgumentInterface
         $this->logger = $logger;
         $this->userFactory = $userFactory;
         $this->resourceModel = $resourceModel;
-        $this->customerSession = $customerSession;
+        $this->customerSessionFactory = $customerSessionFactory;
+        $this->collectionFactory = $collectionFactory;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getCollection(): Collection
+    {
+        return $this->collectionFactory->create()
+            ->addFieldToFilter(FeedbackInterface::IS_ACTIVE, 1)
+            ->addFieldToFilter(FeedbackInterface::CUSTOMER_ID, $this->getLoggedCustomerId())
+            ->setOrder(FeedbackInterface::CREATION_TIME, 'DESC');
     }
 
     /**
@@ -142,5 +179,14 @@ class FeedbackHistory implements ArgumentInterface
             $this->logger->error($e->getLogMessage());
         }
         return $replyAuthorName === ' ' ? self::DEFAULT_ADMIN_NAME : $replyAuthorName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLoggedCustomerId() : int
+    {
+        $customerSession = $this->customerSessionFactory->create();
+        return (int)$customerSession->getCustomer()->getId();
     }
 }

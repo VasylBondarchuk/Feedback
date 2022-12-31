@@ -32,6 +32,9 @@ class FeedbackHistory extends Template
      */
     protected UserResourceModel $resourceModel;
 
+    /**
+     * @var SessionFactory
+     */
     private SessionFactory $customerSessionFactory;
 
     /**
@@ -60,9 +63,6 @@ class FeedbackHistory extends Template
     /**
      * Gets only active feedbacks
      *
-     * @return Collection
-     */
-    /**
      * @return Collection
      */
     public function getCollection(): Collection
@@ -97,6 +97,9 @@ class FeedbackHistory extends Template
         return $this->getChildHtml('pager');
     }
 
+    /**
+     * @return mixed
+     */
     public function getLoggedCustomerId()
     {
         $customerSession = $this->customerSessionFactory->create();

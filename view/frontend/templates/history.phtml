@@ -2,7 +2,7 @@
 <div>
     <!-- Display feedback info -->
     <div class="feedback-list">
-        <?php foreach ($block->getCollection() as $feedback): ?>
+        <?php foreach ($viewModel->getCollection() as $feedback): ?>
                 <div class="feedback-item" style="background-color: aliceblue; margin: 5px; padding: 20px;">
                     <p>
                         <?= $block->escapeHtml($feedback->getAuthorName()) ?> |
