@@ -3,14 +3,10 @@
     <acl>
         <resources>
             <resource id="Magento_Backend::admin">
-                <resource id="Magento_Backend::content">
-                    <resource id="Magento_Backend::content_elements">
-                        <resource id="Training_Feedback::menu" title="Store Feedbacks" translate="title" sortOrder="10">
-                            <resource id="Training_Feedback::feedback_view" title="View Feedbacks" translate="title" sortOrder="10" />
-                            <resource id="Training_Feedback::feedback_save" title="Save Feedbacks" translate="title" sortOrder="20" />
-                            <resource id="Training_Feedback::feedback_delete" title="Delete Feedbacks" translate="title" sortOrder="30" />
-                        </resource>
-                    </resource>
+                <resource id="Training_Feedback::menu" title="Store Feedbacks" translate="title" sortOrder="10">
+                    <resource id="Training_Feedback::feedback_view" title="View Feedbacks" translate="title" sortOrder="10" />
+                    <resource id="Training_Feedback::feedback_save" title="Save Feedbacks" translate="title" sortOrder="20" />
+                    <resource id="Training_Feedback::feedback_delete" title="Delete Feedbacks" translate="title" sortOrder="30" />
                 </resource>
             </resource>
         </resources>

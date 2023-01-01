@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Training\Feedback\Block;
 
@@ -6,11 +7,11 @@ use Magento\Customer\Model\SessionFactory;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
+use Magento\User\Model\ResourceModel\User as UserResourceModel;
+use Magento\User\Model\UserFactory;
+use Training\Feedback\Api\Data\Feedback\FeedbackInterface;
 use Training\Feedback\Model\ResourceModel\Feedback\Collection;
 use Training\Feedback\Model\ResourceModel\Feedback\CollectionFactory;
-use Training\Feedback\Api\Data\Feedback\FeedbackInterface;
-use Magento\User\Model\UserFactory;
-use Magento\User\Model\ResourceModel\User as UserResourceModel;
 
 /**
  *
@@ -81,7 +82,7 @@ class FeedbackHistory extends Template
     {
         parent::_prepareLayout();
         $pager = $this->getLayout()
-            ->createBlock(CustomPager::class,'feedback.list.pager')
+            ->createBlock(CustomPager::class, 'feedback.list.pager')
             ->setCollection($this->getCollection());
         $this->setChild('pager', $pager);
         return $this;

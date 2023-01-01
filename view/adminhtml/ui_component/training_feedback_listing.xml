@@ -180,6 +180,7 @@
         <column name="is_replied" class="Training\Feedback\Ui\Component\Listing\Column\IsReplied" >
             <settings>
                 <label translate="true">Replied</label>
+                <sortable>false</sortable>
             </settings>
         </column>
         <column name="creation_time" class="Magento\Ui\Component\Listing\Columns\Date"

@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
-        <tab id="Tsg" translate="label" sortOrder="10">
+        <tab id="Training" translate="label" sortOrder="10">
             <label>TRAINING EXTENSIONS</label>
         </tab>
         <section id="feedback_configuration" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
             <class>separator-top</class>
             <label>Feedback configuration</label>
-            <tab>Tsg</tab>
+            <tab>Training</tab>
             <resource>Training_Feedback::menu</resource>
             <group id="feedback_configuration_general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Feedback General Configuration</label>

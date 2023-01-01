@@ -79,14 +79,14 @@ class Delete implements HttpPostActionInterface, HttpGetActionInterface
             try {
                 $this->feedbackRepository->deleteById($feedbackId);
                 $this->replyRepository->deleteByFeedbackId($feedbackId);
-                $this->messageManager->addSuccessMessage(__('You deleted the feedback and related replies if existed.'));
+                $this->messageManager->addSuccessMessage(__('You deleted the feedback and the related reply if existed.'));
                 return $resultRedirect->setPath('*/*/');
             } catch (LocalizedException $e) {
                 $this->messageManager->addErrorMessage($e->getMessage());
-                return $resultRedirect->setPath('*/*/edit', [FeedbackInterface:: FEEDBACK_ID => $feedbackId]);
+                return $resultRedirect->setPath('*/*/edit', [FeedbackInterface::FEEDBACK_ID => $feedbackId]);
             } catch (\Exception $e) {
                 $this->messageManager->addErrorMessage(__('We can\'t delete the feedback.'));
-                return $resultRedirect->setPath('*/*/edit', [FeedbackInterface:: FEEDBACK_ID => $feedbackId]);
+                return $resultRedirect->setPath('*/*/edit', [FeedbackInterface::FEEDBACK_ID => $feedbackId]);
             }
         }
         $this->messageManager->addErrorMessage(__('We can\'t find a feedback to delete.'));

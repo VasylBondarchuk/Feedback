@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Training\Feedback\Ui\Component\Listing\Column;
 
@@ -40,7 +41,7 @@ class IsReplied extends Column
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as & $item) {
                 if (isset($item['feedback_id'])) {
-                    $item['is_replied'] = $this->replyRepository->isFeedbackReplied($item['feedback_id'])
+                    $item['is_replied'] = $this->replyRepository->isFeedbackReplied((int)$item['feedback_id'])
                         ? "Yes"
                         : "No";
                 }

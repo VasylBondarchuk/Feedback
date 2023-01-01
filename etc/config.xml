@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <feedback_configuration>
+            <feedback_configuration_general>
+                <top_menu_link_name>Store Feedbacks</top_menu_link_name>
+            </feedback_configuration_general>
+        </feedback_configuration>
+    </default>
+</config>

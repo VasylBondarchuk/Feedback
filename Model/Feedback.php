@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Training\Feedback\Model;
 
@@ -67,7 +68,7 @@ class Feedback extends AbstractExtensibleModel implements FeedbackInterface
      */
     public function getFeedbackId(): int
     {
-        return $this->getData(self::FEEDBACK_ID);
+        return (int)$this->getData(self::FEEDBACK_ID);
     }
 
 
@@ -76,7 +77,7 @@ class Feedback extends AbstractExtensibleModel implements FeedbackInterface
      */
     public function getCustomerId(): ?int
     {
-        return $this->getData(self::CUSTOMER_ID);
+        return (int)$this->getData(self::CUSTOMER_ID);
     }
 
     /**
