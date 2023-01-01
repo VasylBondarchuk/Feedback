@@ -106,9 +106,9 @@ class DataProvider extends AbstractDataProvider
 
     /**
      * @param int $feedbackId
-     * @return string
+     * @return string|null
      */
-    private function getReplyText(int $feedbackId) : string
+    private function getReplyText(int $feedbackId) : ?string
     {
         $replyText = '';
         try {
