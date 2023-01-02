@@ -11,6 +11,7 @@ use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\UrlInterface;
 use Magento\Store\Model\StoreManagerInterface;
@@ -106,23 +107,15 @@ class Save implements HttpPostActionInterface
      */
     public function execute()
     {
-        $storeId = $this->storeManager->getStore()->getId();
-        //echo "Store ID is = " . $storeId . '</br>';
-        //$websiteId = $this->storeManager->getStore()->getWebsiteId();
-        //echo "Website ID is = " . $websiteId . '</br>';
-        //exit;
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         $resultRedirect->setPath('*/*/index');
         if ($post = $this->request->getPostValue()) {
-            //print_r($post);
-            //exit;
             try {
                 // input data validation
                 $this->validatePost($post);
                 // create feedback model instance
                 $feedback = $this->feedbackFactory->create();
                 // set data to model
-
                 $this->setDataToModel($feedback, $post);
                 // save data
                 $this->feedbackRepository->save($feedback);
@@ -178,6 +171,7 @@ class Save implements HttpPostActionInterface
      * @param FeedbackModel $feedback
      * @param array $post
      * @return void
+     * @throws NoSuchEntityException
      */
     private function setDataToModel(FeedbackModel $feedback, array $post): void
     {
@@ -185,9 +179,9 @@ class Save implements HttpPostActionInterface
             ->setData($post)
             ->setIsActive($this->publishFeedbackWithoutModeration())
             ->setStoreId($this->storeManager->getStore()->getId());
-        /*if (!isset($post['reply_notification'])) {
+        if (!isset($post['reply_notification'])) {
             $feedback->setReplyNotification(0);
-        }*/
+        }
         if ($this->customerSession->isLoggedIn()) {
             $feedback->setCustomerId($this->customerSession->getCustomerId());
         }
