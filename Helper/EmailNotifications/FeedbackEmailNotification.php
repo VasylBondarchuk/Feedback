@@ -18,9 +18,9 @@ class FeedbackEmailNotification extends EmailNotification
     protected const TEMPLATE_VARS_NAMES= ['recipientName','feedbackText','link'];
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getNotificationRecipientEmail(): string
+    public function getNotificationRecipientEmail(): ?string
     {
         return $this->getConfigsValue(self::NEW_FEEDBACK_NOTIFICATION_EMAIL_PATH);
     }

@@ -76,7 +76,7 @@ class EmailNotification extends AbstractHelper
      * @param string $path
      * @return string
      */
-    protected function getConfigsValue(string $path): string
+    protected function getConfigsValue(string $path): ?string
     {
         return $this->scopeConfig->getValue($path, ScopeInterface::SCOPE_STORE);
     }

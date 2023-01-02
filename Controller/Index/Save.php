@@ -2,6 +2,7 @@
 
 namespace Training\Feedback\Controller\Index;
 
+use Magento\Customer\Model\Session;
 use Magento\Framework\App\Action\HttpPostActionInterface as HttpPostActionInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\RequestInterface;
@@ -12,11 +13,11 @@ use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\UrlInterface;
+use Magento\Store\Model\StoreManagerInterface;
 use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
 use Training\Feedback\Helper\EmailNotifications\FeedbackEmailNotification;
 use Training\Feedback\Model\Feedback as FeedbackModel;
 use Training\Feedback\Model\FeedbackFactory;
-use Magento\Customer\Model\Session;
 
 /**
  * Saves new feedback
@@ -62,6 +63,8 @@ class Save implements HttpPostActionInterface
 
     private Session $customerSession;
 
+    private StoreManagerInterface $storeManager;
+
     /**
      * @param ManagerInterface $messageManager
      * @param ResultFactory $resultFactory
@@ -82,7 +85,8 @@ class Save implements HttpPostActionInterface
         UrlInterface $urlInterface,
         ScopeConfigInterface $scopeConfig,
         FeedbackRepositoryInterface $feedbackRepository,
-        Session $customerSession
+        Session $customerSession,
+        StoreManagerInterface $storeManager
     ) {
         $this->messageManager = $messageManager;
         $this->resultFactory = $resultFactory;
@@ -93,6 +97,7 @@ class Save implements HttpPostActionInterface
         $this->scopeConfig = $scopeConfig;
         $this->feedbackRepository = $feedbackRepository;
         $this->customerSession = $customerSession;
+        $this->storeManager = $storeManager;
     }
 
     /**
@@ -101,9 +106,16 @@ class Save implements HttpPostActionInterface
      */
     public function execute()
     {
+        $storeId = $this->storeManager->getStore()->getId();
+        //echo "Store ID is = " . $storeId . '</br>';
+        //$websiteId = $this->storeManager->getStore()->getWebsiteId();
+        //echo "Website ID is = " . $websiteId . '</br>';
+        //exit;
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         $resultRedirect->setPath('*/*/index');
         if ($post = $this->request->getPostValue()) {
+            //print_r($post);
+            //exit;
             try {
                 // input data validation
                 $this->validatePost($post);
@@ -171,16 +183,20 @@ class Save implements HttpPostActionInterface
     {
         $feedback
             ->setData($post)
-            ->setIsActive($this->publishFeedbackWithoutModeration());
-        if($this->customerSession->isLoggedIn()) {
+            ->setIsActive($this->publishFeedbackWithoutModeration())
+            ->setStoreId($this->storeManager->getStore()->getId());
+        /*if (!isset($post['reply_notification'])) {
+            $feedback->setReplyNotification(0);
+        }*/
+        if ($this->customerSession->isLoggedIn()) {
             $feedback->setCustomerId($this->customerSession->getCustomerId());
         }
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    private function publishFeedbackWithoutModeration(): string
+    private function publishFeedbackWithoutModeration(): ?string
     {
         return $this->scopeConfig->getValue(self::PUBLISH_FEEDBACK_PATH);
     }
@@ -193,6 +209,4 @@ class Save implements HttpPostActionInterface
     {
         return $this->urlInterface->getUrl(self::FEEDBACK_EDIT_PAGE_PATH) . $this->getFeedbackId($feedback);
     }
-
-
 }

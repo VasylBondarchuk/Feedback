@@ -16,7 +16,7 @@ use Training\Feedback\Model\ResourceModel\Feedback\CollectionFactory;
 /**
  *
  */
-class FeedbackHistory extends Template
+class CustomerFeedbackHistory extends Template
 {
     /**
      * @var CollectionFactory

@@ -14,6 +14,14 @@ interface FeedbackInterface
      */
     const FEEDBACK_ID = 'feedback_id';
 
+    /**
+     *
+     */
+    const STORE_ID = 'store_id';
+
+    /**
+     *
+     */
     const CUSTOMER_ID = 'customer_id';
     /**
      *
@@ -27,6 +35,8 @@ interface FeedbackInterface
      *
      */
     const MESSAGE = 'message';
+
+    const REPLY_NOTIFICATION = 'reply_notification';
     /**
      *
      */
@@ -46,6 +56,11 @@ interface FeedbackInterface
      * @return int|null
      */
     public function getFeedbackId(): ?int;
+
+    /**
+     * @return int|null
+     */
+    public function getStoreId(): ?int;
 
     /**
      * @return int|null
@@ -95,6 +110,13 @@ interface FeedbackInterface
      * @return FeedbackInterface
      */
     public function setFeedbackId(int $feedbackId): FeedbackInterface;
+
+
+    /**
+     * @param int $storeId
+     * @return FeedbackInterface
+     */
+    public function setStoreId(int $storeId): FeedbackInterface;
 
     /**
      * @param int $customerId
