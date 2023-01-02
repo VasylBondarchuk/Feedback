@@ -26,7 +26,6 @@ use Training\Feedback\Model\FeedbackFactory;
 class Save implements HttpPostActionInterface
 {
     private const FEEDBACK_EDIT_PAGE_PATH = 'admin/training_feedback/index/edit/feedback_id/';
-
     private const PUBLISH_FEEDBACK_PATH = 'feedback_configuration/feedback_configuration_general/publish_feedback_without_moderation';
 
     /**
@@ -46,6 +45,9 @@ class Save implements HttpPostActionInterface
      */
     private RequestInterface $request;
 
+    /**
+     * @var FeedbackEmailNotification
+     */
     private FeedbackEmailNotification $email;
     /**
      * @var UrlInterface
@@ -62,8 +64,14 @@ class Save implements HttpPostActionInterface
      */
     private FeedbackRepositoryInterface $feedbackRepository;
 
+    /**
+     * @var Session
+     */
     private Session $customerSession;
 
+    /**
+     * @var StoreManagerInterface
+     */
     private StoreManagerInterface $storeManager;
 
     /**
