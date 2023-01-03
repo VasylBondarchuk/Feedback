@@ -84,6 +84,7 @@ class Save implements HttpPostActionInterface
      * @param ScopeConfigInterface $scopeConfig
      * @param FeedbackRepositoryInterface $feedbackRepository
      * @param Session $customerSession
+     * @param StoreManagerInterface $storeManager
      */
     public function __construct(
         ManagerInterface $messageManager,
@@ -168,15 +169,6 @@ class Save implements HttpPostActionInterface
 
     /**
      * @param FeedbackModel $feedback
-     * @return int
-     */
-    private function getFeedbackId(FeedbackModel $feedback) : int
-    {
-        return ($feedback->getFeedbackId());
-    }
-
-    /**
-     * @param FeedbackModel $feedback
      * @param array $post
      * @return void
      * @throws NoSuchEntityException
@@ -209,6 +201,6 @@ class Save implements HttpPostActionInterface
      */
     private function getLinkToFeedbackEditPage(FeedbackModel $feedback) : string
     {
-        return $this->urlInterface->getUrl(self::FEEDBACK_EDIT_PAGE_PATH) . $this->getFeedbackId($feedback);
+        return $this->urlInterface->getUrl(self::FEEDBACK_EDIT_PAGE_PATH) . $feedback->getFeedbackId();
     }
 }

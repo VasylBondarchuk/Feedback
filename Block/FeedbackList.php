@@ -3,8 +3,10 @@
 namespace Training\Feedback\Block;
 
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
+use Magento\Store\Model\StoreManagerInterface;
 use Magento\User\Model\ResourceModel\User as UserResourceModel;
 use Magento\User\Model\UserFactory;
 use Training\Feedback\Api\Data\Feedback\FeedbackInterface;
@@ -32,10 +34,16 @@ class FeedbackList extends Template
     protected UserResourceModel $resourceModel;
 
     /**
+     * @var StoreManagerInterface
+     */
+    private StoreManagerInterface $storeManager;
+
+    /**
      * @param Context $context
      * @param CollectionFactory $collectionFactory
      * @param UserFactory $userFactory
      * @param UserResourceModel $resourceModel
+     * @param StoreManagerInterface $storeManager
      * @param array $data
      */
     public function __construct(
@@ -43,26 +51,25 @@ class FeedbackList extends Template
         CollectionFactory $collectionFactory,
         UserFactory $userFactory,
         UserResourceModel $resourceModel,
+        StoreManagerInterface $storeManager,
         array             $data = []
     ) {
         parent::__construct($context, $data);
         $this->collectionFactory = $collectionFactory;
         $this->userFactory = $userFactory;
         $this->resourceModel = $resourceModel;
+        $this->storeManager = $storeManager;
     }
 
     /**
-     * Gets only active feedbacks
-     *
      * @return Collection
-     */
-    /**
-     * @return Collection
+     * @throws NoSuchEntityException
      */
     public function getCollection(): Collection
     {
         return $this->collectionFactory->create()
             ->addFieldToFilter(FeedbackInterface::IS_ACTIVE, 1)
+            ->addFieldToFilter(FeedbackInterface::STORE_ID, $this->getStoreId())
             ->setOrder(FeedbackInterface::CREATION_TIME, 'DESC');
     }
 
@@ -88,5 +95,14 @@ class FeedbackList extends Template
     public function getPagerHtml(): string
     {
         return $this->getChildHtml('pager');
+    }
+
+    /**
+     * @return int
+     * @throws NoSuchEntityException
+     */
+    public function getStoreId(): int
+    {
+        return $this->storeManager->getStore()->getId();
     }
 }

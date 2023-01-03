@@ -5,16 +5,20 @@ declare(strict_types=1);
 namespace Training\Feedback\ViewModel;
 
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Stdlib\DateTime\Timezone;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
+use Magento\Store\Model\StoreManagerInterface;
 use Magento\User\Model\ResourceModel\User as UserResourceModel;
 use Magento\User\Model\UserFactory;
 use Psr\Log\LoggerInterface;
+use Training\Feedback\Api\Data\Feedback\FeedbackInterface;
 use Training\Feedback\Model\Feedback as FeedbackModel;
 use Training\Feedback\Model\Reply as ReplyModel;
 use Training\Feedback\Model\ReplyRepository;
 use Training\Feedback\Model\ResourceModel\Feedback as FeedbackResource;
+use Training\Feedback\Model\ResourceModel\Feedback\CollectionFactory;
 use Training\Feedback\Model\ResourceModel\Reply\Collection as ReplyCollection;
 
 /**
@@ -23,21 +27,23 @@ use Training\Feedback\Model\ResourceModel\Reply\Collection as ReplyCollection;
 class FeedbackList implements ArgumentInterface
 {
     /**
+     *
+     */
+    private const ADD_FEEDBACK_FORM_PATH = 'training_feedback/index/form';
+    /**
+     *
+     */
+    private const DEFAULT_ADMIN_NAME = 'Admin';
+
+    /**
      * @var UrlInterface
      */
     private UrlInterface $urlBuilder;
-    private const ADD_FEEDBACK_FORM_PATH = 'training_feedback/index/form';
-    private const DEFAULT_ADMIN_NAME = 'Admin';
 
     /**
      * @var Timezone
      */
     private Timezone $timezone;
-
-    /**
-     * @var FeedbackResource
-     */
-    private FeedbackResource $feedbackResource;
 
     /**
      * @var ReplyRepository
@@ -49,35 +55,54 @@ class FeedbackList implements ArgumentInterface
      */
     private LoggerInterface $logger;
 
+    /**
+     * @var UserFactory
+     */
     protected UserFactory $userFactory;
 
+    /**
+     * @var UserResourceModel
+     */
     protected UserResourceModel $resourceModel;
+
+    /**
+     * @var StoreManagerInterface
+     */
+    private StoreManagerInterface $storeManager;
+
+    /**
+     * @var CollectionFactory
+     */
+    private CollectionFactory $collectionFactory;
 
     /**
      * @param UrlInterface $urlBuilder
      * @param Timezone $timezone
-     * @param FeedbackResource $feedbackResource
      * @param ReplyRepository $replyRepository
      * @param LoggerInterface $logger
      * @param UserFactory $userFactory
      * @param UserResourceModel $resourceModel
+     * @param StoreManagerInterface $storeManager
+     * @param CollectionFactory $collectionFactory
      */
     public function __construct(
         UrlInterface $urlBuilder,
         Timezone          $timezone,
-        FeedbackResource  $feedbackResource,
         ReplyRepository   $replyRepository,
         LoggerInterface   $logger,
         UserFactory $userFactory,
         UserResourceModel $resourceModel,
+        StoreManagerInterface $storeManager,
+        CollectionFactory $collectionFactory
     ) {
         $this->urlBuilder = $urlBuilder;
         $this->timezone = $timezone;
-        $this->feedbackResource = $feedbackResource;
         $this->replyRepository = $replyRepository;
         $this->logger = $logger;
         $this->userFactory = $userFactory;
         $this->resourceModel = $resourceModel;
+        $this->storeManager = $storeManager;
+        $this->collectionFactory = $collectionFactory;
     }
 
     /**
@@ -98,19 +123,26 @@ class FeedbackList implements ArgumentInterface
     }
 
     /**
-     * @return string
+     * @return int
+     * @throws NoSuchEntityException
      */
-    public function getAllFeedbackNumber(): string
+    public function getAllFeedbackNumber(): int
     {
-        return $this->feedbackResource->getAllFeedbackNumber();
+        return $this->collectionFactory->create()
+            ->addFieldToFilter(FeedbackInterface::STORE_ID, $this->getStoreId())
+            ->count();
     }
 
     /**
-     * @return string
+     * @return int
+     * @throws NoSuchEntityException
      */
-    public function getActiveFeedbackNumber(): string
+    public function getActiveFeedbackNumber(): int
     {
-        return $this->feedbackResource->getActiveFeedbackNumber();
+        return $this->collectionFactory->create()
+            ->addFieldToFilter(FeedbackInterface::IS_ACTIVE, 1)
+            ->addFieldToFilter(FeedbackInterface::STORE_ID, $this->getStoreId())
+            ->count();
     }
 
     /**
@@ -136,5 +168,14 @@ class FeedbackList implements ArgumentInterface
             $this->logger->error($e->getLogMessage());
         }
         return $replyAuthorName === ' ' ? self::DEFAULT_ADMIN_NAME : $replyAuthorName;
+    }
+
+    /**
+     * @return int
+     * @throws NoSuchEntityException
+     */
+    public function getStoreId(): int
+    {
+        return (int)$this->storeManager->getStore()->getId();
     }
 }
