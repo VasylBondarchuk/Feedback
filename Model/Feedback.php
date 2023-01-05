@@ -71,7 +71,6 @@ class Feedback extends AbstractExtensibleModel implements FeedbackInterface
         return (int)$this->getData(self::FEEDBACK_ID);
     }
 
-
     public function getStoreId(): ?int
     {
         return (int)$this->getData(self::STORE_ID);
@@ -150,6 +149,11 @@ class Feedback extends AbstractExtensibleModel implements FeedbackInterface
     public function getIsActive(): bool
     {
         return (bool)$this->getData(self::IS_ACTIVE);
+    }
+
+    public function getIsReplied()
+    {
+        return $this->getData(self::IS_REPLIED);
     }
 
     /**
@@ -256,5 +260,10 @@ class Feedback extends AbstractExtensibleModel implements FeedbackInterface
     public function setIsActive($isActive): FeedbackInterface
     {
         return $this->setData(self::IS_ACTIVE, $isActive);
+    }
+
+    public function setIsReplied(int $isReplied): FeedbackInterface
+    {
+        return $this->setData(self::IS_REPLIED, $isReplied);
     }
 }

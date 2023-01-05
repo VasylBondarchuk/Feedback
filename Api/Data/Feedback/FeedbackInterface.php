@@ -36,6 +36,9 @@ interface FeedbackInterface
      */
     const MESSAGE = 'message';
 
+    /**
+     *
+     */
     const REPLY_NOTIFICATION = 'reply_notification';
     /**
      *
@@ -49,6 +52,11 @@ interface FeedbackInterface
      *
      */
     const IS_ACTIVE = 'is_active';
+
+    /**
+     *
+     */
+    const IS_REPLIED = 'is_replied';
 
     /**
      * Get FEEDBACK_ID
@@ -102,6 +110,11 @@ interface FeedbackInterface
      * @return bool|null
      */
     public function getIsActive(): ?bool;
+
+    /**
+     * @return mixed
+     */
+    public function getIsReplied();
 
     /**
      * Set ID
@@ -167,5 +180,11 @@ interface FeedbackInterface
      * @return FeedbackInterface
      */
     public function setIsActive(int $isActive): FeedbackInterface;
+
+    /**
+     * @param int $isReplied
+     * @return FeedbackInterface
+     */
+    public function setIsReplied(int $isReplied): FeedbackInterface;
 }
 

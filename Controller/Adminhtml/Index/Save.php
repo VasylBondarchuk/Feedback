@@ -141,7 +141,7 @@ class Save implements HttpPostActionInterface
             if (empty($data[FeedbackInterface::FEEDBACK_ID])) {
                 $data[FeedbackInterface::FEEDBACK_ID] = null;
             }
-            $editedFeedbackId = (int)($this->request->get('feedback_id'));
+            $editedFeedbackId = (int)($this->request->get(FeedbackInterface::FEEDBACK_ID));
             try {
                 $feedbackModel = $this->getFeedBackModel($editedFeedbackId);
                 $replyModel = $this->getReplyModel($editedFeedbackId);
@@ -151,7 +151,13 @@ class Save implements HttpPostActionInterface
 
             try {
                 $this->saveFeedback($feedbackModel, $data);
-                $this->saveReply($replyModel, $feedbackModel, $data);
+                if (!empty($data['reply_text'])) {
+                    $this->saveReply($replyModel, $feedbackModel, $data);
+                } else {
+                    $this->replyRepository->deleteByFeedbackId($editedFeedbackId);
+                    $feedbackModel->setIsReplied($this->replyRepository->isReplied($editedFeedbackId));
+                    $this->feedbackRepository->save($feedbackModel);
+                }
                 $this->email->sendEmail($feedbackModel->getAuthorEmail(), [$feedbackModel->getAuthorName(),$replyModel->getReplyText()]);
 
                 $this->messageManager->addSuccessMessage(__('You saved the feedback.'));
@@ -229,6 +235,8 @@ class Save implements HttpPostActionInterface
             ->setReplyText($data[ReplyInterface::REPLY_TEXT])
             ->setReplyCreationTime(date("F j, Y, g:i a"));
         $this->replyRepository->save($replyModel);
+        $feedbackModel->setIsReplied($this->replyRepository->isReplied($feedBackId));
+        $this->feedbackRepository->save($feedbackModel);
     }
 
     /**

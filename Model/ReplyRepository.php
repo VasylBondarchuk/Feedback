@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Training\Feedback\Model;
 
+use Magento\Backend\Model\Auth\Session;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Exception\CouldNotDeleteException;
@@ -15,7 +16,6 @@ use Training\Feedback\Api\Data\Reply\ReplySearchResultsInterface;
 use Training\Feedback\Api\Data\Reply\ReplySearchResultsInterfaceFactory;
 use Training\Feedback\Model\ResourceModel\Reply as ReplyResource;
 use Training\Feedback\Model\ResourceModel\Reply\CollectionFactory as ReplyCollectionFactory;
-use Magento\Backend\Model\Auth\Session;
 
 /**
  * Reply repository
@@ -226,5 +226,10 @@ class ReplyRepository implements ReplyRepositoryInterface
         $replyCollection = $this->replyCollectionFactory->create();
         return $replyCollection
             ->addFieldToFilter(ReplyInterface::FEEDBACK_ID, $feedbackId);
+    }
+
+    public function isReplied(int $feedbackId): int
+    {
+        return $this->getRepliesByFeedbackId($feedbackId)->count() ? 1 : 0;
     }
 }

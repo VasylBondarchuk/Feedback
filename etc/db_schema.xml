@@ -26,6 +26,9 @@
         <column xsi:type="smallint" name="is_active" padding="5" nullable="false" identity="false"
                 default="0"
                 comment="Is Feedback Active"/>
+        <column xsi:type="smallint" name="is_replied" nullable="false" identity="false"
+                default="0"
+                comment="Is Feedback replied"/>
         <constraint xsi:type="primary" referenceId="PRIMARY">
             <column name="feedback_id"/>
         </constraint>
