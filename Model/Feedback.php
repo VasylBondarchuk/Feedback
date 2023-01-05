@@ -47,11 +47,11 @@ class Feedback extends AbstractExtensibleModel implements FeedbackInterface
     /**
      *
      */
-    const IS_REPLIED = 1;
+    const IS_REPLIED_VALUE = 1;
     /**
      *
      */
-    const IS_NOT_REPLIED = 0;
+    const IS_NOT_REPLIED_VALUE = 0;
     /**
      *
      */

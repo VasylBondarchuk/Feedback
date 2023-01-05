@@ -72,6 +72,7 @@ class Index implements HttpGetActionInterface
     public function execute()
     {
         $this->displayNotPublishedFeedbacksNumber();
+        $this->displayNotRepliedFeedbacksNumber();
         $resultPage = $this->resultFactory->create(ResultFactory::TYPE_PAGE);
         $resultPage
             ->setActiveMenu('Training_Feedback::feedback')
@@ -93,6 +94,18 @@ class Index implements HttpGetActionInterface
     }
 
     /**
+     * @return void
+     */
+    private function displayNotRepliedFeedbacksNumber(): void
+    {
+        if ($this->getNotRepliedFeedbacksNumber()) {
+            $this->messageManager->addSuccessMessage(
+                __('%1 Feedback(s) are not replied.', $this->getNotRepliedFeedbacksNumber())
+            );
+        }
+    }
+
+    /**
      *
      * @return int
      */
@@ -104,6 +117,25 @@ class Index implements HttpGetActionInterface
             Feedback::STATUS_INACTIVE_VALUE,
             'like'
         );
+
+        $criteria = $this->searchCriteriaBuilder->create();
+        $feedbacks = $this->feedbackRepository->getList($criteria);
+        return count($feedbacks->getItems());
+    }
+
+    private function getNotRepliedFeedbacksNumber(): int
+    {
+        $this->searchCriteriaBuilder
+            ->addFilter(
+                FeedbackInterface::REPLY_NOTIFICATION,
+                Feedback::REPLY_NOTIFY,
+                'like'
+            )
+            ->addFilter(
+                FeedbackInterface::IS_REPLIED,
+                Feedback::IS_NOT_REPLIED_VALUE,
+                'like'
+            );
 
         $criteria = $this->searchCriteriaBuilder->create();
         $feedbacks = $this->feedbackRepository->getList($criteria);

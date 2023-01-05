@@ -17,7 +17,7 @@ class IsReplied implements OptionSourceInterface
      * @return array
      */
 
-    const OPTION_VALUES = [Feedback::IS_REPLIED, Feedback::IS_NOT_REPLIED];
+    const OPTION_VALUES = [Feedback::IS_REPLIED_VALUE, Feedback::IS_NOT_REPLIED_VALUE];
     const OPTION_LABELS = [Feedback::IS_REPLIED_LABEL, Feedback::IS_NOT_REPLIED_LABEL];
 
     /**
