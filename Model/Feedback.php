@@ -45,6 +45,23 @@ class Feedback extends AbstractExtensibleModel implements FeedbackInterface
     const REPLY_DO_NOT_NOTIFY_LABEL = 'No';
 
     /**
+     *
+     */
+    const IS_REPLIED = 1;
+    /**
+     *
+     */
+    const IS_NOT_REPLIED = 0;
+    /**
+     *
+     */
+    const IS_REPLIED_LABEL = 'Yes';
+    /**
+     *
+     */
+    const IS_NOT_REPLIED_LABEL = 'No';
+
+    /**
      * @var string
      */
     protected $_eventPrefix = 'training_feedback';

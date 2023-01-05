@@ -183,10 +183,12 @@
                 <label translate="true">Reply Notification</label>
             </settings>
         </column>
-        <column name="is_replied" class="Training\Feedback\Ui\Component\Listing\Column\IsReplied" >
+        <column name="is_replied" component="Magento_Ui/js/grid/columns/select">
             <settings>
-                <label translate="true">Replied</label>
-                <sortable>false</sortable>
+                <options class="Training\Feedback\Model\Source\IsReplied"/>
+                <filter>select</filter>
+                <dataType>select</dataType>
+                <label translate="true">Is Replied</label>
             </settings>
         </column>
         <column name="creation_time" class="Magento\Ui\Component\Listing\Columns\Date"
