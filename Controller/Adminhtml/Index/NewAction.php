@@ -31,7 +31,6 @@ class NewAction implements HttpGetActionInterface
     /**
      * Index action
      *
-     * @return ResultInterface
      */
     public function execute()
     {
