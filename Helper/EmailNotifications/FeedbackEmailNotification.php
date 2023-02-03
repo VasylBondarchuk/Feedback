@@ -1,8 +1,7 @@
 <?php
+declare(strict_types=1);
 
 namespace Training\Feedback\Helper\EmailNotifications;
-
-use Magento\Store\Model\ScopeInterface;
 
 /**
  * Sends email notification in the case new feedback is submitted
