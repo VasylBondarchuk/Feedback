@@ -3,7 +3,7 @@
     <update handle="customer_account"/>
     <body>
         <referenceContainer name="content">
-            <block class="Training\Feedback\Block\FeedbackHistory" name="feedback_history" template="Training_Feedback::history.phtml">
+            <block class="Training\Feedback\Block\CustomerFeedbackHistory" name="feedback_history" template="Training_Feedback::history.phtml">
                 <arguments>
                     <argument name="feedback_history_view_model" xsi:type="object">Training\Feedback\ViewModel\FeedbackHistory</argument>
                 </arguments>
