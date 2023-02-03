@@ -17,7 +17,7 @@ use Symfony\Component\Console\Helper\Table;
 class DisplayFeedbackDetailsById extends Command
 {
     const FEEDBACK_ID = 'feedbackId';
-    const HEADERS = ['ID', 'Author name', 'Author FeedbackEmail', 'Status', 'Created' , 'Modified'];
+    const HEADERS = ['ID', 'Author name', 'Author Email', 'Message', 'Status', 'Created' , 'Modified', 'Reply Notification', 'Replied'];
 
     /**
      * @var FeedbackRepositoryInterface
@@ -62,11 +62,7 @@ class DisplayFeedbackDetailsById extends Command
     {
         $feedbackId = (int)$input->getOption(self::FEEDBACK_ID);
 
-        try {
-            if(!$this->isEnteredIdValid($feedbackId)){
-                $this->displayErrorMessage($output,'Please enter correct id. Id must be an integer positive number!');
-            }
-            else{
+        try {            
                 $table = new Table($output);
                 $table->setHeaders(self::HEADERS);
                 $feedback = $this->feedbackRepository->getById($feedbackId);
@@ -74,25 +70,18 @@ class DisplayFeedbackDetailsById extends Command
                     $feedback->getFeedbackId(),
                     $feedback->getAuthorName(),
                     $feedback->getAuthorEmail(),
+                    $feedback->getMessage(),
                     $feedback->getIsPublished(),
                     $feedback->getCreationTime(),
                     $feedback->getUpdateTime(),
+                    $feedback->getReplyNotification(),
+                    $feedback->getIsReplied()
                 ]);
-                $table->render();
-            }
+                $table->render();            
         } catch (LocalizedException $exception) {
             $this->displayErrorMessage($output,'There is no feedback, corresponding to entered id');
         }
         return $this;
-    }
-
-    /**
-     * @param $feedbackId
-     * @return bool
-     */
-    private function isEnteredIdValid ($feedbackId) : bool
-    {
-        return (is_int($feedbackId) && $feedbackId > 0);
     }
 
     /**
@@ -102,6 +91,6 @@ class DisplayFeedbackDetailsById extends Command
      */
     private function displayErrorMessage (OutputInterface $output, string $errorMessage)
     {
-        $output->writeln('<error>'.$errorMessage.'<error>');
+        $output->writeln('<error>' . $errorMessage . '<error>');
     }
 }
