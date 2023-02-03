@@ -2,13 +2,11 @@
 
 namespace Training\Feedback\Controller\Adminhtml\Index;
 
-use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\App\Action\HttpGetActionInterface as HttpGetActionInterface;
 use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Message\ManagerInterface;
-use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
 use Training\Feedback\Model\ResourceModel\Feedback as Resource;
 
 /**
@@ -43,18 +41,14 @@ class Index implements HttpGetActionInterface
 
     /**
      * @param ResultFactory $resultFactory
-     * @param DataPersistorInterface $dataPersistor
-     * @param FeedbackRepositoryInterface $feedbackRepository
-     * @param Resource $resource
-     * @param SearchCriteriaBuilder $searchCriteriaBuilder
+     * @param DataPersistorInterface $dataPersistor    
+     * @param Resource $resource     
      * @param ManagerInterface $messageManager
      */
     public function __construct(
         ResultFactory $resultFactory,
-        DataPersistorInterface    $dataPersistor,
-        FeedbackRepositoryInterface $feedbackRepository,
-        Resource $resource,
-        SearchCriteriaBuilder     $searchCriteriaBuilder,
+        DataPersistorInterface    $dataPersistor,        
+        Resource $resource,        
         ManagerInterface $messageManager
     ) {
         $this->resultFactory = $resultFactory;
