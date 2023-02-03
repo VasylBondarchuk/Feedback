@@ -104,6 +104,6 @@ class FeedbackList extends Template
      */
     public function getStoreId(): int
     {
-        return $this->storeManager->getStore()->getId();
+        return (int)$this->storeManager->getStore()->getId();
     }
 }

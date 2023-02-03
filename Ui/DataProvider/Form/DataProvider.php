@@ -110,11 +110,11 @@ class DataProvider extends AbstractDataProvider
      * @return string|null
      */
     private function getReplyText(int $feedbackId) : ?string
-    {
-        $replyText = '';
+    {        
         try {
             $replyText = $this->replyRepository->getByFeedbackId($feedbackId)->getReplyText();
         } catch (\Exception $e) {
+            $replyText = '';
             $this->logger->debug($e->getMessage());
         }
         return $replyText;

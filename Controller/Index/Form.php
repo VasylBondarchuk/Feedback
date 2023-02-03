@@ -66,8 +66,8 @@ class Form implements HttpGetActionInterface
     /**
      * @return bool|null
      */
-    public function isGuestAllowedToAddFeedback(): ?bool
+    public function isGuestAllowedToAddFeedback(): bool
     {
-        return $this->scopeConfig->getValue(self::ADD_FEEDBACK_BY_GUESTS, ScopeInterface::SCOPE_STORE);
+        return (bool)$this->scopeConfig->getValue(self::ADD_FEEDBACK_BY_GUESTS, ScopeInterface::SCOPE_STORE);
     }
 }

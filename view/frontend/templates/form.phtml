@@ -26,7 +26,7 @@
             </label>
             <div class="control">
                 <input name="author_email" id="author_email"
-                       title="<?= $block->escapeHtmlAttr(__('FeedbackEmail')) ?>" value=""
+                       title="<?= $block->escapeHtmlAttr(__('FeedbackEmail')) ?>" value="<?= $viewModel->getCustomerEmail() ?>"
                        class="input-text" type="email" data-validate="{required:true, 'validate-email':true}"/>
             </div>
         </div>
