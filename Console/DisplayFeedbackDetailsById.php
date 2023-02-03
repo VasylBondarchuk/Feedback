@@ -19,11 +19,15 @@ class DisplayFeedbackDetailsById extends Command
 {
     const FEEDBACK_ID = 'feedbackId';
     const HEADERS = ['ID', 'Author name', 'Author Email', 'Message', 'Status', 'Created' , 'Modified', 'Reply Notification', 'Replied'];
+<<<<<<< HEAD
     
     /**
      * @var LoggerInterface
      */
     private LoggerInterface $logger;
+=======
+
+>>>>>>> origin/master
     /**
      * @var FeedbackRepositoryInterface
      */
