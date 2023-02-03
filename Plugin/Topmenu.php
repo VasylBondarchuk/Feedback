@@ -52,7 +52,11 @@ class Topmenu
      * @param int $limit
      * @return void
      */
-    public function beforeGetHtml(\Magento\Theme\Block\Html\Topmenu $subject, string $outermostClass = '', string $childrenWrapClass = '', int $limit = 0): void
+    public function beforeGetHtml(
+            \Magento\Theme\Block\Html\Topmenu $subject,
+            string $outermostClass = '',
+            string $childrenWrapClass = '',
+            int $limit = 0): void
     {
         $menuNode = $this->nodeFactory->create(
             ['data' => $this->getNodeAsArray(

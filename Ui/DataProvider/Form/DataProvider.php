@@ -65,8 +65,8 @@ class DataProvider extends AbstractDataProvider
         CollectionFactory        $collectionFactory,
         DataPersistorInterface   $dataPersistor,
         ReplyRepositoryInterface $replyRepository,
-        Session $authSession,
-        LoggerInterface $logger,
+        Session                  $authSession,
+        LoggerInterface          $logger,
         array                    $meta = [],
         array                    $data = []
     ) {
