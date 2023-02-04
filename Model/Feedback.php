@@ -242,7 +242,7 @@ class Feedback extends AbstractExtensibleModel implements FeedbackInterface
      * @param string $replyNotification
      * @return FeedbackInterface
      */
-    public function setReplyNotification(string $replyNotification): FeedbackInterface
+    public function setReplyNotification(int $replyNotification): FeedbackInterface
     {
         return $this->setData(self::REPLY_NOTIFICATION, $replyNotification);
     }

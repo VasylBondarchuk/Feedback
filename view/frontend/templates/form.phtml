@@ -1,4 +1,4 @@
-<?php $viewModel = $block->getData('feedback_form_view_model');?>
+<?php $viewModel = $block->getData('feedback_form_view_model'); ?>
 
 <form class="form contact"
       action="<?= $block->escapeUrl($viewModel->getActionUrl()) ?>"
@@ -10,6 +10,7 @@
         <legend class="legend">
             <span><?= $block->escapeHtml(__('Leave your feedback')) ?></span>
         </legend><br />
+
         <div class="field name required">
             <label class="label" for="author_name">
                 <span><?= $block->escapeHtml(__('Name')) ?></span>
@@ -20,6 +21,7 @@
                        class="input-text" type="text" data-validate="{required:true}"/>
             </div>
         </div>
+
         <div class="field email required">
             <label class="label" for="author_email">
                 <span><?= $block->escapeHtml(__('Email')) ?></span>
@@ -30,9 +32,10 @@
                        class="input-text" type="email" data-validate="{required:true, 'validate-email':true}"/>
             </div>
         </div>
+
         <div class="field comment required">
             <label class="label" for="message">
-                <span><?= $block->escapeHtml(__('What’s on your mind?')) ?></span>
+                <span><?= $block->escapeHtml(__('Leave your feedback here')) ?></span>
             </label>
             <div class="control">
                 <textarea name="message" id="message"
@@ -41,14 +44,18 @@
                 </textarea>
             </div>
         </div>
-    <div class="field email notification">
-        <label class="label" for="message">
-            <span><?= $block->escapeHtml(__('Notify me about reply')) ?></span>
-        </label>
-        <div class="control">
-            <input type="checkbox" name="reply_notification" value=1>
-        </div>
-    </div>
+
+        <div class="field choice newsletter">
+            <input type="checkbox"
+                   name="reply_notification"
+                   title="<?= $escaper->escapeHtmlAttr(__('Notify me about reply')) ?>"
+                   value="1"
+                   id="reply_notification"                       
+                   class="checkbox">
+            <label for="reply_notification" class="label">
+                <span><?= $escaper->escapeHtml(__('Notify me about reply')) ?></span>
+            </label>
+        </div>    
 
     </fieldset>
     <div class="actions-toolbar">
