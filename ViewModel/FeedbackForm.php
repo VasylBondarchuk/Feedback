@@ -62,11 +62,11 @@ class FeedbackForm implements ArgumentInterface
     {
         try {
             $customerId =  (int)$this->customerSession->getCustomer()->getId();
-            $customerName = $this->customerRepository->getById($customerId)->getEmail();
+            $customerEmail = $this->customerRepository->getById($customerId)->getEmail();
         } catch (\Exception $exception) {
-            $customerName = '';
+            $customerEmail = '';
         }
-        return $customerName;
+        return $customerEmail;
     }
 
     /**
