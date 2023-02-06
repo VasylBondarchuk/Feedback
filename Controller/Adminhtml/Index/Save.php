@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Training\Feedback\Controller\Adminhtml\Index;
@@ -25,8 +26,8 @@ use Training\Feedback\Model\ReplyFactory;
 /**
  * Saves feedbacks
  */
-class Save implements HttpPostActionInterface
-{
+class Save implements HttpPostActionInterface {
+
     /**
      *
      */
@@ -101,17 +102,17 @@ class Save implements HttpPostActionInterface
      * @param ReplyEmailNotification $email
      */
     public function __construct(
-        ManagerInterface $messageManager,
-        ResultFactory $resultFactory,
-        DataPersistorInterface    $dataPersistor,
-        FeedbackRepositoryInterface $feedbackRepository,
-        FeedbackFactory           $feedbackFactory,
-        ReplyRepositoryInterface  $replyRepository,
-        ReplyFactory              $replyFactory,
-        Session                   $authSession,
-        LoggerInterface           $logger,
-        RequestInterface          $request,
-        ReplyEmailNotification $email
+            ManagerInterface $messageManager,
+            ResultFactory $resultFactory,
+            DataPersistorInterface $dataPersistor,
+            FeedbackRepositoryInterface $feedbackRepository,
+            FeedbackFactory $feedbackFactory,
+            ReplyRepositoryInterface $replyRepository,
+            ReplyFactory $replyFactory,
+            Session $authSession,
+            LoggerInterface $logger,
+            RequestInterface $request,
+            ReplyEmailNotification $email
     ) {
         $this->messageManager = $messageManager;
         $this->resultFactory = $resultFactory;
@@ -130,11 +131,11 @@ class Save implements HttpPostActionInterface
      * @return Redirect|ResultInterface
      * @throws LocalizedException
      */
-    public function execute()
-    {
+    public function execute() {
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         // get data from the feedback form field
         $data = $this->request->getPostValue();
+        
         if ($data) {
             if (isset($data[FeedbackInterface::IS_ACTIVE]) && $data[FeedbackInterface::IS_ACTIVE] === 'true') {
                 $data[FeedbackInterface::IS_ACTIVE] = Feedback::STATUS_ACTIVE_VALUE;
@@ -142,7 +143,7 @@ class Save implements HttpPostActionInterface
             if (empty($data[FeedbackInterface::FEEDBACK_ID])) {
                 $data[FeedbackInterface::FEEDBACK_ID] = null;
             }
-            $editedFeedbackId = (int)($this->request->get(FeedbackInterface::FEEDBACK_ID));
+            $editedFeedbackId = (int) ($this->request->get(FeedbackInterface::FEEDBACK_ID));
             try {
                 $feedbackModel = $this->getFeedBackModel($editedFeedbackId);
                 $replyModel = $this->getReplyModel($editedFeedbackId);
@@ -159,7 +160,7 @@ class Save implements HttpPostActionInterface
                     $feedbackModel->setIsReplied($this->replyRepository->isReplied($editedFeedbackId));
                     $this->feedbackRepository->save($feedbackModel);
                 }
-                $this->email->sendEmail($feedbackModel->getAuthorEmail(), [$feedbackModel->getAuthorName(),$replyModel->getReplyText()]);
+                $this->email->sendEmail($feedbackModel->getAuthorEmail(), [$feedbackModel->getAuthorName(), $replyModel->getReplyText()]);
 
                 $this->messageManager->addSuccessMessage(__('You saved the feedback.'));
                 $this->dataPersistor->clear('training_feedback');
@@ -168,14 +169,14 @@ class Save implements HttpPostActionInterface
             } catch (\Exception $e) {
                 $this->messageManager->addErrorMessage($e->getMessage());
                 $this->messageManager
-                    ->addExceptionMessage($e, __('Something went wrong while saving the feedback.'));
+                        ->addExceptionMessage($e, __('Something went wrong while saving the feedback.'));
             }
 
             $this->dataPersistor->set('training_feedback', $data);
 
             return $resultRedirect->setPath(
-                '*/*/edit',
-                ['feedback_id' => $editedFeedbackId]
+                            '*/*/edit',
+                            ['feedback_id' => $editedFeedbackId]
             );
         }
         return $resultRedirect->setPath('*/*/');
@@ -186,22 +187,16 @@ class Save implements HttpPostActionInterface
      * @return Feedback
      * @throws LocalizedException
      */
-    private function getFeedBackModel(int $editedFeedbackId) : FeedbackInterface
-    {
-        return $editedFeedbackId
-            ? $this->feedbackRepository->getById($editedFeedbackId)
-            : $this->feedbackFactory->create();
+    private function getFeedBackModel(int $editedFeedbackId): FeedbackInterface {
+        return $editedFeedbackId ? $this->feedbackRepository->getById($editedFeedbackId) : $this->feedbackFactory->create();
     }
 
     /**
      * @param int $editedFeedbackId
      * @return Reply
      */
-    private function getReplyModel(int $editedFeedbackId) : ReplyInterface
-    {
-        return $this->replyRepository->isReplyExist($editedFeedbackId)
-            ? $this->replyRepository->getByFeedbackId($editedFeedbackId)
-            : $this->replyFactory->create();
+    private function getReplyModel(int $editedFeedbackId): ReplyInterface {
+        return $this->replyRepository->isReplyExist($editedFeedbackId) ? $this->replyRepository->getByFeedbackId($editedFeedbackId) : $this->replyFactory->create();
     }
 
     /**
@@ -209,10 +204,9 @@ class Save implements HttpPostActionInterface
      * @param array $data
      * @return void
      */
-    private function saveFeedback(FeedbackInterface $feedbackModel, array $data): void
-    {
+    private function saveFeedback(FeedbackInterface $feedbackModel, array $data): void {
         try {
-            $feedbackModel->setData($data);
+            $feedbackModel->setData($data);           
             $this->feedbackRepository->save($feedbackModel);
         } catch (LocalizedException $exception) {
             $this->logger->error($exception->getLogMessage());
@@ -226,15 +220,14 @@ class Save implements HttpPostActionInterface
      * @return void
      * @throws LocalizedException
      */
-    private function saveReply(ReplyInterface $replyModel, FeedbackInterface $feedbackModel, array $data)
-    {
+    private function saveReply(ReplyInterface $replyModel, FeedbackInterface $feedbackModel, array $data) {
         $feedBackId = $feedbackModel->getFeedbackId();
 
         $replyModel
-            ->setFeedbackId($feedBackId)
-            ->setAdminId($this->getAdminId())
-            ->setReplyText($data[ReplyInterface::REPLY_TEXT])
-            ->setReplyCreationTime(date("F j, Y, g:i a"));
+                ->setFeedbackId($feedBackId)
+                ->setAdminId($this->getAdminId())
+                ->setReplyText($data[ReplyInterface::REPLY_TEXT])
+                ->setReplyCreationTime(date("F j, Y, g:i a"));
         $this->replyRepository->save($replyModel);
         $feedbackModel->setIsReplied($this->replyRepository->isReplied($feedBackId));
         $this->feedbackRepository->save($feedbackModel);
@@ -243,11 +236,10 @@ class Save implements HttpPostActionInterface
     /**
      * @return int
      */
-    private function getAdminId(): int
-    {
-        return (int)$this->authSession
-            ->getUser()
-            ->getData('user_id');
+    private function getAdminId(): int {
+        return (int) $this->authSession
+                        ->getUser()
+                        ->getData('user_id');
     }
 
     /**
@@ -256,10 +248,9 @@ class Save implements HttpPostActionInterface
      * @param $resultRedirect
      * @return mixed
      */
-    private function processRedirect($model, $data, $resultRedirect): mixed
-    {
+    private function processRedirect($model, $data, $resultRedirect): mixed {
         $redirect = $data['back'] ?? 'close';
-        if ($redirect ==='continue') {
+        if ($redirect === 'continue') {
             $resultRedirect->setPath('*/*/edit', ['feedback_id' => $model->getId()]);
         } elseif ($redirect === 'close') {
             $resultRedirect->setPath('*/*/');
