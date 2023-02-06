@@ -4,8 +4,9 @@ declare(strict_types=1);
 namespace Training\Feedback\Block;
 
 use Magento\Theme\Block\Html\Pager;
+
 /**
- *
+ * Custom feedbacks pagination
  */
 class CustomPager extends Pager
 {

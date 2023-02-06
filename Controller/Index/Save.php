@@ -179,12 +179,12 @@ class Save implements HttpPostActionInterface
         $feedback
             ->setData($post)
             ->setIsActive($this->publishFeedbackWithoutModeration())
-            ->setStoreId($this->storeManager->getStore()->getId());
+            ->setStoreId((int)$this->storeManager->getStore()->getId());
         if (!isset($post['reply_notification'])) {
             $feedback->setReplyNotification(0);
         }
         if ($this->customerSession->isLoggedIn()) {
-            $feedback->setCustomerId($this->customerSession->getCustomerId());
+            $feedback->setCustomerId((int)$this->customerSession->getCustomerId());
         }
     }
 

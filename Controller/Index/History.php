@@ -10,7 +10,7 @@ use Magento\Framework\View\Result\Page;
 use Magento\Framework\View\Result\PageFactory;
 
 /**
- * Page with all feedbacks list
+ * Page with all customer's feedbacks 
  */
 class History implements HttpGetActionInterface
 {

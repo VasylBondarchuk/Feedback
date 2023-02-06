@@ -16,7 +16,6 @@ use Training\Feedback\Api\Data\Feedback\FeedbackInterface;
 use Training\Feedback\Model\Feedback as FeedbackModel;
 use Training\Feedback\Model\Reply as ReplyModel;
 use Training\Feedback\Model\ReplyRepository;
-use Training\Feedback\Model\ResourceModel\Feedback as FeedbackResource;
 use Training\Feedback\Model\ResourceModel\Feedback\CollectionFactory;
 use Training\Feedback\Model\ResourceModel\Reply\Collection as ReplyCollection;
 

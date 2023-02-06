@@ -1,23 +1,25 @@
-<?php $viewModel = $block->getData('feedback_history_view_model');?>
+<?php $viewModel = $block->getData('feedback_history_view_model'); ?>
+   
 <div>
+    <?php if($viewModel->getAllCustomerFeedbacksNumber()): ?>
     <!-- Display feedback info -->
     <div class="feedback-list">
         <?php foreach ($viewModel->getCollection() as $feedback): ?>
-                <div class="feedback-item" style="background-color: aliceblue; margin: 5px; padding: 20px;">
-                    <p>
-                        <?= $block->escapeHtml($feedback->getAuthorName()) ?> |
-                        <?= $viewModel->getFeedbackDate($feedback) ?>
-                    </p>
-                    <p><?= $block->escapeHtml($feedback->getMessage()) ?></p>
-                </div>
+            <div class="feedback-item" style="background-color: aliceblue; margin: 5px; padding: 20px;">
+                <p>
+                    <?= $block->escapeHtml($feedback->getAuthorName()) ?> |
+                    <?= $viewModel->getFeedbackDate($feedback) ?>
+                </p>
+                <p><?= $block->escapeHtml($feedback->getMessage()) ?></p>
+            </div>
 
             <!-- Display feedback replies if any -->
-            <?php foreach ($viewModel ->getRepliesByFeedbackId($feedback->getId()) as $reply): ?>
+            <?php foreach ($viewModel->getRepliesByFeedbackId($feedback->getId()) as $reply): ?>
                 <?php if ($reply->getReplyText()): ?>
                     <div class="feedback-item" style="background-color: oldlace; margin: 20px; padding: 20px;">
                         <div>
                             <p>
-                                <?= $block->escapeHtml($viewModel ->getReplyAuthorName($reply)) ?> |
+                                <?= $block->escapeHtml($viewModel->getReplyAuthorName($reply)) ?> |
                                 <?= $reply->getReplyCreationTime() ?>
                             </p>
                             <p>
@@ -30,7 +32,11 @@
             <br>
         <?php endforeach; ?>
     </div>
-
+    
+<?php else: ?>
+    <div class="message info empty"><span><?= $escaper->escapeHtml(__('You have submitted no feedbacks.')) ?></span></div>
+<?php endif; ?>
+    
     <!-- Display pagination -->
     <?php if ($block->getPagerHtml()): ?>
         <div class="order-products-toolbar toolbar bottom">

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Training\Feedback\ViewModel;
@@ -23,16 +24,18 @@ use Training\Feedback\Model\ResourceModel\Reply\Collection as ReplyCollection;
 /**
  *
  */
-class FeedbackHistory implements ArgumentInterface
-{
+class FeedbackHistory implements ArgumentInterface {
+
     /**
      * @var UrlInterface
      */
     private UrlInterface $urlBuilder;
+
     /**
      *
      */
     private const ADD_FEEDBACK_FORM_PATH = 'training_feedback/index/form';
+
     /**
      *
      */
@@ -90,15 +93,15 @@ class FeedbackHistory implements ArgumentInterface
      * @param CollectionFactory $collectionFactory
      */
     public function __construct(
-        UrlInterface $urlBuilder,
-        Timezone          $timezone,
-        FeedbackResource  $feedbackResource,
-        ReplyRepository   $replyRepository,
-        LoggerInterface   $logger,
-        UserFactory $userFactory,
-        UserResourceModel $resourceModel,
-        SessionFactory $customerSessionFactory,
-        CollectionFactory $collectionFactory,
+            UrlInterface $urlBuilder,
+            Timezone $timezone,
+            FeedbackResource $feedbackResource,
+            ReplyRepository $replyRepository,
+            LoggerInterface $logger,
+            UserFactory $userFactory,
+            UserResourceModel $resourceModel,
+            SessionFactory $customerSessionFactory,
+            CollectionFactory $collectionFactory,
     ) {
         $this->urlBuilder = $urlBuilder;
         $this->timezone = $timezone;
@@ -116,10 +119,9 @@ class FeedbackHistory implements ArgumentInterface
      */
     public function getCollection(): Collection
     {
-        return $this->collectionFactory->create()
-            ->addFieldToFilter(FeedbackInterface::IS_ACTIVE, 1)
-            ->addFieldToFilter(FeedbackInterface::CUSTOMER_ID, $this->getLoggedCustomerId())
-            ->setOrder(FeedbackInterface::CREATION_TIME, 'DESC');
+        return $this->collectionFactory->create()                        
+                        ->addFieldToFilter(FeedbackInterface::CUSTOMER_ID, $this->getLoggedCustomerId())
+                        ->setOrder(FeedbackInterface::CREATION_TIME, 'DESC');
     }
 
     /**
@@ -134,33 +136,37 @@ class FeedbackHistory implements ArgumentInterface
      * @param FeedbackModel $feedback
      * @return string
      */
-    public function getFeedbackDate(FeedbackModel $feedback) : string
+    public function getFeedbackDate(FeedbackModel $feedback): string
     {
         return $this->timezone->formatDateTime($feedback->getCreationTime());
     }
 
     /**
-     * @return string
+     * @return int
+     * @throws NoSuchEntityException
      */
-    public function getAllFeedbackNumber(): string
+    public function getAllCustomerFeedbacksNumber(): int
     {
-        return $this->feedbackResource->getAllFeedbackNumber();
+        return (int)$this->getCollection()->count();
     }
 
     /**
      * @return string
      */
-    public function getActiveFeedbackNumber(): string
+    public function getActiveCustomerFeedbackNumber(): int
     {
-        return $this->feedbackResource->getActiveFeedbackNumber();
+        return $this->collectionFactory->create()
+                        ->addFieldToFilter(FeedbackInterface::STORE_ID, $this->getStoreId())
+                        ->addFieldToFilter(FeedbackInterface::CUSTOMER_ID, $this->getLoggedCustomerId())
+                        ->addFieldToFilter(FeedbackInterface::IS_ACTIVE, 1)
+                        ->count();
     }
 
     /**
      * @param int $feedbackId
      * @return ReplyCollection
      */
-    public function getRepliesByFeedbackId(int $feedbackId): ReplyCollection
-    {
+    public function getRepliesByFeedbackId(int $feedbackId): ReplyCollection {
         return $this->replyRepository->getRepliesByFeedbackId($feedbackId);
     }
 
@@ -168,8 +174,7 @@ class FeedbackHistory implements ArgumentInterface
      * @param ReplyModel $reply
      * @return string
      */
-    public function getReplyAuthorName(ReplyModel $reply): string
-    {
+    public function getReplyAuthorName(ReplyModel $reply): string {
         try {
             $user = $this->userFactory->create();
             $this->resourceModel->load($user, $reply->getAdminId());
@@ -183,9 +188,9 @@ class FeedbackHistory implements ArgumentInterface
     /**
      * @return mixed
      */
-    public function getLoggedCustomerId() : int
-    {
+    public function getLoggedCustomerId(): int {
         $customerSession = $this->customerSessionFactory->create();
-        return (int)$customerSession->getCustomer()->getId();
-    }
+        return (int) $customerSession->getCustomer()->getId();
+    }  
+
 }
