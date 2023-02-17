@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Training\Feedback\Controller\Adminhtml\Index;
 
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\ResponseInterface;
@@ -17,7 +19,7 @@ use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
 /**
  * Edits feedback in the admin panel
  */
-class Edit implements HttpGetActionInterface
+class Edit extends Action implements HttpGetActionInterface
 {
     const ADMIN_RESOURCE = 'Training_Feedback::feedback_save';
     const REQUEST_FIELD_NAME = 'feedback_id';
@@ -25,12 +27,12 @@ class Edit implements HttpGetActionInterface
     /**
      * @var ManagerInterface
      */
-    private ManagerInterface $messageManager;
+    protected $messageManager;
 
     /**
      * @var ResultFactory
      */
-    private ResultFactory $resultFactory;
+    protected $resultFactory;
 
     /**
      * @var FeedbackRepositoryInterface
@@ -56,17 +58,19 @@ class Edit implements HttpGetActionInterface
      * @param LoggerInterface $logger
      */
     public function __construct(
+        Context $context,    
         ManagerInterface $messageManager,
         ResultFactory $resultFactory,
         FeedbackRepositoryInterface $feedbackRepository,
         RequestInterface $request,
-        LoggerInterface  $logger
+        LoggerInterface  $logger           
     ) {
         $this->messageManager = $messageManager;
         $this->resultFactory = $resultFactory;
         $this->feedbackRepository = $feedbackRepository;
         $this->request = $request;
         $this->logger = $logger;
+        parent::__construct($context); 
     }
 
     /**

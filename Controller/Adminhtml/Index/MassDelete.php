@@ -3,7 +3,9 @@ declare(strict_types = 1);
 
 namespace Training\Feedback\Controller\Adminhtml\Index;
 
-use Magento\Framework\App\Action\HttpPostActionInterface as HttpPostActionInterface;
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Message\ManagerInterface;
@@ -16,19 +18,19 @@ use Training\Feedback\Model\ResourceModel\Feedback\CollectionFactory;
 /**
  * Provides feedbacks mass deletion
  */
-class MassDelete implements HttpPostActionInterface
+class MassDelete extends Action implements HttpGetActionInterface
 {
     const ADMIN_RESOURCE = 'Training_Feedback::feedback_delete';
 
     /**
      * @var ManagerInterface
      */
-    private ManagerInterface $messageManager;
+    protected $messageManager;
 
     /**
      * @var ResultFactory
      */
-    private ResultFactory $resultFactory;
+    protected $resultFactory;
 
     /**
      * @var Filter
@@ -66,6 +68,7 @@ class MassDelete implements HttpPostActionInterface
      * @param LoggerInterface|null $logger
      */
     public function __construct(
+        Context $context,
         ManagerInterface $messageManager,
         ResultFactory $resultFactory,
         Filter                    $filter,
@@ -81,6 +84,7 @@ class MassDelete implements HttpPostActionInterface
         $this->feedbackRepository = $feedbackRepository;
         $this->replyRepository = $replyRepository;
         $this->logger = $logger;
+        parent::__construct($context);
     }
 
     /**

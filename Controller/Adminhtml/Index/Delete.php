@@ -3,8 +3,9 @@ declare(strict_types=1);
 
 namespace Training\Feedback\Controller\Adminhtml\Index;
 
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Action\HttpGetActionInterface;
-use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\ResultFactory;
@@ -18,7 +19,7 @@ use Training\Feedback\Api\Data\Reply\ReplyRepositoryInterface;
 /**
  * Deletes a feedback
  */
-class Delete implements HttpPostActionInterface, HttpGetActionInterface
+class Delete extends Action implements HttpGetActionInterface
 {
     const ADMIN_RESOURCE = 'Training_Feedback::feedback_delete';
     const REQUEST_FIELD_NAME = 'feedback_id';
@@ -36,12 +37,12 @@ class Delete implements HttpPostActionInterface, HttpGetActionInterface
     /**
      * @var ManagerInterface
      */
-    private ManagerInterface $messageManager;
+    protected $messageManager;
 
     /**
      * @var ResultFactory
      */
-    private ResultFactory $resultFactory;
+    protected $resultFactory;
 
     /**
      * @var RequestInterface
@@ -56,6 +57,7 @@ class Delete implements HttpPostActionInterface, HttpGetActionInterface
      * @param RequestInterface $request
      */
     public function __construct(
+        Context $context,
         FeedbackRepositoryInterface $feedbackRepository,
         ReplyRepositoryInterface $replyRepository,
         ManagerInterface $messageManager,
@@ -67,6 +69,7 @@ class Delete implements HttpPostActionInterface, HttpGetActionInterface
         $this->messageManager = $messageManager;
         $this->resultFactory = $resultFactory;
         $this->request = $request;
+        parent::__construct($context);
     }
 
     /**

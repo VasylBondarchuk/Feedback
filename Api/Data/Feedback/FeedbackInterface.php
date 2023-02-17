@@ -2,8 +2,6 @@
 
 namespace Training\Feedback\Api\Data\Feedback;
 
-use Magento\Framework\Api\ExtensibleDataInterface;
-
 /**
  *
  */

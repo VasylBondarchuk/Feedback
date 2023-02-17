@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Training\Feedback\Controller\Adminhtml\Index;
 
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Action\HttpGetActionInterface as HttpGetActionInterface;
 use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Framework\Controller\ResultFactory;
@@ -13,7 +15,7 @@ use Training\Feedback\Model\ResourceModel\Feedback as Resource;
 /**
  * Index page
  */
-class Index implements HttpGetActionInterface
+class Index extends Action implements HttpGetActionInterface
 {
     /**
      *
@@ -23,7 +25,7 @@ class Index implements HttpGetActionInterface
     /**
      * @var ResultFactory
      */
-    private ResultFactory $resultFactory;
+    protected $resultFactory;
 
     /**
      * @var DataPersistorInterface
@@ -33,7 +35,7 @@ class Index implements HttpGetActionInterface
     /**
      * @var ManagerInterface
      */
-    private ManagerInterface $messageManager;
+    protected $messageManager;
 
     /**
      * @var Resource
@@ -47,6 +49,7 @@ class Index implements HttpGetActionInterface
      * @param ManagerInterface $messageManager
      */
     public function __construct(
+        Context $context,
         ResultFactory $resultFactory,
         DataPersistorInterface    $dataPersistor,        
         Resource $resource,        
@@ -56,6 +59,7 @@ class Index implements HttpGetActionInterface
         $this->dataPersistor = $dataPersistor;
         $this->resource = $resource;
         $this->messageManager = $messageManager;
+        parent::__construct($context);
     }
 
     /**

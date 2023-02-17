@@ -3,18 +3,20 @@ declare(strict_types=1);
 
 namespace Training\Feedback\Controller\Adminhtml\Index;
 
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\App\Action\HttpGetActionInterface as HttpGetActionInterface;
 
 /**
- *
+ * Creates new feedback
  */
-class NewAction implements HttpGetActionInterface
+class NewAction extends Action implements HttpGetActionInterface
 {
     const ADMIN_RESOURCE = 'Training_Feedback::menu';
 
-    private ResultFactory $resultFactory;
+    protected $resultFactory;
 
     private DataPersistorInterface $dataPersistor;
 
@@ -23,11 +25,13 @@ class NewAction implements HttpGetActionInterface
      * @param DataPersistorInterface $dataPersistor
      */
     public function __construct(
+        Context $context,
         ResultFactory $resultFactory,
         DataPersistorInterface $dataPersistor
     ) {
         $this->resultFactory = $resultFactory;
         $this->dataPersistor = $dataPersistor;
+        parent::__construct($context);
     }
     /**
      * Index action

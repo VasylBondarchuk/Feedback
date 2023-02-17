@@ -3,7 +3,9 @@ declare(strict_types = 1);
 
 namespace Training\Feedback\Controller\Adminhtml\Index;
 
-use Magento\Framework\App\Action\HttpPostActionInterface as HttpPostActionInterface;
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Exception\LocalizedException;
@@ -16,19 +18,19 @@ use Training\Feedback\Model\ResourceModel\Feedback\CollectionFactory;
 /**
  *
  */
-class MassStatus implements HttpPostActionInterface
+class MassStatus extends Action implements HttpGetActionInterface
 {
     const ADMIN_RESOURCE = 'Training_Feedback::feedback_save';
 
     /**
      * @var ManagerInterface
      */
-    private ManagerInterface $messageManager;
+    protected $messageManager;
 
     /**
      * @var ResultFactory
      */
-    private ResultFactory $resultFactory;
+    protected $resultFactory;
 
     /**
      * @var Filter
@@ -65,6 +67,7 @@ class MassStatus implements HttpPostActionInterface
      * @param LoggerInterface|null $logger
      */
     public function __construct(
+        Context $context,
         ManagerInterface $messageManager,
         ResultFactory $resultFactory,
         Filter                    $filter,
@@ -80,6 +83,7 @@ class MassStatus implements HttpPostActionInterface
         $this->feedbackRepository = $feedbackRepository;
         $this->request = $request;
         $this->logger = $logger;
+        parent::__construct($context);
     }
 
     /**

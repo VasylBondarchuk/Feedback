@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Training\Feedback\Controller\Adminhtml\Index;
 
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
 use Magento\Backend\Model\Auth\Session;
-use Magento\Framework\App\Action\HttpPostActionInterface as HttpPostActionInterface;
+use Magento\Framework\App\Action\HttpPostActionInterface as HttpGetActionInterface;
 use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Controller\ResultFactory;
@@ -26,7 +28,7 @@ use Training\Feedback\Model\ReplyFactory;
 /**
  * Saves feedbacks
  */
-class Save implements HttpPostActionInterface {
+class Save extends Action implements HttpGetActionInterface {
 
     /**
      *
@@ -36,12 +38,12 @@ class Save implements HttpPostActionInterface {
     /**
      * @var ManagerInterface
      */
-    private ManagerInterface $messageManager;
+    protected $messageManager;
 
     /**
      * @var ResultFactory
      */
-    private ResultFactory $resultFactory;
+    protected $resultFactory;
 
     /**
      * @var DataPersistorInterface
@@ -102,6 +104,7 @@ class Save implements HttpPostActionInterface {
      * @param ReplyEmailNotification $email
      */
     public function __construct(
+            Context $context,
             ManagerInterface $messageManager,
             ResultFactory $resultFactory,
             DataPersistorInterface $dataPersistor,
@@ -125,6 +128,7 @@ class Save implements HttpPostActionInterface {
         $this->logger = $logger;
         $this->request = $request;
         $this->email = $email;
+        parent::__construct($context);
     }
 
     /**
