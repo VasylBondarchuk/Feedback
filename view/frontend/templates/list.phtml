@@ -1,59 +1,81 @@
-<?php $viewModel = $block->getData('feedback_list_view_model');?>
+<?php $viewModel = $block->getData('feedback_list_view_model'); ?>
+
+<!-- Display sorting -->
+<div class="toolbar-sorter sorter">        
+    <label class="sorter-label" for="sorter"><?= $block->escapeHtml(__('Sort by')) ?></label>
+    <select name="sort_order"
+            id="sort_order"
+            onchange='addParamToUrl("<?= $escaper->escapeUrl($block->getUrl('training_feedback/index/index')); ?>", "sort_order","order")'>            
+        <?php foreach ($block->getAvailableOrders() as $key => $order) : ?>
+            <option value="<?= $block->escapeHtmlAttr($key) ?>"
+            <?php if ($block->isOrderCurrent($key)) : ?>
+                        selected="selected"
+                    <?php endif; ?>
+                    >
+                        <?= $block->escapeHtml(__($order)) ?>
+            </option>
+        <?php endforeach; ?> 
+    </select>
+</div> 
+
+<br>
+
+<!-- Display feedback statistics -->
 <div>
-    <!-- Display feedback statistics -->
-    <?php if ($viewModel->getAllFeedbackNumber()):?>
+    <label class="feedback_statistics" for="sorter"><?= $block->escapeHtml(__('Feedbacks statistics')) ?></label>
+    <?php if ($viewModel->getAllFeedbackNumber()): ?>
         <div class="feedback-statistic">
-            <p><?= __('Total number of submitted feedbacks: %1', '<b>' . $viewModel ->getAllFeedbackNumber() . '</b>') ?></p>
-            <p><?= __('Total number of active feedbacks: %1', '<b>' . $viewModel ->getActiveFeedbackNumber() . '</b>') ?></p>
+            <?= __('Total number of submitted feedbacks: %1', '<b>' . $viewModel->getAllFeedbackNumber() . '</b>') ?> /
+            <?= __('Total number of active feedbacks: %1', '<b>' . $viewModel->getActiveFeedbackNumber() . '</b>') ?>
         </div>
-    <?php else:?>
+    <?php else: ?>
         <p><?= $block->escapeHtml('There are no feedbacks at the moment. Be the first to add a feedback.') ?></p>
     <?php endif; ?>
+</div>
 
-    <!-- Display feedback info -->
-    <div class="feedback-list">
-        <?php foreach ($block->getCollection() as $feedback): ?>
-            <div class="feedback-item" style="background-color: aliceblue; margin: 5px; padding: 20px;">
-                <p>
-                    <?= $block->escapeHtml($feedback->getAuthorName()) ?> |
-                    <?= $viewModel->getFeedbackDate($feedback) ?>
-                </p>
-                <p><?= $block->escapeHtml($feedback->getMessage()) ?></p>
-            </div>
-
-            <!-- Display feedback replies if any -->
-            <?php foreach ($viewModel ->getRepliesByFeedbackId($feedback->getId()) as $reply): ?>
-                <?php if ($reply->getReplyText()): ?>
-                    <div class="feedback-item" style="background-color: oldlace; margin: 20px; padding: 20px;">
-                        <div>
-                            <p>
-                                <?= $block->escapeHtml($viewModel ->getReplyAuthorName($reply)) ?> |
-                                <?= $reply->getReplyCreationTime() ?>
-                            </p>
-                            <p>
-                                <?= $block->escapeHtml($reply->getReplyText()) ?>
-                            </p>
-                        </div>
-                    </div>
-                <?php endif ?>
-            <?php endforeach; ?>
-            <br>
-        <?php endforeach; ?>
-    </div>
-
-    <!-- Display pagination -->
-    <?php if ($block->getPagerHtml()): ?>
-        <div class="order-products-toolbar toolbar bottom">
-            <?= $block->getPagerHtml() ?>
+<!-- Display feedback info -->
+<div class="feedback-list">
+    <?php foreach ($block->getCollection() as $feedback): ?>
+        <div class="feedback-item" style="background-color: aliceblue; margin: 5px; padding: 20px;">
+            <p>
+                <?= $block->escapeHtml($feedback->getAuthorName()) ?> |
+                <?= $viewModel->getFeedbackDate($feedback) ?>
+            </p>
+            <p><?= $block->escapeHtml($feedback->getMessage()) ?></p>
         </div>
-    <?php endif ?>
 
-    <!-- Display add 'Add Feedback' button -->
-    <div class="action">
-        <button id="add" title="<?= __('Add Feedback') ?>"
-                type="button" class="action scalable primary"
-                onclick="location.href = '<?= $block->escapeUrl($viewModel->getAddFeedbackUrl()) ?>';">
-            <span><?= __('Add Feedback') ?></span>
-        </button>
+        <!-- Display feedback replies if any -->
+        <?php foreach ($viewModel->getRepliesByFeedbackId($feedback->getId()) as $reply): ?>
+            <?php if ($reply->getReplyText()): ?>
+                <div class="feedback-item" style="background-color: oldlace; margin: 20px; padding: 20px;">
+                    <div>
+                        <p>
+                            <?= $block->escapeHtml($viewModel->getReplyAuthorName($reply)) ?> |
+                            <?= $reply->getReplyCreationTime() ?>
+                        </p>
+                        <p>
+                            <?= $block->escapeHtml($reply->getReplyText()) ?>
+                        </p>
+                    </div>
+                </div>
+            <?php endif ?>
+        <?php endforeach; ?>
+        <br>
+    <?php endforeach; ?>
+</div>
+
+<!-- Display pagination -->
+<?php if ($block->getPagerHtml()): ?>
+    <div class="order-products-toolbar toolbar bottom">
+        <?= $block->getPagerHtml() ?>
     </div>
+<?php endif ?>
+
+<!-- Display add 'Add Feedback' button -->
+<div class="action">
+    <button id="add" title="<?= __('Add Feedback') ?>"
+            type="button" class="action scalable primary"
+            onclick="location.href = '<?= $block->escapeUrl($viewModel->getAddFeedbackUrl()) ?>';">
+        <span><?= __('Add Feedback') ?></span>
+    </button>
 </div>
