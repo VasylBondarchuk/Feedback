@@ -12,12 +12,14 @@ use Magento\User\Model\UserFactory;
 use Training\Feedback\Api\Data\Feedback\FeedbackInterface;
 use Training\Feedback\Model\ResourceModel\Feedback\Collection;
 use Training\Feedback\Model\ResourceModel\Feedback\CollectionFactory;
+use Magento\Framework\App\RequestInterface;
 
 /**
  *
  */
 class CustomerFeedbackHistory extends Template
 {
+    const DEFAULT_SORT_ORDER = 'desc';
     /**
      * @var CollectionFactory
      */
@@ -37,6 +39,12 @@ class CustomerFeedbackHistory extends Template
      * @var SessionFactory
      */
     private SessionFactory $customerSessionFactory;
+    
+    /**
+     * 
+     * @var RequestInterface
+    */
+    private RequestInterface $request;
 
     /**
      * @param Context $context
@@ -52,6 +60,7 @@ class CustomerFeedbackHistory extends Template
         UserFactory $userFactory,
         UserResourceModel $resourceModel,
         SessionFactory $customerSessionFactory,
+        RequestInterface $request,    
         array             $data = []
     ) {
         parent::__construct($context, $data);
@@ -59,6 +68,7 @@ class CustomerFeedbackHistory extends Template
         $this->userFactory = $userFactory;
         $this->resourceModel = $resourceModel;
         $this->customerSessionFactory = $customerSessionFactory;
+        $this->request = $request;
     }
 
     /**
@@ -71,8 +81,9 @@ class CustomerFeedbackHistory extends Template
         return $this->collectionFactory->create()
             ->addFieldToFilter(FeedbackInterface::IS_ACTIVE, 1)
             ->addFieldToFilter(FeedbackInterface::CUSTOMER_ID, $this->getLoggedCustomerId())
-            ->setOrder(FeedbackInterface::CREATION_TIME, 'DESC');
-    }
+            ->setOrder(FeedbackInterface::CREATION_TIME, $this->getCurrentDirection());
+    }   
+   
 
     /**
      * @inheritDoc
@@ -106,5 +117,24 @@ class CustomerFeedbackHistory extends Template
         $customerSession = $this->customerSessionFactory->create();
         $customer = $customerSession->getCustomer();
         return $customer->getId();
+    }
+    
+    // Returns sorting order, selected by front-end user  
+    public function getCurrentDirection()  {
+        return ($this->request->getParam('order')) ?? self::DEFAULT_SORT_ORDER;
+                
+    }
+    
+    // Provides options vaules and options labels to the sorting order select 
+    public function getAvailableOrders() : array{
+        return [
+            'desc' => 'From newest to oldest',
+            'asc' => 'From oldest to newest',
+            ];
+    }
+    
+    // Checks if selected sorting order corresponds to the current one 
+    public function isOrderCurrent(string $order) : bool{
+        return $order === $this->getCurrentDirection();
     }
 }

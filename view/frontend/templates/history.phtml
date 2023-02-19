@@ -1,10 +1,28 @@
 <?php $viewModel = $block->getData('feedback_history_view_model'); ?>
-   
+
+<!-- Display sorting -->
+<div class="toolbar-sorter sorter">        
+    <label class="sorter-label" for="sorter"><?= $block->escapeHtml(__('Sort by')) ?></label>
+    <select name="sort_order"
+            id="sort_order"
+            onchange='addParamToUrl("<?= $escaper->escapeUrl($block->getUrl('training_feedback/index/history/')); ?>", "sort_order","order")'>            
+        <?php foreach ($block->getAvailableOrders() as $key => $order) : ?>
+            <option value="<?= $block->escapeHtmlAttr($key) ?>"
+            <?php if ($block->isOrderCurrent($key)) : ?>
+                        selected="selected"
+                    <?php endif; ?>
+                    >
+                        <?= $block->escapeHtml(__($order)) ?>
+            </option>
+        <?php endforeach; ?> 
+    </select>
+</div> 
+<br><br><br>
 <div>
     <?php if($viewModel->getAllCustomerFeedbacksNumber()): ?>
     <!-- Display feedback info -->
     <div class="feedback-list">
-        <?php foreach ($viewModel->getCollection() as $feedback): ?>
+        <?php foreach ($block->getCollection() as $feedback): ?>
             <div class="feedback-item" style="background-color: aliceblue; margin: 5px; padding: 20px;">
                 <p>
                     <?= $block->escapeHtml($feedback->getAuthorName()) ?> |

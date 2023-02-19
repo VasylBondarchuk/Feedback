@@ -42,6 +42,10 @@ class FeedbackList extends Template
      */
     private StoreManagerInterface $storeManager;
     
+    /**
+     * 
+     * @var RequestInterface
+     */
     private RequestInterface $request;
 
     /**
@@ -120,6 +124,7 @@ class FeedbackList extends Template
                 
     }
     
+    // Provides options vaules and options labels to the sorting order select 
     public function getAvailableOrders() : array{
         return [
             'desc' => 'From newest to oldest',
@@ -127,6 +132,7 @@ class FeedbackList extends Template
             ];
     }
     
+    // Checks if selected sorting order corresponds to the current one 
     public function isOrderCurrent(string $order) : bool{
         return $order === $this->getCurrentDirection();
     }
