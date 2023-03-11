@@ -138,10 +138,10 @@ class Save implements HttpPostActionInterface
                 $this->messageManager->addSuccessMessage(
                     __('Thank you for your feedback.')
                 );
-            } catch (\Exception $e) {
+            } catch (LocalizedException $e) {
                 $this->messageManager->addErrorMessage(
-                    __('An error occurred while processing your form. Please try again later.')
-                );
+                    __('An error occurred while processing your form. %1', $e->getMessage())
+                        );
                 $resultRedirect->setPath('*/*/form');
             }
         }

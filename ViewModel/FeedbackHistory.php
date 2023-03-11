@@ -182,7 +182,9 @@ class FeedbackHistory implements ArgumentInterface {
         } catch (LocalizedException $e) {
             $this->logger->error($e->getLogMessage());
         }
-        return $replyAuthorName === ' ' ? self::DEFAULT_ADMIN_NAME : $replyAuthorName;
+        return $replyAuthorName === ' '
+                ? self::DEFAULT_ADMIN_NAME
+                : $replyAuthorName;
     }
 
     /**

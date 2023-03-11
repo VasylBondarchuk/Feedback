@@ -1,29 +1,33 @@
 <?php $viewModel = $block->getData('feedback_list_view_model'); ?>
 
 <!-- Display sorting -->
-<div class="toolbar-sorter sorter">        
-    <label class="sorter-label" for="sorter"><?= $block->escapeHtml(__('Sort by')) ?></label>
-    <select name="sort_order"
-            id="sort_order"
-            onchange='addParamToUrl("<?= $escaper->escapeUrl($block->getUrl('training_feedback/index/index')); ?>", "sort_order","order")'>            
-        <?php foreach ($block->getAvailableOrders() as $key => $order) : ?>
-            <option value="<?= $block->escapeHtmlAttr($key) ?>"
-            <?php if ($block->isOrderCurrent($key)) : ?>
-                        selected="selected"
-                    <?php endif; ?>
-                    >
-                        <?= $block->escapeHtml(__($order)) ?>
-            </option>
-        <?php endforeach; ?> 
-    </select>
+
+<div class="toolbar-sorter sorter">
+    <?php if ($viewModel->getActiveFeedbackNumber()): ?>
+        <label class="sorter-label" for="sorter"><?= $block->escapeHtml(__('Sort by')) ?></label>
+        <select name="sort_order"
+                id="sort_order"
+                onchange='addParamToUrl("<?= $escaper->escapeUrl($block->getUrl('training_feedback/index/index')); ?>", "sort_order", "order")'>            
+                    <?php foreach ($block->getAvailableOrders() as $key => $order) : ?>
+                <option value="<?= $block->escapeHtmlAttr($key) ?>"
+                <?php if ($block->isOrderCurrent($key)) : ?>
+                            selected="selected"
+                        <?php endif; ?>
+                        >
+                            <?= $block->escapeHtml(__($order)) ?>
+                </option>
+            <?php endforeach; ?> 
+        </select>
+    <?php endif; ?>
 </div> 
 
 <br>
 
 <!-- Display feedback statistics -->
-<div>
-    <label class="feedback_statistics" for="sorter"><?= $block->escapeHtml(__('Feedbacks statistics')) ?></label>
+
+<div>    
     <?php if ($viewModel->getAllFeedbackNumber()): ?>
+        <label class="feedback_statistics" for="sorter"><?= $block->escapeHtml(__('Feedbacks statistics')) ?></label>
         <div class="feedback-statistic">
             <?= __('Total number of submitted feedbacks: %1', '<b>' . $viewModel->getAllFeedbackNumber() . '</b>') ?> /
             <?= __('Total number of active feedbacks: %1', '<b>' . $viewModel->getActiveFeedbackNumber() . '</b>') ?>
@@ -34,6 +38,7 @@
 </div>
 
 <!-- Display feedback info -->
+
 <div class="feedback-list">
     <?php foreach ($block->getCollection() as $feedback): ?>
         <div class="feedback-item" style="background-color: aliceblue; margin: 5px; padding: 20px;">
@@ -42,9 +47,10 @@
                 <?= $viewModel->getFeedbackDate($feedback) ?>
             </p>
             <p><?= $block->escapeHtml($feedback->getMessage()) ?></p>
-        </div>
+        </div> 
 
         <!-- Display feedback replies if any -->
+
         <?php foreach ($viewModel->getRepliesByFeedbackId($feedback->getId()) as $reply): ?>
             <?php if ($reply->getReplyText()): ?>
                 <div class="feedback-item" style="background-color: oldlace; margin: 20px; padding: 20px;">
@@ -70,6 +76,8 @@
         <?= $block->getPagerHtml() ?>
     </div>
 <?php endif ?>
+
+<br>
 
 <!-- Display add 'Add Feedback' button -->
 <div class="action">

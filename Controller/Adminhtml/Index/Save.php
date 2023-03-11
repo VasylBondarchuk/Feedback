@@ -164,7 +164,11 @@ class Save extends Action implements HttpGetActionInterface {
                     $feedbackModel->setIsReplied($this->replyRepository->isReplied($editedFeedbackId));
                     $this->feedbackRepository->save($feedbackModel);
                 }
-                $this->email->sendEmail($feedbackModel->getAuthorEmail(), [$feedbackModel->getAuthorName(), $replyModel->getReplyText()]);
+                $this->email->sendEmail(
+                        $feedbackModel->getAuthorEmail(),
+                        [$feedbackModel->getAuthorName(),
+                        $replyModel->getReplyText()]
+                        );
 
                 $this->messageManager->addSuccessMessage(__('You saved the feedback.'));
                 $this->dataPersistor->clear('training_feedback');

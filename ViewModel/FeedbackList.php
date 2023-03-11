@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Training\Feedback\ViewModel;
@@ -22,12 +23,13 @@ use Training\Feedback\Model\ResourceModel\Reply\Collection as ReplyCollection;
 /**
  *
  */
-class FeedbackList implements ArgumentInterface
-{
+class FeedbackList implements ArgumentInterface {
+
     /**
      *
      */
     private const ADD_FEEDBACK_FORM_PATH = 'training_feedback/index/form';
+
     /**
      *
      */
@@ -84,14 +86,14 @@ class FeedbackList implements ArgumentInterface
      * @param CollectionFactory $collectionFactory
      */
     public function __construct(
-        UrlInterface $urlBuilder,
-        Timezone          $timezone,
-        ReplyRepository   $replyRepository,
-        LoggerInterface   $logger,
-        UserFactory $userFactory,
-        UserResourceModel $resourceModel,
-        StoreManagerInterface $storeManager,
-        CollectionFactory $collectionFactory
+            UrlInterface $urlBuilder,
+            Timezone $timezone,
+            ReplyRepository $replyRepository,
+            LoggerInterface $logger,
+            UserFactory $userFactory,
+            UserResourceModel $resourceModel,
+            StoreManagerInterface $storeManager,
+            CollectionFactory $collectionFactory
     ) {
         $this->urlBuilder = $urlBuilder;
         $this->timezone = $timezone;
@@ -106,8 +108,7 @@ class FeedbackList implements ArgumentInterface
     /**
      * @return string
      */
-    public function getAddFeedbackUrl(): string
-    {
+    public function getAddFeedbackUrl(): string {
         return $this->urlBuilder->getUrl(self::ADD_FEEDBACK_FORM_PATH);
     }
 
@@ -115,8 +116,7 @@ class FeedbackList implements ArgumentInterface
      * @param FeedbackModel $feedback
      * @return string
      */
-    public function getFeedbackDate(FeedbackModel $feedback) : string
-    {
+    public function getFeedbackDate(FeedbackModel $feedback): string {
         return $this->timezone->formatDateTime($feedback->getCreationTime());
     }
 
@@ -124,31 +124,28 @@ class FeedbackList implements ArgumentInterface
      * @return int
      * @throws NoSuchEntityException
      */
-    public function getAllFeedbackNumber(): int
-    {
+    public function getAllFeedbackNumber(): int {
         return $this->collectionFactory->create()
-            ->addFieldToFilter(FeedbackInterface::STORE_ID, $this->getStoreId())
-            ->count();
+                        ->addFieldToFilter(FeedbackInterface::STORE_ID, $this->getStoreId())
+                        ->count();
     }
 
     /**
      * @return int
      * @throws NoSuchEntityException
      */
-    public function getActiveFeedbackNumber(): int
-    {
+    public function getActiveFeedbackNumber(): int {
         return $this->collectionFactory->create()
-            ->addFieldToFilter(FeedbackInterface::IS_ACTIVE, 1)
-            ->addFieldToFilter(FeedbackInterface::STORE_ID, $this->getStoreId())
-            ->count();
+                        ->addFieldToFilter(FeedbackInterface::IS_ACTIVE, 1)
+                        ->addFieldToFilter(FeedbackInterface::STORE_ID, $this->getStoreId())
+                        ->count();
     }
 
     /**
      * @param int $feedbackId
      * @return ReplyCollection
      */
-    public function getRepliesByFeedbackId(int $feedbackId): ReplyCollection
-    {
+    public function getRepliesByFeedbackId(int $feedbackId): ReplyCollection {
         return $this->replyRepository->getRepliesByFeedbackId($feedbackId);
     }
 
@@ -156,8 +153,7 @@ class FeedbackList implements ArgumentInterface
      * @param ReplyModel $reply
      * @return string
      */
-    public function getReplyAuthorName(ReplyModel $reply): string
-    {
+    public function getReplyAuthorName(ReplyModel $reply): string {
         try {
             $user = $this->userFactory->create();
             $this->resourceModel->load($user, $reply->getAdminId());
@@ -165,15 +161,24 @@ class FeedbackList implements ArgumentInterface
         } catch (LocalizedException $e) {
             $this->logger->error($e->getLogMessage());
         }
-        return $replyAuthorName === ' ' ? self::DEFAULT_ADMIN_NAME : $replyAuthorName;
+        return $replyAuthorName === ' '
+                ? self::DEFAULT_ADMIN_NAME
+                : $replyAuthorName;
     }
 
     /**
      * @return int
      * @throws NoSuchEntityException
      */
-    public function getStoreId(): int
-    {
-        return (int)$this->storeManager->getStore()->getId();
+    public function getStoreId(): int {
+        return (int) $this->storeManager->getStore()->getId();
     }
+
+    /**
+     * @return string
+     */
+    public function getActionUrl(): string {
+        return $this->urlBuilder->getUrl('training_feedback/index/save');
+    }
+
 }

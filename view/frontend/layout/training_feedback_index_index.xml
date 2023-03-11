@@ -5,7 +5,7 @@
   </head>     
     <body>
         <referenceContainer name="content">
-            <block class="Training\Feedback\Block\FeedbackList" name="feedback_list" template="Training_Feedback::list.phtml">
+            <block class="Training\Feedback\Block\FeedbackList" name="feedback_list" template="Training_Feedback::list.phtml">            
                 <arguments>
                     <argument name="feedback_list_view_model" xsi:type="object">Training\Feedback\ViewModel\FeedbackList</argument>
                 </arguments>

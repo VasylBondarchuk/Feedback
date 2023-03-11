@@ -279,7 +279,7 @@ class Feedback extends AbstractExtensibleModel implements FeedbackInterface
         return $this->setData(self::IS_ACTIVE, $isActive);
     }
 
-    public function setIsReplied(int $isReplied): FeedbackInterface
+    public function setIsReplied($isReplied): FeedbackInterface
     {
         return $this->setData(self::IS_REPLIED, $isReplied);
     }

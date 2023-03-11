@@ -228,8 +228,8 @@ class ReplyRepository implements ReplyRepositoryInterface
             ->addFieldToFilter(ReplyInterface::FEEDBACK_ID, $feedbackId);
     }
 
-    public function isReplied(int $feedbackId): int
+    public function isReplied(int $feedbackId): bool
     {
-        return $this->getRepliesByFeedbackId($feedbackId)->count() ? 1 : 0;
+        return (bool)$this->getRepliesByFeedbackId($feedbackId)->count();
     }
 }
