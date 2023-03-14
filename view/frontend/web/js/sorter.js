@@ -1,6 +1,6 @@
 // Adds sorting direction as request parameter to the URl
-function addParamToUrl(currentURL, elementId, requestParamName)
+function addParamToUrl(URL, elementId, requestParam)
 {
     var option = document.getElementById(elementId);    
-    window.location = currentURL + '?' + requestParamName + '=' + option.value;
+    window.location = URL + requestParam + '=' + option.value;
 }

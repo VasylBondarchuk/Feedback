@@ -10,7 +10,7 @@
                 <arguments>
                     <argument name="feedback_history_view_model" xsi:type="object">Training\Feedback\ViewModel\FeedbackHistory</argument>
                 </arguments>
-                <block class="Magento\Theme\Block\Html\Pager" name="feedback_list_pager"/>
+                <block class="Magento\Theme\Block\Html\Pager" name="feedback_history_pager"/>
             </block>
         </referenceContainer>
     </body>

@@ -22,6 +22,8 @@ class FeedbackList extends Template
 {
     
     const DEFAULT_SORT_ORDER = 'desc';
+    
+    const DEFAULT_FILTERING_PARAM = 'all';
     /**
      * @var CollectionFactory
      */
@@ -79,11 +81,15 @@ class FeedbackList extends Template
      */
     public function getCollection(): Collection
     {
-        return $this->collectionFactory->create()            
-            ->addFieldToFilter(FeedbackInterface::IS_ACTIVE, 1)
+        $collection = $this->collectionFactory->create();
+        if($this->getCurrentFilteringParam()!== 'all'){
+            $collection->addFieldToFilter(FeedbackInterface::CUSTOMER_ID, ['neq' => NULL]);}
+        $collection->addFieldToFilter(FeedbackInterface::IS_ACTIVE, 1)
             ->addFieldToFilter(FeedbackInterface::STORE_ID, $this->getStoreId())
-            ->setOrder(FeedbackInterface::CREATION_TIME, $this->getCurrentDirection());
+        ->setOrder(FeedbackInterface::CREATION_TIME, $this->getCurrentDirection());
+        return $collection;
     }
+    
 
     /**
      * @inheritDoc
@@ -124,16 +130,46 @@ class FeedbackList extends Template
                 
     }
     
+    // Returns sorting order, selected by front-end user  
+    public function getCurrentFilteringParam()  {
+        return ($this->request->getParam('filtering_param')) ?? self::DEFAULT_FILTERING_PARAM;
+                
+    }
+    
     // Provides options vaules and options labels to the sorting order select 
-    public function getAvailableOrders() : array{
+    public function getAvailableSortingOrders() : array{
         return [
             'desc' => 'From newest to oldest',
             'asc' => 'From oldest to newest',
             ];
     }
     
+    // Provides options vaules and options labels to the sorting order select 
+    public function getFilteringParam() : array{
+        return [
+            'all' => 'All Feedbacks',
+            'registered' => 'Only from registered customers',
+            ];
+    }
+    
     // Checks if selected sorting order corresponds to the current one 
     public function isOrderCurrent(string $order) : bool{
         return $order === $this->getCurrentDirection();
+    }
+    
+    // Checks if selected sorting order corresponds to the current one 
+    public function isFilteringParamCurrent(string $order) : bool{
+        return $order === $this->getCurrentFilteringParam();
+    }
+    
+    // Checks if selected sorting order corresponds to the current one 
+    public function isFilteringApplied() : bool{
+        return (bool)$this->request->getParam('filtering_param');
+    }
+    
+    public function getUrlString(){
+        return $this->isFilteringApplied()
+        ? "training_feedback/index/index?filtering_param={$this->getCurrentFilteringParam()}&"
+        : "training_feedback/index/index?";
     }
 }

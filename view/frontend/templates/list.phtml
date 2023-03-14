@@ -1,30 +1,42 @@
 <?php $viewModel = $block->getData('feedback_list_view_model'); ?>
 
 <!-- Display sorting -->
+<div class="toolbar-sorter sorter">        
+    <label class="sorter-label" for="sorter"><?= $block->escapeHtml(__('Sort by')) ?></label>
+    <select name="sort_order"
+            id="sort_order"
+            onchange='addParamToUrl("<?=$escaper->escapeUrl($block->getBaseUrl() . $block->getUrlString()); ?>", "sort_order","order")'>            
+        <?php foreach ($block->getAvailableSortingOrders() as $key => $order) : ?>
+            <option value="<?= $block->escapeHtmlAttr($key) ?>"
+            <?php if ($block->isOrderCurrent($key)) : ?>
+                        selected="selected"
+                    <?php endif; ?>
+                    >
+                        <?= $block->escapeHtml(__($order)) ?>
+            </option>
+        <?php endforeach; ?> 
+    </select>
+</div>
 
-<div class="toolbar-sorter sorter">
-    <?php if ($viewModel->getActiveFeedbackNumber()): ?>
-        <label class="sorter-label" for="sorter"><?= $block->escapeHtml(__('Sort by')) ?></label>
-        <select name="sort_order"
-                id="sort_order"
-                onchange='addParamToUrl("<?= $escaper->escapeUrl($block->getUrl('training_feedback/index/index')); ?>", "sort_order", "order")'>            
-                    <?php foreach ($block->getAvailableOrders() as $key => $order) : ?>
-                <option value="<?= $block->escapeHtmlAttr($key) ?>"
-                <?php if ($block->isOrderCurrent($key)) : ?>
-                            selected="selected"
-                        <?php endif; ?>
-                        >
-                            <?= $block->escapeHtml(__($order)) ?>
-                </option>
-            <?php endforeach; ?> 
-        </select>
-    <?php endif; ?>
+<!-- Display filtering -->
+<div class="toolbar-sorter sorter">        
+    <label class="sorter-label" for="sorter"><?= $block->escapeHtml(__('Filtering')) ?></label>
+    <select name="sort_order"
+            id="filtering_param"
+            onchange='addParamToUrl("<?= $escaper->escapeUrl($block->getUrl('training_feedback/index/index/'). '?'); ?>", "filtering_param","filtering_param")'>            
+        <?php foreach ($block->getFilteringParam() as $key => $order) : ?>
+            <option value="<?= $block->escapeHtmlAttr($key) ?>"
+            <?php if ($block->isFilteringParamCurrent($key)) : ?>
+                        selected="selected"
+                    <?php endif; ?>
+                    >
+                        <?= $block->escapeHtml(__($order)) ?>
+            </option>
+        <?php endforeach; ?> 
+    </select>
 </div> 
 
-<br>
-
 <!-- Display feedback statistics -->
-
 <div>    
     <?php if ($viewModel->getAllFeedbackNumber()): ?>
         <label class="feedback_statistics" for="sorter"><?= $block->escapeHtml(__('Feedbacks statistics')) ?></label>
@@ -36,6 +48,8 @@
         <p><?= $block->escapeHtml('There are no feedbacks at the moment. Be the first to add a feedback.') ?></p>
     <?php endif; ?>
 </div>
+
+<br>
 
 <!-- Display feedback info -->
 
