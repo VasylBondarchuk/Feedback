@@ -4,7 +4,9 @@
     <script src="Training_Feedback::js/sorter.js" /> 
   </head>     
     <body>
-        <referenceContainer name="content"> 
+        <referenceContainer name="content">            
+            <block class="Training\Feedback\Block\FeedbackSorter" name="feedback_sorter" template="Training_Feedback::sorter.phtml"/>
+            <block class="Training\Feedback\Block\FeedbackFilter" name="feedback_filter" template="Training_Feedback::filter.phtml"/> 
             <block class="Training\Feedback\Block\FeedbackList" name="feedback_list" template="Training_Feedback::list.phtml">            
                 <arguments>
                     <argument name="feedback_list_view_model" xsi:type="object">Training\Feedback\ViewModel\FeedbackList</argument>

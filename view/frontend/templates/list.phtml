@@ -1,41 +1,5 @@
 <?php $viewModel = $block->getData('feedback_list_view_model'); ?>
 
-<!-- Display sorting -->
-<div class="toolbar-sorter sorter">        
-    <label class="sorter-label" for="sorter"><?= $block->escapeHtml(__('Sort by')) ?></label>
-    <select name="sort_order"
-            id="sort_order"
-            onchange='addParamToUrl("<?=$escaper->escapeUrl($block->getBaseUrl() . $block->getUrlString()); ?>", "sort_order","order")'>            
-        <?php foreach ($block->getAvailableSortingOrders() as $key => $order) : ?>
-            <option value="<?= $block->escapeHtmlAttr($key) ?>"
-            <?php if ($block->isOrderCurrent($key)) : ?>
-                        selected="selected"
-                    <?php endif; ?>
-                    >
-                        <?= $block->escapeHtml(__($order)) ?>
-            </option>
-        <?php endforeach; ?> 
-    </select>
-</div>
-
-<!-- Display filtering -->
-<div class="toolbar-sorter sorter">        
-    <label class="sorter-label" for="sorter"><?= $block->escapeHtml(__('Filtering')) ?></label>
-    <select name="sort_order"
-            id="filtering_param"
-            onchange='addParamToUrl("<?= $escaper->escapeUrl($block->getUrl('training_feedback/index/index/'). '?'); ?>", "filtering_param","filtering_param")'>            
-        <?php foreach ($block->getFilteringParam() as $key => $order) : ?>
-            <option value="<?= $block->escapeHtmlAttr($key) ?>"
-            <?php if ($block->isFilteringParamCurrent($key)) : ?>
-                        selected="selected"
-                    <?php endif; ?>
-                    >
-                        <?= $block->escapeHtml(__($order)) ?>
-            </option>
-        <?php endforeach; ?> 
-    </select>
-</div> 
-
 <!-- Display feedback statistics -->
 <div>    
     <?php if ($viewModel->getAllFeedbackNumber()): ?>
@@ -52,7 +16,6 @@
 <br>
 
 <!-- Display feedback info -->
-
 <div class="feedback-list">
     <?php foreach ($block->getCollection() as $feedback): ?>
         <div class="feedback-item" style="background-color: aliceblue; margin: 5px; padding: 20px;">
@@ -64,7 +27,6 @@
         </div> 
 
         <!-- Display feedback replies if any -->
-
         <?php foreach ($viewModel->getRepliesByFeedbackId($feedback->getId()) as $reply): ?>
             <?php if ($reply->getReplyText()): ?>
                 <div class="feedback-item" style="background-color: oldlace; margin: 20px; padding: 20px;">

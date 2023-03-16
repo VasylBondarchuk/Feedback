@@ -1,0 +1,17 @@
+<!-- Display filtering -->
+<div class="toolbar-sorter sorter">        
+    <label class="sorter-label" for="sorter"><?= $block->escapeHtml(__('Filtering')) ?></label>
+    <select name="sort_order"
+            id="filtering_param"
+            onchange='addParamToUrl("<?= $escaper->escapeUrl($block->getUrl('training_feedback/index/index/') . '?'); ?>", "filtering_param","filtering_param")'>            
+        <?php foreach ($block->getFilteringParam() as $key => $order) : ?>
+            <option value="<?= $block->escapeHtmlAttr($key) ?>"
+            <?php if ($block->isFilteringParamCurrent($key)) : ?>
+                        selected="selected"
+                    <?php endif; ?>
+                    >
+                        <?= $block->escapeHtml(__($order)) ?>
+            </option>
+        <?php endforeach; ?> 
+    </select>
+</div> 
