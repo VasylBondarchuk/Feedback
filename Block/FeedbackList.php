@@ -129,5 +129,13 @@ class FeedbackList extends Template
     public function getCurrentDirection()  {
         return ($this->request->getParam('order')) ?? self::DEFAULT_SORT_ORDER;
                 
+    }
+    
+    // Returns sorting order, selected by front-end user  
+    public function getCurrentFilteringParam()  {
+        return ($this->request->getParam(self::FILTERING_PARAM_REQUEST_NAME))
+        ?? self::DEFAULT_FILTERING_PARAM;
+                
     }    
+    
 }
