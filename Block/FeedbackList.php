@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Training\Feedback\Block;
@@ -18,13 +19,12 @@ use Magento\Framework\App\RequestInterface;
 /**
  *
  */
-class FeedbackList extends Template
-{
-    
-    const DEFAULT_SORT_ORDER = 'desc';    
+class FeedbackList extends Template {
+
+    const DEFAULT_SORT_ORDER = 'desc';
     const DEFAULT_FILTERING_PARAM = 'all';
     const FILTERING_PARAM_REQUEST_NAME = 'filtering_param';
-    
+
     /**
      * @var CollectionFactory
      */
@@ -44,7 +44,7 @@ class FeedbackList extends Template
      * @var StoreManagerInterface
      */
     private StoreManagerInterface $storeManager;
-    
+
     /**
      * 
      * @var RequestInterface
@@ -60,13 +60,13 @@ class FeedbackList extends Template
      * @param array $data
      */
     public function __construct(
-        Context           $context,
-        CollectionFactory $collectionFactory,
-        UserFactory $userFactory,
-        UserResourceModel $resourceModel,
-        StoreManagerInterface $storeManager,
-        RequestInterface $request,    
-        array $data = []
+            Context $context,
+            CollectionFactory $collectionFactory,
+            UserFactory $userFactory,
+            UserResourceModel $resourceModel,
+            StoreManagerInterface $storeManager,
+            RequestInterface $request,
+            array $data = []
     ) {
         parent::__construct($context, $data);
         $this->collectionFactory = $collectionFactory;
@@ -80,28 +80,35 @@ class FeedbackList extends Template
      * @return Collection
      * @throws NoSuchEntityException
      */
-    public function getCollection(): Collection
-    {
+    public function getCollection(): Collection {
         $collection = $this->collectionFactory->create();
-        if($this->getCurrentFilteringParam()!== 'all'){
-            $collection->addFieldToFilter(FeedbackInterface::CUSTOMER_ID, ['neq' => NULL]);}
+        
+        // Pagination
+        $pageNum = ($this->getRequest()->getParam('p')) ? $this->getRequest()->getParam('p') : 1;
+        $pageSize = ($this->getRequest()->getParam('limit')) ? $this->getRequest()->getParam('limit') : 5;
+        $collection->setPageSize($pageSize)->setCurPage($pageNum);
+        
+        // Filtering
+        if ($this->getCurrentFilteringParam() !== 'all') {
+            $collection->addFieldToFilter(FeedbackInterface::CUSTOMER_ID, ['neq' => NULL]);
+        }
         $collection->addFieldToFilter(FeedbackInterface::IS_ACTIVE, 1)
-            ->addFieldToFilter(FeedbackInterface::STORE_ID, $this->getStoreId())
-        ->setOrder(FeedbackInterface::CREATION_TIME, $this->getCurrentDirection());
+                ->addFieldToFilter(FeedbackInterface::STORE_ID, $this->getStoreId());
+        // Sorting
+        $collection->setOrder(FeedbackInterface::CREATION_TIME, $this->getCurrentDirection());
+        
         return $collection;
     }
-    
 
     /**
      * @inheritDoc
      * @throws LocalizedException
      */
-    protected function _prepareLayout()
-    {
+    protected function _prepareLayout() {
         parent::_prepareLayout();
         $pager = $this->getLayout()
-            ->createBlock(CustomPager::class, 'feedback.list.pager')
-            ->setCollection($this->getCollection());
+                ->createBlock(CustomPager::class, 'feedback.list.pager')
+                ->setCollection($this->getCollection());
         $this->setChild('pager', $pager);
         return $this;
     }
@@ -111,8 +118,7 @@ class FeedbackList extends Template
      *
      * @return string
      */
-    public function getPagerHtml(): string
-    {
+    public function getPagerHtml(): string {
         return $this->getChildHtml('pager');
     }
 
@@ -120,22 +126,18 @@ class FeedbackList extends Template
      * @return int
      * @throws NoSuchEntityException
      */
-    public function getStoreId(): int
-    {
-        return (int)$this->storeManager->getStore()->getId();
-    }    
-    
-    // Returns sorting order, selected by front-end user  
-    public function getCurrentDirection()  {
-        return ($this->request->getParam('order')) ?? self::DEFAULT_SORT_ORDER;
-                
+    public function getStoreId(): int {
+        return (int) $this->storeManager->getStore()->getId();
     }
-    
+
     // Returns sorting order, selected by front-end user  
-    public function getCurrentFilteringParam()  {
-        return ($this->request->getParam(self::FILTERING_PARAM_REQUEST_NAME))
-        ?? self::DEFAULT_FILTERING_PARAM;
-                
-    }    
-    
+    public function getCurrentDirection() {
+        return ($this->request->getParam('order')) ?? self::DEFAULT_SORT_ORDER;
+    }
+
+    // Returns sorting order, selected by front-end user  
+    public function getCurrentFilteringParam() {
+        return ($this->request->getParam(self::FILTERING_PARAM_REQUEST_NAME)) ?? self::DEFAULT_FILTERING_PARAM;
+    }
+
 }

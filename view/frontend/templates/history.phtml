@@ -5,7 +5,7 @@
     <label class="sorter-label" for="sorter"><?= $block->escapeHtml(__('Sort by')) ?></label>
     <select name="sort_order"
             id="sort_order"
-            onchange='addParamToUrl("<?= $escaper->escapeUrl($block->getUrl('training_feedback/index/history/')); ?>", "sort_order","order")'>            
+            onchange='addParamToUrl("<?= $escaper->escapeUrl($block->getUrl('training_feedback/index/history/'). '?'); ?>", "sort_order","order")'>            
         <?php foreach ($block->getAvailableOrders() as $key => $order) : ?>
             <option value="<?= $block->escapeHtmlAttr($key) ?>"
             <?php if ($block->isOrderCurrent($key)) : ?>

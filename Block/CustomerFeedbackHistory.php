@@ -78,10 +78,20 @@ class CustomerFeedbackHistory extends Template
      */
     public function getCollection(): Collection
     {
-        return $this->collectionFactory->create()
-            ->addFieldToFilter(FeedbackInterface::IS_ACTIVE, 1)
-            ->addFieldToFilter(FeedbackInterface::CUSTOMER_ID, $this->getLoggedCustomerId())
-            ->setOrder(FeedbackInterface::CREATION_TIME, $this->getCurrentDirection());
+        $collection = $this->collectionFactory->create();
+        
+        // Pagination
+        $pageNum = ($this->getRequest()->getParam('p')) ? $this->getRequest()->getParam('p') : 1;
+        $pageSize = ($this->getRequest()->getParam('limit')) ? $this->getRequest()->getParam('limit') : 5;        
+        $collection->setPageSize($pageSize)->setCurPage($pageNum);        
+        
+        // Filtering
+        $collection->addFieldToFilter(FeedbackInterface::IS_ACTIVE, 1)
+            ->addFieldToFilter(FeedbackInterface::CUSTOMER_ID, $this->getLoggedCustomerId());        
+        // Sorting
+        $collection->setOrder(FeedbackInterface::CREATION_TIME, $this->getCurrentDirection());        
+        
+        return $collection;            
     }   
    
 

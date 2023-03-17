@@ -5,7 +5,7 @@
         <script src="Training_Feedback::js/sorter.js" /> 
     </head> 
     <body>
-        <referenceContainer name="content">
+        <referenceContainer name="content">            
             <block class="Training\Feedback\Block\CustomerFeedbackHistory" name="feedback_history" template="Training_Feedback::history.phtml">
                 <arguments>
                     <argument name="feedback_history_view_model" xsi:type="object">Training\Feedback\ViewModel\FeedbackHistory</argument>
