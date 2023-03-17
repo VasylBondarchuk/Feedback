@@ -5,7 +5,7 @@ namespace Training\Feedback\Controller\Adminhtml\Index;
 
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
-use Magento\Framework\App\Action\HttpGetActionInterface;
+use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Message\ManagerInterface;
@@ -18,7 +18,7 @@ use Training\Feedback\Model\ResourceModel\Feedback\CollectionFactory;
 /**
  * Provides feedbacks mass deletion
  */
-class MassDelete extends Action implements HttpGetActionInterface
+class MassDelete extends Action implements HttpPostActionInterface
 {
     const ADMIN_RESOURCE = 'Training_Feedback::feedback_delete';
 
