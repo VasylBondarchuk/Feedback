@@ -13,12 +13,10 @@
     <?php endif; ?>
 </div>
 
-<br>
-
 <!-- Display feedback info -->
-<div class="feedback-list">
+<div class="feedback-list" style="margin-top: 20px;">
     <?php foreach ($block->getCollection() as $feedback): ?>
-        <div class="feedback-item" style="background-color: aliceblue; margin: 5px; padding: 20px;">
+        <div class="feedback-item" style="background-color: <?= $block->getFeedbackBackgroundColor(); ?>; margin: 5px; padding: 20px;">
             <p>
                 <?= $block->escapeHtml($feedback->getAuthorName()) ?> |
                 <?= $viewModel->getFeedbackDate($feedback) ?>
@@ -29,7 +27,7 @@
         <!-- Display feedback replies if any -->
         <?php foreach ($viewModel->getRepliesByFeedbackId($feedback->getId()) as $reply): ?>
             <?php if ($reply->getReplyText()): ?>
-                <div class="feedback-item" style="background-color: oldlace; margin: 20px; padding: 20px;">
+                <div class="feedback-item" style="background-color: <?= $block->getReplyBackgroundColor(); ?>; margin: 20px; padding: 20px;">
                     <div>
                         <p>
                             <?= $block->escapeHtml($viewModel->getReplyAuthorName($reply)) ?> |
@@ -52,8 +50,6 @@
         <?= $block->getPagerHtml() ?>
     </div>
 <?php endif ?>
-
-<br>
 
 <!-- Display add 'Add Feedback' button -->
 <div class="action">

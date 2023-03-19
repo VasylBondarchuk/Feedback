@@ -15,6 +15,8 @@ use Training\Feedback\Api\Data\Feedback\FeedbackInterface;
 use Training\Feedback\Model\ResourceModel\Feedback\Collection;
 use Training\Feedback\Model\ResourceModel\Feedback\CollectionFactory;
 use Magento\Framework\App\RequestInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Store\Model\ScopeInterface;
 
 /**
  *
@@ -24,7 +26,12 @@ class FeedbackList extends Template {
     const DEFAULT_SORT_ORDER = 'desc';
     const DEFAULT_FILTERING_PARAM = 'all';
     const FILTERING_PARAM_REQUEST_NAME = 'filtering_param';
-
+    
+    const FEEDBACK_BACKGROUND_COLOR_CONFIGS_PATH = 'feedback_configuration/feedback_configuration_general/feedback_background_color';
+    const FEEDBACK_DEFAULT_COLOR = 'aliceblue';
+    const REPLY_BACKGROUND_COLOR_CONFIGS_PATH = 'feedback_configuration/feedback_configuration_general/reply_background_color';
+    const REPLY_DEFAULT_COLOR = 'oldlace';
+    
     /**
      * @var CollectionFactory
      */
@@ -50,6 +57,11 @@ class FeedbackList extends Template {
      * @var RequestInterface
      */
     private RequestInterface $request;
+    
+    /**
+     * @var ScopeConfigInterface
+     */
+    private ScopeConfigInterface $scopeConfig;
 
     /**
      * @param Context $context
@@ -66,6 +78,7 @@ class FeedbackList extends Template {
             UserResourceModel $resourceModel,
             StoreManagerInterface $storeManager,
             RequestInterface $request,
+            ScopeConfigInterface $scopeConfig,
             array $data = []
     ) {
         parent::__construct($context, $data);
@@ -74,6 +87,7 @@ class FeedbackList extends Template {
         $this->resourceModel = $resourceModel;
         $this->storeManager = $storeManager;
         $this->request = $request;
+        $this->scopeConfig = $scopeConfig;
     }
 
     /**
@@ -138,6 +152,18 @@ class FeedbackList extends Template {
     // Returns sorting order, selected by front-end user  
     public function getCurrentFilteringParam() {
         return ($this->request->getParam(self::FILTERING_PARAM_REQUEST_NAME)) ?? self::DEFAULT_FILTERING_PARAM;
+    }
+    
+    public function getFeedbackBackgroundColor() : string{
+        return $this->getConfigParamValue(self::FEEDBACK_BACKGROUND_COLOR_CONFIGS_PATH) ?? self::FEEDBACK_DEFAULT_COLOR;
+    }
+    
+     public function getReplyBackgroundColor() : string{
+        return $this->getConfigParamValue(self::REPLY_BACKGROUND_COLOR_CONFIGS_PATH) ?? self::REPLY_DEFAULT_COLOR;
+    }
+    
+    private function getConfigParamValue(string $configPath){
+        return $this->scopeConfig->getValue($configPath, ScopeInterface::SCOPE_STORE);
     }
 
 }

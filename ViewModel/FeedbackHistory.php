@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Training\Feedback\ViewModel;
 
+use Magento\Store\Model\StoreManagerInterface;
 use Magento\Customer\Model\SessionFactory;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Stdlib\DateTime\Timezone;
@@ -80,6 +81,11 @@ class FeedbackHistory implements ArgumentInterface {
      * @var SessionFactory
      */
     private SessionFactory $customerSessionFactory;
+    
+    /**
+     * @var StoreManagerInterface
+     */
+    private StoreManagerInterface $storeManager;
 
     /**
      * @param UrlInterface $urlBuilder
@@ -102,6 +108,7 @@ class FeedbackHistory implements ArgumentInterface {
             UserResourceModel $resourceModel,
             SessionFactory $customerSessionFactory,
             CollectionFactory $collectionFactory,
+            StoreManagerInterface $storeManager
     ) {
         $this->urlBuilder = $urlBuilder;
         $this->timezone = $timezone;
@@ -111,6 +118,7 @@ class FeedbackHistory implements ArgumentInterface {
         $this->userFactory = $userFactory;
         $this->resourceModel = $resourceModel;
         $this->customerSessionFactory = $customerSessionFactory;
+        $this->storeManager = $storeManager;
         $this->collectionFactory = $collectionFactory;
     }
 
@@ -148,6 +156,14 @@ class FeedbackHistory implements ArgumentInterface {
     public function getAllCustomerFeedbacksNumber(): int
     {
         return (int)$this->getCollection()->count();
+    }
+    
+     /**
+     * @return int
+     * @throws NoSuchEntityException
+     */
+    public function getStoreId(): int {
+        return (int) $this->storeManager->getStore()->getId();
     }
 
     /**
@@ -193,6 +209,13 @@ class FeedbackHistory implements ArgumentInterface {
     public function getLoggedCustomerId(): int {
         $customerSession = $this->customerSessionFactory->create();
         return (int) $customerSession->getCustomer()->getId();
-    }  
+    }
+    
+     /**
+     * @return mixed
+     */
+    public function getFeedbackStatus(FeedbackInterface $feedback): string {        
+        return $feedback->getIsActive() ? "Published" : "Not Published";
+    }
 
 }

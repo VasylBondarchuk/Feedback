@@ -38,8 +38,19 @@
                     <validate>required-entry</validate>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-
+                
+                <field id="feedback_background_color" translate="label" sortOrder="8" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Feedback background color</label>
+                    <validate>required-entry</validate>
+                    <frontend_model>Training\Feedback\Block\Colorpicker</frontend_model>
+                </field>
+                
+                <field id="reply_background_color" translate="label" sortOrder="8" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Reply background color</label>
+                    <validate>required-entry</validate>
+                    <frontend_model>Training\Feedback\Block\Colorpicker</frontend_model>
+                </field>
             </group>
-        </section>
+        </section>        
     </system>
 </config>

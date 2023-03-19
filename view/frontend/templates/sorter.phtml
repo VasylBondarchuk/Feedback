@@ -1,5 +1,7 @@
 <!-- Display sorting -->
-<div class="toolbar-sorter sorter">        
+<?php $viewModel = $block->getData('feedback_sorter_view_model'); ?>
+<?php if ($viewModel->getActiveFeedbackNumber()): ?>
+<div class="toolbar-sorter sorter" style="margin-left: 5px; margin-right: 5px;">        
     <label class="sorter-label" for="sorter"><?= $block->escapeHtml(__('Sort by')) ?></label>
     <select name="sort_order"
             id="sort_order"
@@ -15,3 +17,4 @@
         <?php endforeach; ?> 
     </select>
 </div>
+<?php endif; ?>

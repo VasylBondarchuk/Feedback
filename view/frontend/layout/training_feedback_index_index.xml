@@ -1,12 +1,20 @@
 <?xml version="1.0"?>
 <page layout="1column" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
-  <head>     
-    <script src="Training_Feedback::js/sorter.js" /> 
-  </head>     
+    <head>     
+        <script src="Training_Feedback::js/sorter.js" /> 
+    </head>     
     <body>
         <referenceContainer name="content">            
-            <block class="Training\Feedback\Block\FeedbackSorter" name="feedback_sorter" template="Training_Feedback::sorter.phtml"/>
-            <block class="Training\Feedback\Block\FeedbackFilter" name="feedback_filter" template="Training_Feedback::filter.phtml"/> 
+            <block class="Training\Feedback\Block\FeedbackSorter" name="feedback_sorter" template="Training_Feedback::sorter.phtml">
+                <arguments>
+                    <argument name="feedback_sorter_view_model" xsi:type="object">Training\Feedback\ViewModel\FeedbackList</argument>
+                </arguments>
+            </block>                  
+            <block class="Training\Feedback\Block\FeedbackFilter" name="feedback_filter" template="Training_Feedback::filter.phtml">
+                <arguments>
+                    <argument name="feedback_filter_view_model" xsi:type="object">Training\Feedback\ViewModel\FeedbackList</argument>
+                </arguments>
+            </block>      
             <block class="Training\Feedback\Block\FeedbackList" name="feedback_list" template="Training_Feedback::list.phtml">            
                 <arguments>
                     <argument name="feedback_list_view_model" xsi:type="object">Training\Feedback\ViewModel\FeedbackList</argument>

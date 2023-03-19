@@ -5,8 +5,8 @@ namespace Training\Feedback\Block;
 
 use Magento\Customer\Model\SessionFactory;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
+use Magento\Framework\View\Element\Template;
 use Magento\User\Model\ResourceModel\User as UserResourceModel;
 use Magento\User\Model\UserFactory;
 use Training\Feedback\Api\Data\Feedback\FeedbackInterface;
@@ -86,8 +86,7 @@ class CustomerFeedbackHistory extends Template
         $collection->setPageSize($pageSize)->setCurPage($pageNum);        
         
         // Filtering
-        $collection->addFieldToFilter(FeedbackInterface::IS_ACTIVE, 1)
-            ->addFieldToFilter(FeedbackInterface::CUSTOMER_ID, $this->getLoggedCustomerId());        
+        $collection->addFieldToFilter(FeedbackInterface::CUSTOMER_ID, $this->getLoggedCustomerId());        
         // Sorting
         $collection->setOrder(FeedbackInterface::CREATION_TIME, $this->getCurrentDirection());        
         

@@ -1,5 +1,7 @@
 <!-- Display filtering -->
-<div class="toolbar-sorter sorter">        
+<?php $viewModel = $block->getData('feedback_filter_view_model'); ?>
+<?php if ($viewModel->getActiveFeedbackNumber()): ?>
+<div class="toolbar-sorter sorter" style="margin-left: 5px; margin-right: 5px;">        
     <label class="sorter-label" for="sorter"><?= $block->escapeHtml(__('Filtering')) ?></label>
     <select name="sort_order"
             id="filtering_param"
@@ -14,4 +16,5 @@
             </option>
         <?php endforeach; ?> 
     </select>
-</div> 
+</div>
+<?php endif; ?>

@@ -11,10 +11,8 @@ use Magento\Framework\App\RequestInterface;
  *
  */
 class FeedbackSorter extends Template
-{
-    
-    const DEFAULT_SORT_ORDER = 'desc';    
-    const DEFAULT_FILTERING_PARAM = 'all';
+{    
+    const DEFAULT_SORT_ORDER = 'desc';   
     const FILTERING_PARAM_REQUEST_NAME = 'filtering_param'; 
     
     /**
@@ -57,8 +55,7 @@ class FeedbackSorter extends Template
             'desc' => 'From newest to oldest',
             'asc' => 'From oldest to newest',
             ];
-    }    
-    
+    }
     
     // Checks if selected sorting order corresponds to the current one 
     public function isOrderCurrent(string $order) : bool{
