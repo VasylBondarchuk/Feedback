@@ -71,6 +71,6 @@ class FeedbackSorter extends Template
     public function getUrlRequest(){
         return $this->isFilteringApplied()
         ? self::FILTERING_PARAM_REQUEST_NAME . "={$this->getCurrentFilteringParam()}&"
-        : "";
+        : '';
     }
 }

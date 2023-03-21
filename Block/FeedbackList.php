@@ -125,16 +125,7 @@ class FeedbackList extends Template {
                 ->setCollection($this->getCollection());
         $this->setChild('pager', $pager);
         return $this;
-    }
-
-    /**
-     * Get Pager child block output
-     *
-     * @return string
-     */
-    public function getPagerHtml(): string {
-        return $this->getChildHtml('pager');
-    }
+    }    
 
     /**
      * @return int

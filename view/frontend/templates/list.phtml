@@ -45,9 +45,9 @@
 </div>
 
 <!-- Display pagination -->
-<?php if ($block->getPagerHtml()): ?>
+<?php if ($block->getChildHtml('pager')): ?>
     <div class="order-products-toolbar toolbar bottom">
-        <?= $block->getPagerHtml() ?>
+        <?= $block->getChildHtml('pager'); ?>
     </div>
 <?php endif ?>
 
