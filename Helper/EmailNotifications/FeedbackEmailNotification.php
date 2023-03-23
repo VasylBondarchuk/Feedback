@@ -9,9 +9,9 @@ namespace Training\Feedback\Helper\EmailNotifications;
 class FeedbackEmailNotification extends EmailNotification
 {
     private const NEW_FEEDBACK_NOTIFICATION_EMAIL_PATH =
-        'feedback_configuration/feedback_configuration_general/admin_email_new_feedback_notification';
+        'feedback_configuration/feedback_configuration_email_notifications/admin_email_new_feedback_notification';
     private const NEW_FEEDBACK_NOTIFICATION_NAME_PATH =
-        'feedback_configuration/feedback_configuration_general/admin_name_new_feedback_notification';
+        'feedback_configuration/feedback_configuration_email_notifications/admin_name_new_feedback_notification';
     protected const TEMPLATE_ID = 'frontend_new_feedback_notification';
 
     protected const TEMPLATE_VARS_NAMES= ['recipientName','feedbackText','link'];

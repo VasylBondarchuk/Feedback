@@ -27,10 +27,10 @@ class FeedbackList extends Template {
     const DEFAULT_FILTERING_PARAM = 'all';
     const FILTERING_PARAM_REQUEST_NAME = 'filtering_param';
     
-    const FEEDBACK_BACKGROUND_COLOR_CONFIGS_PATH = 'feedback_configuration/feedback_configuration_general/feedback_background_color';
-    const FEEDBACK_DEFAULT_COLOR = 'aliceblue';
+    const FEEDBACK_BACKGROUND_COLOR_CONFIGS_PATH = 'feedback_configuration/feedback_configuration_appearance/feedback_background_color';
+    const FEEDBACK_DEFAULT_COLOR = 'white';
     const REPLY_BACKGROUND_COLOR_CONFIGS_PATH = 'feedback_configuration/feedback_configuration_general/reply_background_color';
-    const REPLY_DEFAULT_COLOR = 'oldlace';
+    const REPLY_DEFAULT_COLOR = 'white';
     
     /**
      * @var CollectionFactory
