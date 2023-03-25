@@ -59,19 +59,10 @@
     <div class="message info empty"><span><?= $escaper->escapeHtml(__('You have submitted no feedbacks.')) ?></span></div>
 <?php endif; ?>
     
-    <!-- Display pagination -->
-    <?php if ($block->getPagerHtml()): ?>
+    <!-- Display pagination --> 
+    <?php if ($block->getChildHtml('pager')): ?>
         <div class="order-products-toolbar toolbar bottom">
-            <?= $block->getPagerHtml() ?>
+            <?= $block->getChildHtml('pager'); ?>
         </div>
-    <?php endif ?>
-
-    <!-- Display add 'Add Feedback' button -->
-    <div class="action">
-        <button id="add" title="<?= __('Add Feedback') ?>"
-                type="button" class="action scalable primary"
-                onclick="location.href = '<?= $block->escapeUrl($viewModel->getAddFeedbackUrl()) ?>';">
-            <span><?= __('Add Feedback') ?></span>
-        </button>
-    </div>
+    <?php endif ?> 
 </div>

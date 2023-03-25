@@ -1,0 +1,10 @@
+<?php $viewModel = $block->getData('add_feedback_button_view_model'); ?>
+
+    <!-- Display add 'Add Feedback' button --> 
+    <div class="action">
+        <button id="add" title="<?= __('Add Feedback') ?>"
+                type="button" class="action scalable primary"
+                onclick="location.href = '<?= $block->escapeUrl($viewModel->getAddFeedbackUrl()) ?>';">
+            <span><?= __('Add Feedback') ?></span>
+        </button>
+    </div>

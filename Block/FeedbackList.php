@@ -17,6 +17,7 @@ use Training\Feedback\Model\ResourceModel\Feedback\CollectionFactory;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\ScopeInterface;
+use Training\Feedback\Api\Data\Reply\ReplyRepositoryInterface;
 
 /**
  *
@@ -26,12 +27,11 @@ class FeedbackList extends Template {
     const DEFAULT_SORT_ORDER = 'desc';
     const DEFAULT_FILTERING_PARAM = 'all';
     const FILTERING_PARAM_REQUEST_NAME = 'filtering_param';
-    
     const FEEDBACK_BACKGROUND_COLOR_CONFIGS_PATH = 'feedback_configuration/feedback_configuration_appearance/feedback_background_color';
     const FEEDBACK_DEFAULT_COLOR = 'white';
-    const REPLY_BACKGROUND_COLOR_CONFIGS_PATH = 'feedback_configuration/feedback_configuration_general/reply_background_color';
+    const REPLY_BACKGROUND_COLOR_CONFIGS_PATH = 'feedback_configuration/feedback_configuration_appearance/reply_background_color';
     const REPLY_DEFAULT_COLOR = 'white';
-    
+
     /**
      * @var CollectionFactory
      */
@@ -57,11 +57,16 @@ class FeedbackList extends Template {
      * @var RequestInterface
      */
     private RequestInterface $request;
-    
+
     /**
      * @var ScopeConfigInterface
      */
     private ScopeConfigInterface $scopeConfig;
+
+    /**
+     * @var ScopeConfigInterface
+     */
+    private ReplyRepositoryInterface $reply;
 
     /**
      * @param Context $context
@@ -79,6 +84,7 @@ class FeedbackList extends Template {
             StoreManagerInterface $storeManager,
             RequestInterface $request,
             ScopeConfigInterface $scopeConfig,
+            ReplyRepositoryInterface $reply,
             array $data = []
     ) {
         parent::__construct($context, $data);
@@ -88,6 +94,7 @@ class FeedbackList extends Template {
         $this->storeManager = $storeManager;
         $this->request = $request;
         $this->scopeConfig = $scopeConfig;
+        $this->reply = $reply;
     }
 
     /**
@@ -96,12 +103,12 @@ class FeedbackList extends Template {
      */
     public function getCollection(): Collection {
         $collection = $this->collectionFactory->create();
-        
+
         // Pagination
         $pageNum = ($this->getRequest()->getParam('p')) ? $this->getRequest()->getParam('p') : 1;
         $pageSize = ($this->getRequest()->getParam('limit')) ? $this->getRequest()->getParam('limit') : 5;
         $collection->setPageSize($pageSize)->setCurPage($pageNum);
-        
+
         // Filtering
         if ($this->getCurrentFilteringParam() !== 'all') {
             $collection->addFieldToFilter(FeedbackInterface::CUSTOMER_ID, ['neq' => NULL]);
@@ -110,7 +117,7 @@ class FeedbackList extends Template {
                 ->addFieldToFilter(FeedbackInterface::STORE_ID, $this->getStoreId());
         // Sorting
         $collection->setOrder(FeedbackInterface::CREATION_TIME, $this->getCurrentDirection());
-        
+
         return $collection;
     }
 
@@ -125,7 +132,7 @@ class FeedbackList extends Template {
                 ->setCollection($this->getCollection());
         $this->setChild('pager', $pager);
         return $this;
-    }    
+    }
 
     /**
      * @return int
@@ -144,17 +151,48 @@ class FeedbackList extends Template {
     public function getCurrentFilteringParam() {
         return ($this->request->getParam(self::FILTERING_PARAM_REQUEST_NAME)) ?? self::DEFAULT_FILTERING_PARAM;
     }
-    
-    public function getFeedbackBackgroundColor() : string{
+
+    /**
+     * 
+     * @return string
+     */
+    public function getFeedbackBackgroundColor(): string {
         return $this->getConfigParamValue(self::FEEDBACK_BACKGROUND_COLOR_CONFIGS_PATH) ?? self::FEEDBACK_DEFAULT_COLOR;
     }
-    
-     public function getReplyBackgroundColor() : string{
+
+    /**
+     * 
+     * @return string
+     */
+    public function getReplyBackgroundColor(): string {
         return $this->getConfigParamValue(self::REPLY_BACKGROUND_COLOR_CONFIGS_PATH) ?? self::REPLY_DEFAULT_COLOR;
     }
-    
-    private function getConfigParamValue(string $configPath){
+
+    /**
+     * 
+     * @param string $configPath
+     * @return type
+     */
+    private function getConfigParamValue(string $configPath) {
         return $this->scopeConfig->getValue($configPath, ScopeInterface::SCOPE_STORE);
+    }
+
+    /**
+     * 
+     * @param int $feedbackId
+     * @return bool
+     */
+    public function isFeedbackReplied(int $feedbackId): bool {
+        return (bool) $this->reply->isReplied($feedbackId);
+    }
+
+    /**
+     * 
+     * @param int $feedbackId
+     * @return int
+     */
+    public function getRepliesNumber(int $feedbackId): int {
+        return (int) $this->reply->getRepliesByFeedbackId($feedbackId)->getSize();
     }
 
 }

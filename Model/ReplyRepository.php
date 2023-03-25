@@ -232,4 +232,5 @@ class ReplyRepository implements ReplyRepositoryInterface
     {
         return (bool)$this->getRepliesByFeedbackId($feedbackId)->count();
     }
+    
 }

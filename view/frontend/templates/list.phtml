@@ -23,44 +23,40 @@
                     <?= $viewModel->getFeedbackDate($feedback) ?>
                 </p>
                 <p><?= $block->escapeHtml($feedback->getMessage()) ?></p>
-            </div> 
+            </div>
+
+            <?php if ($block->isFeedbackReplied($feedback->getFeedbackId())): ?>
+                <a onclick='showReplies("<?= $feedback->getFeedbackId(); ?>")'>
+                    <?= $block->getRepliesNumber($feedback->getFeedbackId()); ?> answer(s)
+                </a>
+            <?php endif; ?>
 
             <!-- Display feedback replies if any -->
-            <?php foreach ($viewModel->getRepliesByFeedbackId($feedback->getId()) as $reply): ?>
-                <?php if ($reply->getReplyText()): ?>
-                    <div class="feedback-item" style="background-color: <?= $block->getReplyBackgroundColor(); ?>; margin: 20px; padding: 20px;">
-                        <div>
+            <div id="<?= $feedback->getFeedbackId(); ?>" style="display:none;">
+                <?php foreach ($viewModel->getRepliesByFeedbackId($feedback->getId()) as $reply): ?>
+                    <?php if ($reply->getReplyText()): ?>
+                        <div class="feedback-item" style="background-color: <?= $block->getReplyBackgroundColor(); ?>; margin: 20px; padding: 20px;">
                             <p>
                                 <?= $block->escapeHtml($viewModel->getReplyAuthorName($reply)) ?> |
                                 <?= $reply->getReplyCreationTime() ?>
                             </p>
                             <p>
                                 <?= $block->escapeHtml($reply->getReplyText()) ?>
-                            </p>
+                            </p>                        
                         </div>
-                    </div>
-                <?php endif ?>
+                    <?php endif ?>
+                <?php endforeach; ?>
+                </div>
+                <br>
             <?php endforeach; ?>
-            <br>
-        <?php endforeach; ?>
-    <?php else: ?>
-        <p><?= $block->escapeHtml('There are no feedbacks matching your selection.') ?></p>
-    <?php endif; ?>
-</div>
+        <?php else: ?>
+            <p><?= $block->escapeHtml('There are no feedbacks matching your selection.') ?></p>
+        <?php endif; ?>    
 
 
-<!-- Display pagination -->
-<?php if ($block->getChildHtml('pager')): ?>
-    <div class="order-products-toolbar toolbar bottom">
-        <?= $block->getChildHtml('pager'); ?>
-    </div>
-<?php endif ?>
-
-<!-- Display add 'Add Feedback' button -->
-<div class="action">
-    <button id="add" title="<?= __('Add Feedback') ?>"
-            type="button" class="action scalable primary"
-            onclick="location.href = '<?= $block->escapeUrl($viewModel->getAddFeedbackUrl()) ?>';">
-        <span><?= __('Add Feedback') ?></span>
-    </button>
-</div>
+    <!-- Display pagination --> 
+    <?php if ($block->getChildHtml('pager')): ?>
+        <div class="order-products-toolbar toolbar bottom">
+            <?= $block->getChildHtml('pager'); ?>
+        </div>
+    <?php endif ?>  

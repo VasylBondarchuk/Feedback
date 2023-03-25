@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <page layout="1column" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <head>     
-        <script src="Training_Feedback::js/sorter.js" /> 
+        <script src="Training_Feedback::js/sorter.js" />
+        <script src="Training_Feedback::js/showReplies.js" /> 
     </head>     
     <body>
         <referenceContainer name="content">            
@@ -19,7 +20,12 @@
                 <arguments>
                     <argument name="feedback_list_view_model" xsi:type="object">Training\Feedback\ViewModel\FeedbackList</argument>
                 </arguments>                
-                <block class="Magento\Theme\Block\Html\Pager" name="feedback_list_pager"/>                
+                <block class="Magento\Theme\Block\Html\Pager" name="feedback_list_pager"/>                             
+            </block>
+            <block name="add_feedback_button" template="Training_Feedback::add_feedback_button.phtml">
+                <arguments>
+                    <argument name="add_feedback_button_view_model" xsi:type="object">Training\Feedback\ViewModel\FeedbackList</argument>
+                </arguments>
             </block>
         </referenceContainer>
     </body>
