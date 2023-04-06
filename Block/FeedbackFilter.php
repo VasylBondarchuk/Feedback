@@ -42,8 +42,8 @@ class FeedbackFilter extends Template
     // Provides options vaules and options labels to the sorting order select 
     public function getFilteringParam() : array{
         return [
-            'all' => 'All Feedbacks',
-            'registered' => 'Only from registered customers',
+            'all' => __('All Feedbacks'),
+            'registered' => __('Only from registered customers')            
             ];
     }    
     

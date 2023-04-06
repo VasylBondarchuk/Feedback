@@ -52,8 +52,8 @@ class FeedbackSorter extends Template
     // Provides options vaules and options labels to the sorting order select 
     public function getAvailableSortingOrders() : array{
         return [
-            'desc' => 'From newest to oldest',
-            'asc' => 'From oldest to newest',
+            'desc' => __('From newest to oldest'),
+            'asc' => __('From oldest to newest')
             ];
     }
     

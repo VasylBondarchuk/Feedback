@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Training\Feedback\Controller\Index;
@@ -14,33 +15,36 @@ use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Message\ManagerInterface;
-use Magento\Framework\UrlInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
 use Training\Feedback\Helper\EmailNotifications\FeedbackEmailNotification;
 use Training\Feedback\Model\Feedback as FeedbackModel;
 use Training\Feedback\Model\FeedbackFactory;
+use Magento\Backend\Model\UrlInterface;
 
 /**
  * Saves new feedback
  */
-class Save implements HttpPostActionInterface
-{
-    private const FEEDBACK_EDIT_PAGE_PATH = 'admin/training_feedback/index/edit/feedback_id/';
+class Save implements HttpPostActionInterface {
+
+    private const FEEDBACK_EDIT_PAGE_PATH = 'training_feedback/index/edit/feedback_id/';
     private const PUBLISH_FEEDBACK_PATH = 'feedback_configuration/feedback_configuration_general/publish_feedback_without_moderation';
 
     /**
      * @var ManagerInterface
      */
     private ManagerInterface $messageManager;
+
     /**
      * @var ResultFactory
      */
     private ResultFactory $resultFactory;
+
     /**
      * @var FeedbackFactory
      */
     private FeedbackFactory $feedbackFactory;
+
     /**
      * @var RequestInterface
      */
@@ -50,6 +54,7 @@ class Save implements HttpPostActionInterface
      * @var FeedbackEmailNotification
      */
     private FeedbackEmailNotification $email;
+
     /**
      * @var UrlInterface
      */
@@ -88,16 +93,16 @@ class Save implements HttpPostActionInterface
      * @param StoreManagerInterface $storeManager
      */
     public function __construct(
-        ManagerInterface $messageManager,
-        ResultFactory $resultFactory,
-        RequestInterface $request,
-        FeedbackFactory $feedbackFactory,
-        FeedbackEmailNotification $email,
-        UrlInterface $urlInterface,
-        ScopeConfigInterface $scopeConfig,
-        FeedbackRepositoryInterface $feedbackRepository,
-        Session $customerSession,
-        StoreManagerInterface $storeManager
+            ManagerInterface $messageManager,
+            ResultFactory $resultFactory,
+            RequestInterface $request,
+            FeedbackFactory $feedbackFactory,
+            FeedbackEmailNotification $email,
+            UrlInterface $urlInterface,
+            ScopeConfigInterface $scopeConfig,
+            FeedbackRepositoryInterface $feedbackRepository,
+            Session $customerSession,
+            StoreManagerInterface $storeManager
     ) {
         $this->messageManager = $messageManager;
         $this->resultFactory = $resultFactory;
@@ -115,8 +120,7 @@ class Save implements HttpPostActionInterface
      * @return ResponseInterface|Redirect|ResultInterface
      * @throws LocalizedException
      */
-    public function execute()
-    {
+    public function execute() {
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         $resultRedirect->setPath('*/*/index');
         if ($post = $this->request->getPostValue()) {
@@ -131,29 +135,29 @@ class Save implements HttpPostActionInterface
                 $this->feedbackRepository->save($feedback);
                 // sends email notification about submitting new feedback
                 $this->email->sendEmail(
-                    $this->email->getNotificationRecipientEmail(),
-                    [$this->email->getNotificationRecipientName(),
-                    $post['message'], $this->getLinkToFeedbackEditPage($feedback)]
+                        $this->email->getNotificationRecipientEmail(),
+                        [$this->email->getNotificationRecipientName(),
+                            $post['message'], $this->getLinkToFeedbackEditPage($feedback)]
                 );
                 $this->messageManager->addSuccessMessage(
-                    __('Thank you for your feedback.')
+                        __('Thank you for your feedback.')
                 );
             } catch (LocalizedException $e) {
                 $this->messageManager->addErrorMessage(
-                    __('An error occurred while processing your form. %1', $e->getMessage())
-                        );
+                        __('An error occurred while processing your form. %1', $e->getMessage())
+                );
                 $resultRedirect->setPath('*/*/form');
             }
         }
         return $resultRedirect;
     }
+
     /**
      * @param $post
      * @return void
      * @throws LocalizedException
      */
-    private function validatePost($post)
-    {
+    private function validatePost($post) {
         if (!isset($post['author_name']) || trim($post['author_name']) === '') {
             throw new LocalizedException(__('Name is missing'));
         }
@@ -174,25 +178,23 @@ class Save implements HttpPostActionInterface
      * @return void
      * @throws NoSuchEntityException
      */
-    private function setDataToModel(FeedbackModel $feedback, array $post): void
-    {
+    private function setDataToModel(FeedbackModel $feedback, array $post): void {
         $feedback
-            ->setData($post)
-            ->setIsActive($this->publishFeedbackWithoutModeration())
-            ->setStoreId((int)$this->storeManager->getStore()->getId());
+                ->setData($post)
+                ->setIsActive($this->publishFeedbackWithoutModeration())
+                ->setStoreId((int) $this->storeManager->getStore()->getId());
         if (!isset($post['reply_notification'])) {
             $feedback->setReplyNotification(0);
         }
         if ($this->customerSession->isLoggedIn()) {
-            $feedback->setCustomerId((int)$this->customerSession->getCustomerId());
+            $feedback->setCustomerId((int) $this->customerSession->getCustomerId());
         }
     }
 
     /**
      * @return string|null
      */
-    private function publishFeedbackWithoutModeration(): ?string
-    {
+    private function publishFeedbackWithoutModeration(): ?string {
         return $this->scopeConfig->getValue(self::PUBLISH_FEEDBACK_PATH);
     }
 
@@ -200,8 +202,10 @@ class Save implements HttpPostActionInterface
      * @param FeedbackModel $feedback
      * @return string
      */
-    private function getLinkToFeedbackEditPage(FeedbackModel $feedback) : string
-    {
-        return $this->urlInterface->getUrl(self::FEEDBACK_EDIT_PAGE_PATH) . $feedback->getFeedbackId();
+    private function getLinkToFeedbackEditPage(FeedbackModel $feedback): string {
+        return $this->urlInterface->getRouteUrl(self::FEEDBACK_EDIT_PAGE_PATH,
+                        ['feedback_id' => $feedback->getFeedbackId(),
+                            'key' => $this->urlInterface->getSecretKey('training_feedback', 'index', 'edit')]);
     }
+
 }
