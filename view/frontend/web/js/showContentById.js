@@ -1,4 +1,4 @@
-function showReplies(id) {
+function showContentById(id) {
     var x = document.getElementById(id);
     if (x.style.display === "none") {
         x.style.display = "block";

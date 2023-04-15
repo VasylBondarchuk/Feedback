@@ -2,7 +2,7 @@
 <page layout="1column" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <head>     
         <script src="Training_Feedback::js/sorter.js" />
-        <script src="Training_Feedback::js/showReplies.js" /> 
+        <script src="Training_Feedback::js/showContentById.js" /> 
     </head>     
     <body>
         <referenceContainer name="content">            
