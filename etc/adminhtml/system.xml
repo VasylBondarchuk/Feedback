@@ -10,20 +10,24 @@
             <tab>Training</tab>
             <resource>Training_Feedback::menu</resource>
             
+            <!--  Feedback General Configuration -->
             <group id="feedback_configuration_general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Feedback General Configuration</label>
 
+                <!-- Top menu link name -->
                 <field id="top_menu_link_name" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label> Top menu link name</label>
                     <validate>required-entry</validate>
-                </field>                
-
+                </field>  
+                              
+                <!-- Publish feedback without moderation -->
                 <field id="publish_feedback_without_moderation" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label> Publish feedback without moderation</label>
                     <validate>required-entry</validate>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-
+                
+                <!-- Allow not registered users (guests) to add feedback? -->    
                 <field id="add_feedback_by_guests" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label> Allow not registered users (guests) to add feedback?</label>
                     <validate>required-entry</validate>
@@ -31,28 +35,35 @@
                 </field> 
             </group>
             
+            <!-- Email Notifications -->
             <group id="feedback_configuration_email_notifications" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Email Notifications</label>
+                
+                <!-- New feedback notification recipient email -->
                 <field id="admin_email_new_feedback_notification" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label> New feedback notification recipient email</label>
                     <validate>required-entry validate-email</validate>
                 </field>
-
+                
+                <!-- New feedback notification recipient name -->
                 <field id="admin_name_new_feedback_notification" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label> New feedback notification recipient name </label>
                     <validate>required-entry</validate>
                 </field>                       
             </group>
             
+            <!-- Feedback and Reply Appearances -->
             <group id="feedback_configuration_appearance" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Feedback and Reply Appearances</label>
                 
+                <!-- Feedback background color -->
                 <field id="feedback_background_color" translate="label" sortOrder="10" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Feedback background color</label>
                     <validate>required-entry</validate>
                     <frontend_model>Training\Feedback\Block\Colorpicker</frontend_model>
                 </field>
                 
+                <!-- Reply background color -->
                 <field id="reply_background_color" translate="label" sortOrder="20" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Reply background color</label>
                     <validate>required-entry</validate>
