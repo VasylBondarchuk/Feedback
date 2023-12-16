@@ -99,7 +99,7 @@ class Index extends Action implements HttpGetActionInterface
     {
         if ($this->resource->getNotRepliedFeedbacksNumber()) {
             $this->messageManager->addSuccessMessage(
-                __('%1 Feedback(s) are not replied.',
+                __('%1 Feedback(s) are published but not replied.',
                     $this->resource->getNotRepliedFeedbacksNumber())
             );
         }

@@ -1,6 +1,6 @@
 <?php $viewModel = $block->getData('feedback_list_view_model'); ?>
 
-<!-- Display feedback statistics -->
+<!-- Display feedbacks statistics -->
 <div>    
     <?php if ($viewModel->getAllFeedbackNumber()): ?>        
         <label class="feedback_statistics" for="sorter"><?= $block->escapeHtml(__('Feedbacks statistics')) ?></label>
@@ -11,31 +11,31 @@
     <?php else: ?>
         <p><?= $block->escapeHtml('There are no feedbacks at the moment. Be the first to add a feedback.') ?></p>
     <?php endif; ?>
-</div>
+</div> 
 
 <!-- Display feedback info -->
-<div class="feedback-list" style="margin-top: 20px;">
+<div class="feedback-list" style="margin-top: 10px;">
     <?php if (count($block->getCollection())): ?>
         <?php foreach ($block->getCollection() as $feedback): ?>
-            <div class="feedback-item" style="background-color: <?= $block->getFeedbackBackgroundColor(); ?>; margin: 5px; padding: 20px;">
+            <div class="feedback-item" style="background-color: <?= $block->getFeedbackBackgroundColor(); ?>; margin: 10px; padding: 1px;">
                 <p>
                     <?= $block->escapeHtml($feedback->getAuthorName()) ?> |
                     <?= $viewModel->getFeedbackDate($feedback) ?>
                 </p>
-                <p><?= $block->escapeHtml($feedback->getMessage()) ?></p>
-            </div>
+                <p><?= $block->escapeHtml($feedback->getMessage()) ?></p>            
 
-            <?php if ($block->isFeedbackReplied($feedback->getFeedbackId())): ?>
-                <a href="#<?= $feedback->getFeedbackId(); ?>" onclick='showContentById("<?= $feedback->getFeedbackId(); ?>")'>
-                    <?= $block->getRepliesNumber($feedback->getFeedbackId()); ?> answer(s)
-                </a>
-            <?php endif; ?>
+                <?php if ($block->isFeedbackReplied($feedback->getFeedbackId())): ?>
+                    <a href="#<?= $feedback->getFeedbackId(); ?>" onclick='showContentById("<?= $feedback->getFeedbackId(); ?>")'>
+                        <?= $block->getRepliesNumber($feedback->getFeedbackId()); ?> answer(s)
+                    </a>
+                <?php endif; ?>
+            </div>
 
             <!-- Display feedback replies if any -->
             <div id="<?= $feedback->getFeedbackId(); ?>" style="display:none;">
                 <?php foreach ($viewModel->getRepliesByFeedbackId($feedback->getId()) as $reply): ?>
                     <?php if ($reply->getReplyText()): ?>
-                        <div class="feedback-item" style="background-color: <?= $block->getReplyBackgroundColor(); ?>; margin: 20px; padding: 20px;">
+                        <div class="feedback-item" style="background-color: <?= $block->getReplyBackgroundColor(); ?>; margin: 5px; padding: 10px;">
                             <p>
                                 <?= $block->escapeHtml($viewModel->getReplyAuthorName($reply)) ?> |
                                 <?= $reply->getReplyCreationTime() ?>
@@ -45,13 +45,14 @@
                             </p>                        
                         </div>
                     <?php endif ?>
-                <?php endforeach; ?>
-                </div>
-                <br>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <p><?= $block->escapeHtml('There are no feedbacks matching your selection.') ?></p>
-        <?php endif; ?>    
+                <?php endforeach; ?>                
+            </div>            
+        <?php endforeach; ?>
+    <?php elseif(($viewModel->getActiveFeedbackNumber())): ?>
+        <p><?= $block->escapeHtml('There are no feedbacks matching your selection.') ?></p>
+    <?php endif; ?>
+ </div>       
+       
 
 
     <!-- Display pagination --> 
