@@ -24,6 +24,7 @@ use Training\Feedback\Model\Feedback;
 use Training\Feedback\Model\FeedbackFactory;
 use Training\Feedback\Model\Reply;
 use Training\Feedback\Model\ReplyFactory;
+use Training\Feedback\Helper\Form;
 
 /**
  * Saves feedbacks
@@ -49,6 +50,16 @@ class Save extends Action implements HttpGetActionInterface {
      * @var DataPersistorInterface
      */
     private DataPersistorInterface $dataPersistor;
+
+    /**
+     * @var FeedbackInterface
+     */
+    private FeedbackInterface $feedback;
+
+    /**
+     * @var ReplyRepositoryInterface
+     */
+    private ReplyInterface $reply;
 
     /**
      * @var FeedbackRepositoryInterface
@@ -91,9 +102,15 @@ class Save extends Action implements HttpGetActionInterface {
     private ReplyEmailNotification $email;
 
     /**
+     * 
+     * @var Form
+     */
+    private Form $form;
+
+    /**
      * @param ManagerInterface $messageManager
      * @param ResultFactory $resultFactory
-     * @param DataPersistorInterface $dataPersistor
+     * @param DataPersistorInterface $postPersistor
      * @param FeedbackRepositoryInterface $feedbackRepository
      * @param FeedbackFactory $feedbackFactory
      * @param ReplyRepositoryInterface $replyRepository
@@ -108,6 +125,8 @@ class Save extends Action implements HttpGetActionInterface {
             ManagerInterface $messageManager,
             ResultFactory $resultFactory,
             DataPersistorInterface $dataPersistor,
+            FeedbackInterface $feedback,
+            ReplyInterface $reply,
             FeedbackRepositoryInterface $feedbackRepository,
             FeedbackFactory $feedbackFactory,
             ReplyRepositoryInterface $replyRepository,
@@ -115,11 +134,14 @@ class Save extends Action implements HttpGetActionInterface {
             Session $authSession,
             LoggerInterface $logger,
             RequestInterface $request,
-            ReplyEmailNotification $email
+            ReplyEmailNotification $email,
+            Form $form
     ) {
         $this->messageManager = $messageManager;
         $this->resultFactory = $resultFactory;
         $this->dataPersistor = $dataPersistor;
+        $this->feedback = $feedback;
+        $this->reply = $reply;
         $this->feedbackRepository = $feedbackRepository;
         $this->feedbackFactory = $feedbackFactory;
         $this->replyRepository = $replyRepository;
@@ -128,6 +150,7 @@ class Save extends Action implements HttpGetActionInterface {
         $this->logger = $logger;
         $this->request = $request;
         $this->email = $email;
+        $this->form = $form;
         parent::__construct($context);
     }
 
@@ -136,58 +159,25 @@ class Save extends Action implements HttpGetActionInterface {
      * @throws LocalizedException
      */
     public function execute() {
-        $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
-        // get data from the feedback form field
-        $data = $this->request->getPostValue();
-        
-        if ($data) {
-            if (isset($data[FeedbackInterface::IS_ACTIVE]) && $data[FeedbackInterface::IS_ACTIVE] === 'true') {
-                $data[FeedbackInterface::IS_ACTIVE] = Feedback::STATUS_ACTIVE_VALUE;
-            }
-            if (empty($data[FeedbackInterface::FEEDBACK_ID])) {
-                $data[FeedbackInterface::FEEDBACK_ID] = null;
-            }
-            $editedFeedbackId = (int) ($this->request->get(FeedbackInterface::FEEDBACK_ID));
+        if ($this->form->isFormSubmitted()) {
+            $post = $this->form->getFormData();
             try {
-                $feedbackModel = $this->getFeedBackModel($editedFeedbackId);
-                $replyModel = $this->getReplyModel($editedFeedbackId);
-            } catch (\Exception $e) {
-                return $resultRedirect->setPath('*/*/');
-            }
-
-            try {
-                $this->saveFeedback($feedbackModel, $data);
-                if (!empty($data['reply_text'])) {
-                    $this->saveReply($replyModel, $feedbackModel, $data);
-                } else {
-                    $this->replyRepository->deleteByFeedbackId($editedFeedbackId);
-                    $feedbackModel->setIsReplied($this->replyRepository->isReplied($editedFeedbackId));
-                    $this->feedbackRepository->save($feedbackModel);
-                }
-                $this->email->sendEmail(
-                        $feedbackModel->getAuthorEmail(),
-                        [$feedbackModel->getAuthorName(),
-                        $replyModel->getReplyText()]
-                        );
+                $this->form->validatePost($post);
+                $this->saveFeedback($post);
+                $this->saveReply($post);
+                $this->sendNotificationEmail();
 
                 $this->messageManager->addSuccessMessage(__('You saved the feedback.'));
                 $this->dataPersistor->clear('training_feedback');
-
-                return $this->processRedirect($feedbackModel, $data, $resultRedirect);
             } catch (\Exception $e) {
-                $this->messageManager->addErrorMessage($e->getMessage());
-                $this->messageManager
-                        ->addExceptionMessage($e, __('Something went wrong while saving the feedback.'));
+                $this->messageManager->addErrorMessage(
+                        __('An error occurred while saving the feedback. %1', $e->getMessage()));
+                $this->logger->error($e->getLogMessage());
             }
-
-            $this->dataPersistor->set('training_feedback', $data);
-
-            return $resultRedirect->setPath(
-                            '*/*/edit',
-                            ['feedback_id' => $editedFeedbackId]
-            );
+            $this->dataPersistor->set('training_feedback', $post);
+            $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
+            return $this->redirect($post, $resultRedirect);
         }
-        return $resultRedirect->setPath('*/*/');
     }
 
     /**
@@ -195,50 +185,104 @@ class Save extends Action implements HttpGetActionInterface {
      * @return Feedback
      * @throws LocalizedException
      */
-    private function getFeedBackModel(int $editedFeedbackId): FeedbackInterface {
-        return $editedFeedbackId ? $this->feedbackRepository->getById($editedFeedbackId) : $this->feedbackFactory->create();
+    private function getFeedbackModel(): FeedbackInterface {
+        $editedFeedbackId = $this->getEditedFeedbackId();
+        if (!$this->feedback) {
+            $this->feedback = $editedFeedbackId ? $this->feedbackRepository->getById($editedFeedbackId) : $this->feedbackFactory->create();
+        }
+        return $this->feedback;
     }
 
     /**
      * @param int $editedFeedbackId
      * @return Reply
      */
-    private function getReplyModel(int $editedFeedbackId): ReplyInterface {
-        return $this->replyRepository->isReplyExist($editedFeedbackId) ? $this->replyRepository->getByFeedbackId($editedFeedbackId) : $this->replyFactory->create();
+    private function getReplyModel(): ReplyInterface {
+        $editedFeedbackId = $this->getEditedFeedbackId();
+        if (!$this->reply) {
+            $this->freply = $this->replyRepository->isReplyExist($editedFeedbackId) ? $this->replyRepository->getByFeedbackId($editedFeedbackId) : $this->replyFactory->create();
+        }
+        return $this->reply;
     }
 
     /**
      * @param FeedbackInterface $feedbackModel
-     * @param array $data
+     * @param array $post
      * @return void
      */
-    private function saveFeedback(FeedbackInterface $feedbackModel, array $data): void {
+    private function saveFeedback(array $post): void {
+        $feedbackModel = $this->getFeedbackModel();
+        if (empty($post[FeedbackInterface::FEEDBACK_ID])) {
+            $post[FeedbackInterface::FEEDBACK_ID] = null;
+        }
         try {
-            $feedbackModel->setData($data);           
+            $feedbackModel->setData($post);
             $this->feedbackRepository->save($feedbackModel);
-        } catch (LocalizedException $exception) {
-            $this->logger->error($exception->getLogMessage());
+        } catch (LocalizedException $e) {
+            $this->logger->error($e->getLogMessage());
         }
     }
 
     /**
-     * @param Reply $replyModel
-     * @param Feedback $feedbackModel
-     * @param array $data
-     * @return void
-     * @throws LocalizedException
+     * 
+     * @param FeedbackInterface $feedbackModel
+     * @param ReplyInterface $replyModel
+     * @param array $post
      */
-    private function saveReply(ReplyInterface $replyModel, FeedbackInterface $feedbackModel, array $data) {
-        $feedBackId = $feedbackModel->getFeedbackId();
+    private function saveReply(array $post) {
+        try {
+            $replyModel = $this->getReplyModel();
+            $feedbackModel = $this->getFeedbackModel();
+            if ($this->isReplySubmitted()) {
+                $feedBackId = $feedbackModel->getFeedbackId();
+                $replyModel
+                        ->setFeedbackId($feedBackId)
+                        ->setAdminId($this->getAdminId())
+                        ->setReplyText($post[ReplyInterface::REPLY_TEXT])
+                        ->setReplyCreationTime(date("F j, Y, g:i a"));
+                $this->replyRepository->save($replyModel);
+                $feedbackModel->setIsReplied($this->replyRepository->isReplied($feedBackId));
+                $this->feedbackRepository->save($feedbackModel);
+            } else {
+                $editedFeedbackId = (int) ($this->request->get(FeedbackInterface::FEEDBACK_ID));
+                $this->replyRepository->deleteByFeedbackId($editedFeedbackId);
+                $feedbackModel->setIsReplied($this->replyRepository->isReplied($editedFeedbackId));
+                $this->feedbackRepository->save($feedbackModel);
+            }
+        } catch (LocalizedException $e) {
+            $this->messageManager->addErrorMessage(
+                    __('An error occurred while saving the reply. %1', $e->getMessage()));
+            $this->logger->error($e->getLogMessage());            
+        }
+    }
 
-        $replyModel
-                ->setFeedbackId($feedBackId)
-                ->setAdminId($this->getAdminId())
-                ->setReplyText($data[ReplyInterface::REPLY_TEXT])
-                ->setReplyCreationTime(date("F j, Y, g:i a"));
-        $this->replyRepository->save($replyModel);
-        $feedbackModel->setIsReplied($this->replyRepository->isReplied($feedBackId));
-        $this->feedbackRepository->save($feedbackModel);
+    /**
+     * 
+     */
+    private function sendNotificationEmail() {
+        $replyModel = $this->getReplyModel();
+        $feedbackModel = $this->getFeedbackModel();
+        try {
+            $this->email->sendEmail(
+                    $feedbackModel->getAuthorEmail(),
+                    [$feedbackModel->getAuthorName(),
+                        $replyModel->getReplyText()]
+            );
+        } catch (LocalizedException $e) {
+            $this->messageManager->addErrorMessage(
+                    __('An error occurred while sending notification email. %1', $e->getMessage())
+            );
+            $this->logger->error($e->getLogMessage());
+        }
+    }
+
+    /**
+     * 
+     * @return bool
+     */
+    private function isReplySubmitted(): bool {
+        $post = $this->request->getPostValue();
+        return !empty($post['reply_text']);
     }
 
     /**
@@ -252,17 +296,22 @@ class Save extends Action implements HttpGetActionInterface {
 
     /**
      * @param $model
-     * @param $data
+     * @param $post
      * @param $resultRedirect
      * @return mixed
      */
-    private function processRedirect($model, $data, $resultRedirect): mixed {
-        $redirect = $data['back'] ?? 'close';
+    private function redirect($post, $resultRedirect): mixed {
+        $feedbackModel = $this->getFeedbackModel();
+        $redirect = $post['back'] ?? 'close';
         if ($redirect === 'continue') {
-            $resultRedirect->setPath('*/*/edit', ['feedback_id' => $model->getId()]);
+            $resultRedirect->setPath('*/*/edit', ['feedback_id' => $feedbackModel->getId()]);
         } elseif ($redirect === 'close') {
             $resultRedirect->setPath('*/*/');
         }
         return $resultRedirect;
+    }
+
+    private function getEditedFeedbackId(): int {
+        return (int) ($this->request->get(FeedbackInterface::FEEDBACK_ID));
     }
 }

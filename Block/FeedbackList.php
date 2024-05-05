@@ -113,7 +113,9 @@ class FeedbackList extends Template {
         if ($this->getCurrentFilteringParam() !== 'all') {
             $collection->addFieldToFilter(FeedbackInterface::CUSTOMER_ID, ['neq' => NULL]);
         }
-        $collection->addFieldToFilter(FeedbackInterface::IS_ACTIVE, 1)
+        $collection
+                ->addFieldToFilter(FeedbackInterface::IS_ACTIVE, 1)
+                ->addFieldToFilter(FeedbackInterface::IS_ANONYMOUS, 0)
                 ->addFieldToFilter(FeedbackInterface::STORE_ID, $this->getStoreId());
         // Sorting
         $collection->setOrder(FeedbackInterface::CREATION_TIME, $this->getCurrentDirection());

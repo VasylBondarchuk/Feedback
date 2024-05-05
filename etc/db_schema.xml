@@ -23,12 +23,15 @@
         <column xsi:type="timestamp" name="update_time" on_update="true" nullable="false"
                 default="CURRENT_TIMESTAMP"
                 comment="Feedback Modification Time"/>
-        <column xsi:type="smallint" name="is_active" padding="5" nullable="false" identity="false"
+        <column xsi:type="tinyint" name="is_active" padding="5" nullable="false" identity="false"
                 default="0"
                 comment="Is Feedback Active"/>
-        <column xsi:type="smallint" name="is_replied" nullable="false" identity="false"
+        <column xsi:type="tinyint" name="is_replied" nullable="false" identity="false"
                 default="0"
                 comment="Is Feedback replied"/>
+        <column xsi:type="tinyint" name="is_anonymous" nullable="false" identity="false"
+                default="0"
+                comment="Is Feedback Anonymous"/>        
         <constraint xsi:type="primary" referenceId="PRIMARY">
             <column name="feedback_id"/>
         </constraint>

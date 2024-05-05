@@ -27,7 +27,7 @@ class FeedbackEmailNotification extends EmailNotification
     /**
      * @return string
      */
-    public function getNotificationRecipientName(): string
+    public function getNotificationRecipientName(): ?string
     {
         return $this->getConfigsValue(self::NEW_FEEDBACK_NOTIFICATION_NAME_PATH);
     }

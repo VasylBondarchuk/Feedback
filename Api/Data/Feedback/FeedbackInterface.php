@@ -55,6 +55,11 @@ interface FeedbackInterface
      *
      */
     const IS_REPLIED = 'is_replied';
+    
+    /**
+     *
+     */
+    const IS_ANONYMOUS = 'is_anonymous';
 
     /**
      * Get FEEDBACK_ID
@@ -113,6 +118,12 @@ interface FeedbackInterface
      * @return mixed
      */
     public function getIsReplied();
+    
+    /**
+     * @return string
+     */
+    public function getIsAnonymous();
+    
 
     /**
      * Set ID
@@ -184,5 +195,7 @@ interface FeedbackInterface
      * @return FeedbackInterface
      */
     public function setIsReplied(int $isReplied): FeedbackInterface;
+    
+    public function setIsAnonymous(int $isReplied): FeedbackInterface;
 }
 

@@ -32,12 +32,11 @@ class FeedbackFilter extends Template
     }
         
     // Returns sorting order, selected by front-end user  
-    public function getCurrentFilteringParam()  {
+    public function getCurrentFilteringParam() : string  {
         return ($this->request->getParam(self::FILTERING_PARAM_REQUEST_NAME))
         ?? self::DEFAULT_FILTERING_PARAM;
                 
-    }    
-   
+    }
     
     // Provides options vaules and options labels to the sorting order select 
     public function getFilteringParam() : array{
@@ -50,6 +49,5 @@ class FeedbackFilter extends Template
     // Checks if selected sorting order corresponds to the current one 
     public function isFilteringParamCurrent(string $order) : bool{
         return $order === $this->getCurrentFilteringParam();
-    }
-    
+    }    
 }

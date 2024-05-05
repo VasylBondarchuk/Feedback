@@ -127,6 +127,7 @@ class FeedbackList implements ArgumentInterface {
     public function getAllFeedbackNumber(): int {
         return $this->collectionFactory->create()
                         ->addFieldToFilter(FeedbackInterface::STORE_ID, $this->getStoreId())
+                        ->addFieldToFilter(FeedbackInterface::IS_ANONYMOUS, 0)
                         ->count();
     }
 
@@ -137,6 +138,7 @@ class FeedbackList implements ArgumentInterface {
     public function getActiveFeedbackNumber(): int {
         return $this->collectionFactory->create()
                         ->addFieldToFilter(FeedbackInterface::IS_ACTIVE, 1)
+                        ->addFieldToFilter(FeedbackInterface::IS_ANONYMOUS, 0)
                         ->addFieldToFilter(FeedbackInterface::STORE_ID, $this->getStoreId())
                         ->count();
     }
@@ -180,5 +182,4 @@ class FeedbackList implements ArgumentInterface {
     public function getActionUrl(): string {
         return $this->urlBuilder->getUrl('training_feedback/index/save');
     }
-
 }

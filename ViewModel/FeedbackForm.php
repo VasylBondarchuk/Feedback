@@ -9,9 +9,8 @@ use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Psr\Log\LoggerInterface;
 
-
 /**
- * View Model for a Feedback's front-end form
+ * Block for a Feedback's front-end form
  */
 class FeedbackForm implements ArgumentInterface
 {
@@ -39,12 +38,13 @@ class FeedbackForm implements ArgumentInterface
      * @param UrlInterface $urlBuilder
      * @param Session $customerSession
      * @param CustomerRepositoryInterface $customerRepository
+     * @param LoggerInterface $logger
      */
     public function __construct(
         UrlInterface $urlBuilder,
         Session $customerSession,
         CustomerRepositoryInterface $customerRepository,
-        LoggerInterface   $logger    
+        LoggerInterface $logger
     ) {
         $this->urlBuilder = $urlBuilder;
         $this->customerSession = $customerSession;
@@ -52,11 +52,12 @@ class FeedbackForm implements ArgumentInterface
         $this->logger = $logger;
     }
 
-     /**
+    /**
      * Gets customer's name
      * 
+     * @return string
      */
-    public function getCustomerName() : string
+    public function getCustomerName(): string
     {
         try {            
             $customerName = $this->customerRepository
@@ -72,8 +73,9 @@ class FeedbackForm implements ArgumentInterface
     /**
      * Gets customer's email
      * 
+     * @return string
      */
-    public function getCustomerEmail() : string
+    public function getCustomerEmail(): string
     {
         try {            
             $customerEmail = $this->customerRepository
@@ -89,13 +91,16 @@ class FeedbackForm implements ArgumentInterface
     /**
      * Gets customer's Id
      * 
+     * @return int
      */
-    public function getCustomerId() : int
+    public function getCustomerId(): int
     {
         return (int)$this->customerSession->getCustomer()->getId();       
     }
 
     /**
+     * Get the action URL for the feedback form submission
+     * 
      * @return string
      */
     public function getActionUrl(): string

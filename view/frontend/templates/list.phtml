@@ -14,7 +14,7 @@
 </div> 
 
 <!-- Display feedback info -->
-<div class="feedback-list" style="margin-top: 10px;">
+<div class="feedback-list" style="margin-top: 30px;">
     <?php if (count($block->getCollection())): ?>
         <?php foreach ($block->getCollection() as $feedback): ?>
             <div class="feedback-item" style="background-color: <?= $block->getFeedbackBackgroundColor(); ?>; margin: 10px; padding: 1px;">
@@ -35,7 +35,7 @@
             <div id="<?= $feedback->getFeedbackId(); ?>" style="display:none;">
                 <?php foreach ($viewModel->getRepliesByFeedbackId($feedback->getId()) as $reply): ?>
                     <?php if ($reply->getReplyText()): ?>
-                        <div class="feedback-item" style="background-color: <?= $block->getReplyBackgroundColor(); ?>; margin: 5px; padding: 10px;">
+                        <div class="feedback-item" style="background-color: <?= $block->getReplyBackgroundColor(); ?>; margin: 15px; padding: 10px;">
                             <p>
                                 <?= $block->escapeHtml($viewModel->getReplyAuthorName($reply)) ?> |
                                 <?= $reply->getReplyCreationTime() ?>
@@ -48,16 +48,14 @@
                 <?php endforeach; ?>                
             </div>            
         <?php endforeach; ?>
-    <?php elseif(($viewModel->getActiveFeedbackNumber())): ?>
+    <?php elseif (($viewModel->getActiveFeedbackNumber())): ?>
         <p><?= $block->escapeHtml('There are no feedbacks matching your selection.') ?></p>
     <?php endif; ?>
- </div>       
-       
+</div>      
 
-
-    <!-- Display pagination --> 
-    <?php if ($block->getChildHtml('pager')): ?>
-        <div class="order-products-toolbar toolbar bottom">
-            <?= $block->getChildHtml('pager'); ?>
-        </div>
-    <?php endif ?>  
+<!-- Display pagination --> 
+<?php if ($block->getChildHtml('pager')): ?>
+    <div class="order-products-toolbar toolbar bottom">
+        <?= $block->getChildHtml('pager'); ?>
+    </div>
+<?php endif ?>  

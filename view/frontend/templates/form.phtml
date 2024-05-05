@@ -11,6 +11,19 @@
             <span><?= $block->escapeHtml(__('Leave your feedback')) ?></span>
         </legend><br />
 
+        <div class="field choice newsletter">
+            <input type="checkbox"
+                   name="is_anonymous"
+                   title="<?= $escaper->escapeHtmlAttr(__('Is Anonymous Feedback')) ?>"
+                   value="1"
+                   id="reply_notification"                       
+                   class="checkbox">
+            <label for="is_anonymous" class="label">
+                <span><?= $escaper->escapeHtml(__('Is Anonymous Feedback')) ?></span>
+            </label>
+        </div> 
+        
+        
         <div class="field name required">
             <label class="label" for="author_name">
                 <span><?= $block->escapeHtml(__('Name')) ?></span>
@@ -20,7 +33,7 @@
                        title="<?= $block->escapeHtmlAttr(__('Name')) ?>" value="<?= $viewModel->getCustomerName() ?>"
                        class="input-text" type="text" data-validate="{required:true}"/>
             </div>
-        </div>
+        </div>  
 
         <div class="field email required">
             <label class="label" for="author_email">
@@ -59,8 +72,7 @@
 
     </fieldset>
     <div class="actions-toolbar">
-        <div class="primary">
-            <input type="hidden" name="hideit" id="hideit" value="" />
+        <div class="primary">            
             <button type="submit" title="<?= $block->escapeHtmlAttr(__('Submit')) ?>"
                     class="action submit primary">
                 <span><?= $block->escapeHtml(__('Submit')) ?></span>
