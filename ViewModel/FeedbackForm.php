@@ -7,7 +7,9 @@ use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Model\Session;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
+use Training\Feedback\Model\ResourceModel\RatingOption\CollectionFactory as RatingOptionCollectionFactory;
 use Psr\Log\LoggerInterface;
+use Magento\Framework\Escaper;
 
 /**
  * Block for a Feedback's front-end form
@@ -30,9 +32,20 @@ class FeedbackForm implements ArgumentInterface
     private CustomerRepositoryInterface $customerRepository;
     
     /**
+     * 
+     * @var RatingOptionCollectionFactory
+     */
+    private RatingOptionCollectionFactory $ratingOptionCollectionFactory;
+    
+    /**
      * @var LoggerInterface
      */
     private LoggerInterface $logger;
+    
+    /**
+     * @var Escaper
+     */
+    private $escaper;
 
     /**
      * @param UrlInterface $urlBuilder
@@ -44,12 +57,16 @@ class FeedbackForm implements ArgumentInterface
         UrlInterface $urlBuilder,
         Session $customerSession,
         CustomerRepositoryInterface $customerRepository,
-        LoggerInterface $logger
+         RatingOptionCollectionFactory $ratingOptionCollectionFactory,    
+        LoggerInterface $logger,
+        Escaper $escaper    
     ) {
         $this->urlBuilder = $urlBuilder;
         $this->customerSession = $customerSession;
         $this->customerRepository = $customerRepository;
+        $this->ratingOptionCollectionFactory = $ratingOptionCollectionFactory;
         $this->logger = $logger;
+        $this->escaper = $escaper;
     }
 
     /**
@@ -106,5 +123,15 @@ class FeedbackForm implements ArgumentInterface
     public function getActionUrl(): string
     {
         return $this->urlBuilder->getUrl('training_feedback/index/save');
+    }
+    
+    /**
+     * 
+     * @return type
+     */
+    public function getRatingOptions()
+    {
+        $collection = $this->ratingOptionCollectionFactory->create();
+        return $collection->getItems();
     }
 }

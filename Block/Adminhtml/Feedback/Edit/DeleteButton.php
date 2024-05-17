@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Training\Feedback\Block\Adminhtml\Feedback\Edit;
@@ -9,22 +10,22 @@ use Training\Feedback\Api\Data\Feedback\FeedbackInterface;
 /**
  * Provides data for 'Delete' button
  */
-class DeleteButton extends GenericButton implements ButtonProviderInterface
-{
+class DeleteButton extends GenericButton implements ButtonProviderInterface {
+
     private const DELETE_PATH = 'training_feedback/index/delete';
+
     /**
      * @return array
      */
-    public function getButtonData(): array
-    {
+    public function getButtonData(): array {
         $data = [];
         if ($this->getFeedbackId()) {
             $data = [
                 'label' => __('Delete Feedback'),
                 'class' => 'delete',
                 'on_click' => 'deleteConfirm(\'' . __(
-                        'Are you sure you want to do this?'
-                    ) . '\', \'' . $this->getDeleteUrl() . '\', {"data": {}})',
+                        'Are you sure you want to delete a feedback record?'
+                ) . '\', \'' . $this->getDeleteUrl() . '\', {"data": {}})',
                 'sort_order' => 20,
             ];
         }
@@ -34,11 +35,10 @@ class DeleteButton extends GenericButton implements ButtonProviderInterface
     /**
      * @return string
      */
-    public function getDeleteUrl(): string
-    {
+    public function getDeleteUrl(): string {
         return $this->getUrl(
-                self::DELETE_PATH,
-                [FeedbackInterface:: FEEDBACK_ID => $this->getFeedbackId()]
-                );
+                        self::DELETE_PATH,
+                        [FeedbackInterface::FEEDBACK_ID => $this->getFeedbackId()]
+        );
     }
 }

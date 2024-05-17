@@ -8,6 +8,14 @@
     <preference for="Training\Feedback\Api\Data\Reply\ReplyInterface" type="Training\Feedback\Model\Reply" />
     <preference for="Training\Feedback\Api\Data\Reply\ReplyRepositoryInterface" type="Training\Feedback\Model\ReplyRepository" />
     <preference for="Training\Feedback\Api\Data\Reply\ReplySearchResultsInterface" type="Magento\Framework\Api\SearchResults" />
+    
+    <preference for="Training\Feedback\Api\Data\RatingOption\RatingOptionInterface" type="Training\Feedback\Model\RatingOption" />
+    <preference for="Training\Feedback\Api\Data\RatingOption\RatingOptionRepositoryInterface" type="Training\Feedback\Model\RatingOptionRepository" />
+    <preference for="Training\Feedback\Api\Data\RatingOption\RatingOptionSearchResultsInterface" type="Magento\Framework\Api\SearchResults" />
+    
+    <preference for="Training\Feedback\Api\Data\Rating\RatingInterface" type="Training\Feedback\Model\Rating" />
+    <preference for="Training\Feedback\Api\Data\Rating\RatingRepositoryInterface" type="Training\Feedback\Model\RatingRepository" />
+    <preference for="Training\Feedback\Api\Data\Rating\RatingSearchResultsInterface" type="Magento\Framework\Api\SearchResults" />
 
     <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
         <arguments>
@@ -26,6 +34,25 @@
             <argument name="resourceModel" xsi:type="string">Training\Feedback\Model\ResourceModel\Feedback</argument>
         </arguments>
     </virtualType>
+    
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="training_feedback_rating_listing_data_source" xsi:type="string">
+                    Training\Feedback\Model\ResourceModel\RatingOption\Grid\Collection
+                </item>
+            </argument>
+        </arguments>
+    </type>
+
+    <virtualType name="Training\Feedback\Model\ResourceModel\RatingOption\Grid\Collection"
+                 type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">training_feedback_rating_options</argument>
+            <argument name="resourceModel" xsi:type="string">Training\Feedback\Model\ResourceModel\RatingOption</argument>
+        </arguments>
+    </virtualType>
+
 
     <type name="Magento\Framework\Console\CommandListInterface">
         <arguments>

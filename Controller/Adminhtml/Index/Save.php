@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Training\Feedback\Controller\Adminhtml\Index;
@@ -15,6 +14,7 @@ use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Message\ManagerInterface;
 use Psr\Log\LoggerInterface;
+
 use Training\Feedback\Api\Data\Feedback\FeedbackInterface;
 use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
 use Training\Feedback\Api\Data\Reply\ReplyInterface;
@@ -174,9 +174,8 @@ class Save extends Action implements HttpGetActionInterface {
                         __('An error occurred while saving the feedback. %1', $e->getMessage()));
                 $this->logger->error($e->getLogMessage());
             }
-            $this->dataPersistor->set('training_feedback', $post);
-            $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
-            return $this->redirect($post, $resultRedirect);
+            $this->dataPersistor->set('training_feedback', $post);            
+            return $this->redirect($post);
         }
     }
 
@@ -188,7 +187,9 @@ class Save extends Action implements HttpGetActionInterface {
     private function getFeedbackModel(): FeedbackInterface {
         $editedFeedbackId = $this->getEditedFeedbackId();
         if (!$this->feedback) {
-            $this->feedback = $editedFeedbackId ? $this->feedbackRepository->getById($editedFeedbackId) : $this->feedbackFactory->create();
+            $this->feedback = $editedFeedbackId
+                    ? $this->feedbackRepository->getById($editedFeedbackId)
+                    : $this->feedbackFactory->create();
         }
         return $this->feedback;
     }
@@ -200,7 +201,9 @@ class Save extends Action implements HttpGetActionInterface {
     private function getReplyModel(): ReplyInterface {
         $editedFeedbackId = $this->getEditedFeedbackId();
         if (!$this->reply) {
-            $this->freply = $this->replyRepository->isReplyExist($editedFeedbackId) ? $this->replyRepository->getByFeedbackId($editedFeedbackId) : $this->replyFactory->create();
+            $this->freply = $this->replyRepository->isReplyExist($editedFeedbackId)
+                    ? $this->replyRepository->getByFeedbackId($editedFeedbackId)
+                    : $this->replyFactory->create();
         }
         return $this->reply;
     }
@@ -232,7 +235,7 @@ class Save extends Action implements HttpGetActionInterface {
     private function saveReply(array $post) {
         try {
             $replyModel = $this->getReplyModel();
-            $feedbackModel = $this->getFeedbackModel();
+            $feedbackModel = $this->getFeedbackModel();            
             if ($this->isReplySubmitted()) {
                 $feedBackId = $feedbackModel->getFeedbackId();
                 $replyModel
@@ -243,8 +246,9 @@ class Save extends Action implements HttpGetActionInterface {
                 $this->replyRepository->save($replyModel);
                 $feedbackModel->setIsReplied($this->replyRepository->isReplied($feedBackId));
                 $this->feedbackRepository->save($feedbackModel);
+                // If reply was deleted
             } else {
-                $editedFeedbackId = (int) ($this->request->get(FeedbackInterface::FEEDBACK_ID));
+                $editedFeedbackId = (int)($this->request->get(FeedbackInterface::FEEDBACK_ID));
                 $this->replyRepository->deleteByFeedbackId($editedFeedbackId);
                 $feedbackModel->setIsReplied($this->replyRepository->isReplied($editedFeedbackId));
                 $this->feedbackRepository->save($feedbackModel);
@@ -265,8 +269,7 @@ class Save extends Action implements HttpGetActionInterface {
         try {
             $this->email->sendEmail(
                     $feedbackModel->getAuthorEmail(),
-                    [$feedbackModel->getAuthorName(),
-                        $replyModel->getReplyText()]
+                    [$feedbackModel->getAuthorName(),$replyModel->getReplyText()]
             );
         } catch (LocalizedException $e) {
             $this->messageManager->addErrorMessage(
@@ -282,7 +285,7 @@ class Save extends Action implements HttpGetActionInterface {
      */
     private function isReplySubmitted(): bool {
         $post = $this->request->getPostValue();
-        return !empty($post['reply_text']);
+        return !empty($post[Form::FEEDBACK_REPLY_FIELD]);
     }
 
     /**
@@ -300,7 +303,8 @@ class Save extends Action implements HttpGetActionInterface {
      * @param $resultRedirect
      * @return mixed
      */
-    private function redirect($post, $resultRedirect): mixed {
+    private function redirect($post): mixed {
+        $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         $feedbackModel = $this->getFeedbackModel();
         $redirect = $post['back'] ?? 'close';
         if ($redirect === 'continue') {

@@ -6,6 +6,7 @@ namespace Training\Feedback\Controller\Adminhtml\Index;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Action\HttpPostActionInterface;
+use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\ResultFactory;
@@ -19,7 +20,7 @@ use Training\Feedback\Api\Data\Reply\ReplyRepositoryInterface;
 /**
  * Deletes a feedback
  */
-class Delete extends Action implements HttpPostActionInterface
+class Delete extends Action implements HttpGetActionInterface,HttpPostActionInterface
 {
     const ADMIN_RESOURCE = 'Training_Feedback::feedback_delete';
     const REQUEST_FIELD_NAME = 'feedback_id';
@@ -76,7 +77,7 @@ class Delete extends Action implements HttpPostActionInterface
      * @return ResponseInterface|ResultInterface
      */
     public function execute()
-    {
+    {        
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         $feedbackId = (int)($this->request->get(self::REQUEST_FIELD_NAME));
         if ($feedbackId) {

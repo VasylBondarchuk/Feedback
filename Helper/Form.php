@@ -10,6 +10,13 @@ use Magento\Framework\Exception\LocalizedException;
  */
 class Form
 {
+    const FEEDBACK_AUTHOR_NAME_FIELD = 'author_name';
+    const FEEDBACK_AUTHOR_EMAIL_FIELD = 'author_email';
+    const FEEDBACK_MESSAGE = 'message';
+    const FEEDBACK_REPLY_FIELD = 'reply_text';
+    
+    
+    
     /**
      * @var RequestInterface
      */
@@ -29,15 +36,18 @@ class Form
      * @throws LocalizedException
      */
     public function validatePost(array $post) {
-        if (!isset($post['author_name']) || trim($post['author_name']) === '') {
+        if (!isset($post[self::FEEDBACK_AUTHOR_NAME_FIELD])
+                || trim($post[self::FEEDBACK_AUTHOR_NAME_FIELD]) === '') {
             throw new LocalizedException(__('Name is missing'));
+        }        
+        if (!isset($post[self::FEEDBACK_AUTHOR_EMAIL_FIELD])
+                || false === \strpos($post[self::FEEDBACK_AUTHOR_EMAIL_FIELD], '@')) {
+            throw new LocalizedException(__('Invalid email address'));
         }
-        if (!isset($post['message']) || trim($post['message']) === '') {
+        if (!isset($post[self::FEEDBACK_MESSAGE])
+                || trim($post[self::FEEDBACK_MESSAGE]) === '') {
             throw new LocalizedException(__('Comment is missing'));
         }
-        if (!isset($post['author_email']) || false === \strpos($post['author_email'], '@')) {
-            throw new LocalizedException(__('Invalid email address'));
-        }        
     }
     
     public function isFormSubmitted(): bool {

@@ -13,8 +13,8 @@ class Collection extends AbstractCollection
     protected function _construct()
     {
         $this->_init(
-            ReplyModel::class,
-            ReplyResourceModel::class
+                ReplyModel::class,
+                ReplyResourceModel::class
         );
     }
 }
