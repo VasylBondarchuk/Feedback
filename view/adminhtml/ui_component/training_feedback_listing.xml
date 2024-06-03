@@ -207,7 +207,7 @@
                 <label translate="true">Modified</label>
             </settings>
         </column>
-        <actionsColumn name="actions" class="Training\Feedback\Ui\Component\Listing\Column\Actions">
+        <actionsColumn name="actions" class="Training\Feedback\Ui\Component\Feedback\Listing\Column\Actions">
             <settings>
                 <indexField>feedback_id</indexField>
             </settings>

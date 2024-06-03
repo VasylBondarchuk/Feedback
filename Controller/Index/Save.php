@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Training\Feedback\Controller\Index;
@@ -23,10 +24,9 @@ use Training\Feedback\Model\ResourceModel\RatingOption\CollectionFactory as Rati
 use Magento\Backend\Model\UrlInterface;
 use Psr\Log\LoggerInterface;
 use Training\Feedback\Helper\Form;
-use Magento\Framework\DB\Transaction;
 
-class Save implements HttpPostActionInterface
-{
+class Save implements HttpPostActionInterface {
+
     private const FEEDBACK_EDIT_PAGE_PATH = 'training_feedback/index/edit/feedback_id/';
     private const PUBLISH_FEEDBACK_PATH = 'feedback_configuration/feedback_configuration_general/publish_feedback_without_moderation';
 
@@ -45,24 +45,23 @@ class Save implements HttpPostActionInterface
     private StoreManagerInterface $storeManager;
     private LoggerInterface $logger;
     private Form $form;
-    private Transaction $transaction;
 
     public function __construct(
-        ManagerInterface $messageManager,
-        ResultFactory $resultFactory,
-        RequestInterface $request,
-        FeedbackFactory $feedbackFactory,
-        RatingFactory $ratingFactory,
-        FeedbackEmailNotification $email,
-        UrlInterface $urlInterface,
-        ScopeConfigInterface $scopeConfig,
-        FeedbackRepositoryInterface $feedbackRepository,
-        RatingRepositoryInterface $ratingRepository,
-        RatingOptionCollectionFactory $ratingOptionCollectionFactory,
-        Session $customerSession,
-        StoreManagerInterface $storeManager,
-        LoggerInterface $logger,
-        Form $form        
+            ManagerInterface $messageManager,
+            ResultFactory $resultFactory,
+            RequestInterface $request,
+            FeedbackFactory $feedbackFactory,
+            RatingFactory $ratingFactory,
+            FeedbackEmailNotification $email,
+            UrlInterface $urlInterface,
+            ScopeConfigInterface $scopeConfig,
+            FeedbackRepositoryInterface $feedbackRepository,
+            RatingRepositoryInterface $ratingRepository,
+            RatingOptionCollectionFactory $ratingOptionCollectionFactory,
+            Session $customerSession,
+            StoreManagerInterface $storeManager,
+            LoggerInterface $logger,
+            Form $form
     ) {
         $this->messageManager = $messageManager;
         $this->resultFactory = $resultFactory;
@@ -78,29 +77,28 @@ class Save implements HttpPostActionInterface
         $this->customerSession = $customerSession;
         $this->storeManager = $storeManager;
         $this->logger = $logger;
-        $this->form = $form;        
+        $this->form = $form;
     }
 
     /**
      * 
      * @return type
      */
-    public function execute()
-    {
+    public function execute() {
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         $resultRedirect->setPath('*/*/index');
         if ($this->form->isFormSubmitted()) {
             $post = $this->form->getFormData();
             try {
-                $this->form->validatePost($post);
+                $this->form->validateFeedbackPost($post);
                 $this->saveFeedback($post);
-                $this->sendNewFeedbackNotificationEmail($post['message']);
+                $this->sendNewFeedbackNotificationEmail($this->getFeedbackMessage());
                 $this->messageManager->addSuccessMessage(
-                    __('Thank you for your feedback.')
+                        __('Thank you for your feedback.')
                 );
             } catch (LocalizedException $e) {
                 $this->messageManager->addErrorMessage(
-                    __('An error occurred while processing your form. %1', $e->getMessage())
+                        __('An error occurred while processing your form. %1', $e->getMessage())
                 );
                 $this->logger->error($e->getMessage());
                 $resultRedirect->setPath('*/*/form');
@@ -115,8 +113,7 @@ class Save implements HttpPostActionInterface
      * @return void
      * @throws \Exception
      */
-    private function saveFeedback(array $post): void
-    {
+    private function saveFeedback(array $post): void {
         $feedback = $this->feedbackFactory->create();
         $this->populateFeedbackModel($feedback, $post);
 
@@ -135,8 +132,7 @@ class Save implements HttpPostActionInterface
      * @param array $post
      * @return void
      */
-    private function saveRating(FeedbackInterface $feedback, array $post): void
-    {
+    private function saveRating(FeedbackInterface $feedback, array $post): void {
         foreach ($this->getRatingOptions() as $ratingOption) {
             $rating = $this->ratingFactory->create();
             $this->populateRatingModel($rating, $feedback, $ratingOption, $post);
@@ -152,11 +148,10 @@ class Save implements HttpPostActionInterface
      * @param array $post
      * @return void
      */
-    private function populateFeedbackModel(FeedbackInterface $feedback, array $post): void
-    {
+    private function populateFeedbackModel(FeedbackInterface $feedback, array $post): void {
         $feedback->setData($post)
-            ->setIsActive($this->publishFeedbackWithoutModeration())
-            ->setStoreId((int) $this->storeManager->getStore()->getId());
+                ->setIsActive($this->publishFeedbackWithoutModeration())
+                ->setStoreId((int) $this->storeManager->getStore()->getId());
 
         if (!isset($post['reply_notification'])) {
             $feedback->setReplyNotification(0);
@@ -175,8 +170,7 @@ class Save implements HttpPostActionInterface
      * @param array $post
      * @return void
      */
-    private function populateRatingModel(RatingInterface $rating, FeedbackInterface $feedback, $ratingOption, array $post): void
-    {
+    private function populateRatingModel(RatingInterface $rating, FeedbackInterface $feedback, $ratingOption, array $post): void {
         $currentDate = (new \DateTime())->format('Y-m-d H:i:s');
         $feedbackId = $feedback->getFeedbackId();
         $ratingOptionId = $ratingOption->getRatingOptionId();
@@ -185,9 +179,9 @@ class Save implements HttpPostActionInterface
         if (isset($post[$ratingKey])) {
             $ratingValue = (int) $post[$ratingKey];
             $rating->setFeedbackId($feedbackId)
-                ->setRatingOptionId($ratingOptionId)
-                ->setRatingValue($ratingValue)
-                ->setCreatedAt($currentDate);
+                    ->setRatingOptionId($ratingOptionId)
+                    ->setRatingValue($ratingValue)
+                    ->setCreatedAt($currentDate);
         }
     }
 
@@ -195,8 +189,7 @@ class Save implements HttpPostActionInterface
      * 
      * @return string|null
      */
-    private function publishFeedbackWithoutModeration(): ?string
-    {
+    private function publishFeedbackWithoutModeration(): ?string {
         return $this->scopeConfig->getValue(self::PUBLISH_FEEDBACK_PATH);
     }
 
@@ -204,13 +197,12 @@ class Save implements HttpPostActionInterface
      * 
      * @param string $message
      */
-    private function sendNewFeedbackNotificationEmail(string $message)
-    {
+    private function sendNewFeedbackNotificationEmail(string $message) {
         $feedback = $this->feedbackFactory->create();
         if ($this->email->getNotificationRecipientEmail() && $this->email->getNotificationRecipientName()) {
             $this->email->sendEmail(
-                $this->email->getNotificationRecipientEmail(),
-                [$this->email->getNotificationRecipientName(), $message, $this->getLinkToFeedbackEditPage($feedback)]
+                    $this->email->getNotificationRecipientEmail(),
+                    [$this->email->getNotificationRecipientName(), $message, $this->getLinkToFeedbackEditPage($feedback)]
             );
         }
     }
@@ -220,11 +212,10 @@ class Save implements HttpPostActionInterface
      * @param FeedbackModel $feedback
      * @return string
      */
-    private function getLinkToFeedbackEditPage(FeedbackModel $feedback): string
-    {
+    private function getLinkToFeedbackEditPage(FeedbackModel $feedback): string {
         return $this->urlInterface->getRouteUrl(self::FEEDBACK_EDIT_PAGE_PATH, [
-            'feedback_id' => $feedback->getFeedbackId(),
-            'key' => $this->urlInterface->getSecretKey('training_feedback', 'index', 'edit')
+                    'feedback_id' => $feedback->getFeedbackId(),
+                    'key' => $this->urlInterface->getSecretKey('training_feedback', 'index', 'edit')
         ]);
     }
 
@@ -232,9 +223,16 @@ class Save implements HttpPostActionInterface
      * 
      * @return type
      */
-    private function getRatingOptions()
-    {
+    private function getRatingOptions() {
         $collection = $this->ratingOptionCollectionFactory->create();
         return $collection->getItems();
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    private function getFeedbackMessage(): string {
+        return $this->form->getFormData()[Form::FEEDBACK_MESSAGE] ?? '';
     }
 }

@@ -4,7 +4,12 @@
     <update handle="styles"/>
     <body>
         <referenceContainer name="content">
-            <uiComponent name="training_feedback_form"/>            
+            <uiComponent name="training_feedback_ratingoption_form"/>
         </referenceContainer>
     </body>
 </page>
+
+
+
+
+

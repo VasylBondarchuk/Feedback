@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Training\Feedback\Ui\DataProvider\Listing;
+namespace Training\Feedback\Ui\DataProvider\Feedback\Listing;
 
 use Magento\Ui\DataProvider\AbstractDataProvider;
 use Training\Feedback\Model\ResourceModel\Feedback\Collection;

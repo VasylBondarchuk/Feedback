@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Training\Feedback\ViewModel;
@@ -19,16 +18,24 @@ use Training\Feedback\Model\Reply as ReplyModel;
 use Training\Feedback\Model\ReplyRepository;
 use Training\Feedback\Model\ResourceModel\Feedback\CollectionFactory;
 use Training\Feedback\Model\ResourceModel\Reply\Collection as ReplyCollection;
+use Training\Feedback\Model\FeedbackRepository;
+use Magento\Framework\App\RequestInterface;
 
 /**
  *
  */
 class FeedbackList implements ArgumentInterface {
-
+    
     /**
      *
      */
-    private const ADD_FEEDBACK_FORM_PATH = 'training_feedback/index/form';
+    private const ADD_FEEDBACK_FORM_PATH = 'training_feedback/index/form';   
+       
+    
+    /**
+     * 
+     */
+    private const SAVE_FEEDBACK_PATH = 'training_feedback/index/save';
 
     /**
      *
@@ -73,9 +80,20 @@ class FeedbackList implements ArgumentInterface {
     /**
      * @var CollectionFactory
      */
-    private CollectionFactory $collectionFactory;
+    private CollectionFactory $collectionFactory; 
+    
+    /**
+     * @var CollectionFactory
+     */
+    private FeedbackRepository $feedbackRepository;
+    
+    /**
+     * @var RequestInterface
+     */
+    private RequestInterface $request;
 
     /**
+     * 
      * @param UrlInterface $urlBuilder
      * @param Timezone $timezone
      * @param ReplyRepository $replyRepository
@@ -84,6 +102,8 @@ class FeedbackList implements ArgumentInterface {
      * @param UserResourceModel $resourceModel
      * @param StoreManagerInterface $storeManager
      * @param CollectionFactory $collectionFactory
+     * @param FeedbackRepository $feedbackRepository
+     * @param RequestInterface $request
      */
     public function __construct(
             UrlInterface $urlBuilder,
@@ -93,7 +113,9 @@ class FeedbackList implements ArgumentInterface {
             UserFactory $userFactory,
             UserResourceModel $resourceModel,
             StoreManagerInterface $storeManager,
-            CollectionFactory $collectionFactory
+            CollectionFactory $collectionFactory,            
+            FeedbackRepository $feedbackRepository,
+            RequestInterface $request
     ) {
         $this->urlBuilder = $urlBuilder;
         $this->timezone = $timezone;
@@ -102,7 +124,9 @@ class FeedbackList implements ArgumentInterface {
         $this->userFactory = $userFactory;
         $this->resourceModel = $resourceModel;
         $this->storeManager = $storeManager;
-        $this->collectionFactory = $collectionFactory;
+        $this->collectionFactory = $collectionFactory;        
+        $this->feedbackRepository = $feedbackRepository;
+        $this->request = $request;
     }
 
     /**
@@ -180,6 +204,7 @@ class FeedbackList implements ArgumentInterface {
      * @return string
      */
     public function getActionUrl(): string {
-        return $this->urlBuilder->getUrl('training_feedback/index/save');
+        return $this->urlBuilder->getUrl(self::SAVE_FEEDBACK_PATH);
     }
+    
 }

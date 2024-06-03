@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Training\Feedback\Controller\Adminhtml\Index;
+namespace Training\Feedback\Controller\Adminhtml\Ratingoption;
 
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
@@ -38,7 +38,7 @@ class NewAction extends Action implements HttpGetActionInterface
         $resultPage = $this->resultFactory->create(ResultFactory::TYPE_PAGE);
         $resultPage
             ->setActiveMenu('Training_Feedback::feedback')
-            ->getConfig()->getTitle()->prepend(__('Create New Feedback'));        
+            ->getConfig()->getTitle()->prepend(__('Create New Rating Option'));        
         return $resultPage;
     }
 }

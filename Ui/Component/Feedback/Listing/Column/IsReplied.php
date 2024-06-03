@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Training\Feedback\Ui\Component\Listing\Column;
+namespace Training\Feedback\Ui\Component\Feedback\Listing\Column;
 
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponentFactory;

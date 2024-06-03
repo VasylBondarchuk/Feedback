@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Training\Feedback\Ui\DataProvider\Form;
+namespace Training\Feedback\Ui\DataProvider\Feedback\Form;
 
 use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Ui\DataProvider\AbstractDataProvider;
@@ -101,7 +101,7 @@ class DataProvider extends AbstractDataProvider
             $this->loadedData[$feedback->getId()] = $feedback->getData();
             $this->loadedData[$feedback->getId()][ReplyInterface::REPLY_TEXT] =
                 $this->getReplyText((int)$feedback->getId());
-        }
+        }        
         return $this->loadedData ?? [];
     }
 

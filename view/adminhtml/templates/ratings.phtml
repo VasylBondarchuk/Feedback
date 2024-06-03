@@ -1,0 +1,103 @@
+<?php $viewModel = $block->getData('feedback_ratings_view_model'); ?>
+
+<div class="admin__field-control">
+    <ul class="ratings-list">
+        <?php foreach ($viewModel->getActiveRatingOptions() as $ratingOption): ?>
+            <?php $ratingValue = $viewModel->getRatingValue($ratingOption->getRatingOptionId()); ?>
+            <li class="rating-item">
+                <span class="rating-name"><?= $block->escapeHtml($ratingOption->getRatingOptionName()) ?>:</span>
+                <div class="stars" data-max="<?= $ratingOption->getRatingOptionMaxValue() ?>" data-current="<?= $ratingValue ?>" data-rating-option-id="<?= $ratingOption->getRatingOptionId() ?>">
+                    <?php for ($i = $ratingOption->getRatingOptionMaxValue(); $i >= 1; $i--): ?>
+                        <input type="radio"
+                               name="ratings[<?= $ratingOption->getRatingOptionId() ?>]"
+                               value="<?= $i ?>"
+                               id="rating_<?= $ratingOption->getRatingOptionId() ?>_<?= $i ?>"
+                               class="star"<?= $i == $ratingValue ? ' checked' : '' ?>>
+                        <label for="rating_<?= $ratingOption->getRatingOptionId() ?>_<?= $i ?>"
+                               class="star-label"
+                               data-value="<?= $i ?>">&#9733;</label>
+                    <?php endfor; ?>
+                </div>                        
+                <input type="hidden" name="ratings[<?= $ratingOption->getRatingOptionId() ?>]" value="<?= $ratingValue ?>">                
+            </li>
+        <?php endforeach; ?>
+    </ul>
+</div>    
+<style>
+    .ratings-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .rating-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+    }
+
+    .rating-name {
+        flex-shrink: 0;
+        margin-right: 10px;
+    }
+
+    .stars {
+        display: flex;
+    }
+
+    .star {
+        display: none;
+    }
+
+    .star-label {
+        font-size: 24px;
+        cursor: pointer;
+        color: #ddd;
+    }
+
+    .star-label.selected {
+        color: #ffcc00;
+    }
+
+    .admin__field-control    {
+        margin: auto;
+        width: 60%;
+    }
+
+    .star:checked ~ .star-label,
+    .star-label:hover ~ .star-label {
+        color: gold;
+    }
+
+    .star-label:hover {
+        color: #f30;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.stars').forEach(function (starsContainer) {
+            const starInputs = Array.from(starsContainer.querySelectorAll('.star'));
+            const ratingOptionId = starsContainer.dataset.ratingOptionId;
+            const currentRatingValue = parseInt(starsContainer.dataset.current);
+
+            function updateRatingValue(selectedValue) {
+                const ratingValueInput = starsContainer.parentNode.querySelector(`input[name="ratings[${ratingOptionId}]"]`);
+                ratingValueInput.value = selectedValue;
+            }
+
+            starInputs.forEach(function (input) {
+                input.addEventListener('change', function () {
+                    const selectedValue = parseInt(this.value);
+                    updateRatingValue(selectedValue);
+                });
+            });
+
+            // Select the radio button with the current rating value
+            const currentRatingInput = starInputs.find(input => parseInt(input.value) === currentRatingValue);
+            if (currentRatingInput) {
+                currentRatingInput.checked = true;
+            }
+        });
+    });
+</script>

@@ -3,8 +3,7 @@
       xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
     <argument name="data" xsi:type="array">
         <item name="js_config" xsi:type="array">
-            <item name="provider"
-                  xsi:type="string">training_feedback_form.training_feedback_form_data_source</item>
+            <item name="provider" xsi:type="string">training_feedback_form.training_feedback_form_data_source</item>
         </item>
         <item name="label" xsi:type="string" translate="true">General Information</item>
         <item name="template" xsi:type="string">templates/form/collapsible</item>
@@ -30,7 +29,7 @@
         <settings>
             <submitUrl path="training_feedback/index/save"/>
         </settings>
-        <dataProvider class="Training\Feedback\Ui\DataProvider\Form\DataProvider"
+        <dataProvider class="Training\Feedback\Ui\DataProvider\Feedback\Form\DataProvider"
                       name="training_feedback_form_data_source">
             <settings>
                 <requestFieldName>feedback_id</requestFieldName>
@@ -44,6 +43,21 @@
             <label/>
             <dataScope>data</dataScope>
         </settings>
+        
+        <htmlContent name="html_content">
+            <settings>
+                <additionalClasses>
+                    <class name="html-content-class">true</class>
+                </additionalClasses>                    
+            </settings>
+            <block name="html_content_block" class="Magento\Backend\Block\Template">
+                <arguments>
+                    <argument name="template" xsi:type="string">Training_Feedback::ratings.phtml</argument>
+                    <argument name="feedback_ratings_view_model" xsi:type="object">Training\Feedback\ViewModel\FeedbackRatings</argument>
+                </arguments>
+            </block>
+        </htmlContent>
+        
         
         <field name="feedback_id" formElement="input">
             <argument name="data" xsi:type="array">

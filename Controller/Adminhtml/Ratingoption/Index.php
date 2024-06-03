@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Training\Feedback\Controller\Adminhtml\Rating;
+namespace Training\Feedback\Controller\Adminhtml\Ratingoption;
 
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;

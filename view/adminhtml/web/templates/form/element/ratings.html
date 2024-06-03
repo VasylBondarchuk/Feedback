@@ -1,0 +1,12 @@
+<!-- ko foreach: ratingOptions -->
+<li class="rating-item">
+    <span class="rating-name" data-bind="text: ratingOptionName"></span>:
+    <div class="stars" data-bind="attr: { 'data-max': ratingOptionMaxValue, 'data-current': ratingValue, 'data-rating-option-id': ratingOptionId }">
+        <!-- ko foreach: Array(ratingOptionMaxValue).fill().map((x,i)=>i+1).reverse() -->
+        <input type="radio" data-bind="attr: { name: 'ratings[' + $parent.ratingOptionId + ']', value: $data, id: 'rating_' + $parent.ratingOptionId + '_' + $data }, checked: $parent.ratingValue, click: function() { $parent.ratingValue($data) }" class="star">
+        <label data-bind="attr: { for: 'rating_' + $parent.ratingOptionId + '_' + $data, 'data-value': $data }" class="star-label">&#9733;</label>
+        <!-- /ko -->
+    </div>
+    <input type="hidden" data-bind="attr: { name: 'ratings[' + ratingOptionId + ']' }, value: ratingValue">
+</li>
+<!-- /ko -->

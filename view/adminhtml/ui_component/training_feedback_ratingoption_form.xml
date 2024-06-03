@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">training_feedback_ratingoption_form.training_feedback_ratingoption_form_data_source</item>
+        </item>
+        <item name="label" xsi:type="string" translate="true">General Information</item>
+        <item name="template" xsi:type="string">templates/form/collapsible</item>
+    </argument>
+    <settings>
+        <buttons>
+            <button name="save" class="Training\Feedback\Block\Adminhtml\RatingOption\Edit\SaveButton"/>
+            <button name="delete" class="Training\Feedback\Block\Adminhtml\RatingOption\Edit\DeleteButton"/>
+            <button name="back" class="Training\Feedback\Block\Adminhtml\RatingOption\Edit\BackButton"/>
+        </buttons>
+        <namespace>training_feedback_ratingoption_form</namespace>
+        <deps>
+            <dep>training_feedback_ratingoption_form.training_feedback_ratingoption_form_data_source</dep>
+        </deps>
+    </settings>
+
+    <dataSource name="training_feedback_ratingoption_form_data_source">
+        <argument name="data" xsi:type="array">
+            <item name="js_config" xsi:type="array">
+                <item name="component" xsi:type="string">Magento_Ui/js/form/provider</item>
+            </item>
+        </argument>
+        <settings>
+            <submitUrl path="training_feedback/ratingoption/save"/>
+        </settings>
+        <dataProvider class="Training\Feedback\Ui\DataProvider\RatingOption\Form\DataProvider"
+                      name="training_feedback_ratingoption_form_data_source">
+            <settings>
+                <requestFieldName>rating_option_id</requestFieldName>
+                <primaryFieldName>rating_option_id</primaryFieldName>
+            </settings>
+        </dataProvider>
+    </dataSource>
+
+    <fieldset name="general">
+        <settings>
+            <label/>
+            <dataScope>data</dataScope>
+        </settings>
+
+        <field name="rating_option_id" formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">rating_option_id</item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>text</dataType>
+                <visible>false</visible>
+                <dataScope>rating_option_id</dataScope>
+            </settings>
+        </field>
+
+        <field name="storeviews">
+            <argument name="data" xsi:type="array">
+                <item name="options" xsi:type="object">Magento\Cms\Ui\Component\Listing\Column\Cms\Options</item>
+                <item name="config" xsi:type="array">
+                    <item name="dataType" xsi:type="string">int</item>
+                    <item name="label" xsi:type="string" translate="true">Store View</item>
+                    <item name="formElement" xsi:type="string">select</item>
+                    <item name="source" xsi:type="string">.store_id</item>
+                    <item name="dataScope" xsi:type="string">store_id</item>
+                    <item name="default" xsi:type="string">1</item>
+                    <item name="validation" xsi:type="array">
+                        <item name="required-entry" xsi:type="boolean">true</item>
+                    </item>
+                </item>
+            </argument>
+        </field>
+
+        <field name="rating_option_code" sortOrder="10" formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">rating_option_code</item>
+                </item>
+            </argument>
+            <settings>
+                <validation>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                </validation>
+                <dataType>text</dataType>
+                <label translate="true">Rating option code</label>
+                <dataScope>rating_option_code</dataScope>
+            </settings>
+        </field>
+
+        <field name="rating_option_name" sortOrder="20" formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">rating_option_name</item>
+                </item>
+            </argument>
+            <settings>
+                <validation>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                </validation>
+                <dataType>text</dataType>
+                <label translate="true">Rating option name</label>
+                <dataScope>rating_option_name</dataScope>
+            </settings>
+        </field>
+
+        <field name="rating_option_max_value" sortOrder="30" formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">rating_option_max_value</item>
+                </item>
+            </argument>
+            <settings>
+                <validation>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                </validation>
+                <dataType>text</dataType>
+                <label translate="true">Rating option max. value</label>
+                <dataScope>rating_option_max_value</dataScope>
+            </settings>
+        </field>
+
+        <field name="is_active" sortOrder="40" formElement="checkbox">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">is_active</item>
+                    <item name="default" xsi:type="number">1</item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>boolean</dataType>
+                <label translate="true">Is Active</label>
+                <dataScope>is_active</dataScope>
+            </settings>
+            <formElements>
+                <checkbox>
+                    <settings>
+                        <valueMap>
+                            <map name="false" xsi:type="number">0</map>
+                            <map name="true" xsi:type="number">1</map>
+                        </valueMap>
+                        <prefer>toggle</prefer>
+                    </settings>
+                </checkbox>
+            </formElements>
+        </field>
+    </fieldset>
+</form>

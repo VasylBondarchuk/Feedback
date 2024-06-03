@@ -7,7 +7,9 @@ use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Exception\CouldNotDeleteException;
 use Magento\Framework\Exception\CouldNotSaveException;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
+
 use Training\Feedback\Api\Data\RatingOption\RatingOptionInterface;
 use Training\Feedback\Api\Data\RatingOption\RatingOptionInterfaceFactory as RatingOptionFactory;
 use Training\Feedback\Api\Data\RatingOption\RatingOptionRepositoryInterface;
@@ -19,22 +21,29 @@ use Training\Feedback\Model\ResourceModel\RatingOption\CollectionFactory as Rati
 /**
  *
  */
-class RatingOptionRepository implements RatingOptionRepositoryInterface
-{
+class RatingOptionRepository implements RatingOptionRepositoryInterface {
+
     /**
      * @var RatingOptionResource
      */
     private RatingOptionResource $resource;
+
     /**
      * @var RatingOptionFactory
      */
     private RatingOptionFactory $ratingOptionFactory;
+
     /**
      * @var RatingOptionCollectionFactory
      */
     private RatingOptionCollectionFactory $ratingOptionCollectionFactory;
-
+    
+    /**
+     * 
+     * @var RatingOptionSearchResultsInterfaceFactory
+     */
     private RatingOptionSearchResultsInterfaceFactory $searchResultsFactory;
+
     /**
      * @var CollectionProcessorInterface
      */
@@ -48,11 +57,11 @@ class RatingOptionRepository implements RatingOptionRepositoryInterface
      * @param CollectionProcessorInterface $collectionProcessor
      */
     public function __construct(
-        RatingOptionResource $resource,
-        RatingOptionFactory $ratingOptionFactory,
-        RatingOptionCollectionFactory $ratingOptionCollectionFactory,
-        RatingOptionSearchResultsInterfaceFactory $searchResultsFactory,
-        CollectionProcessorInterface $collectionProcessor
+            RatingOptionResource $resource,
+            RatingOptionFactory $ratingOptionFactory,
+            RatingOptionCollectionFactory $ratingOptionCollectionFactory,
+            RatingOptionSearchResultsInterfaceFactory $searchResultsFactory,
+            CollectionProcessorInterface $collectionProcessor
     ) {
         $this->resource = $resource;
         $this->ratingOptionFactory = $ratingOptionFactory;
@@ -68,17 +77,38 @@ class RatingOptionRepository implements RatingOptionRepositoryInterface
      * @return RatingOptionInterface
      * @throws CouldNotSaveException
      */
-    public function save(RatingOptionInterface $ratingOption): RatingOptionInterface
-    {
+    public function save(RatingOptionInterface $ratingOption): RatingOptionInterface {
+
+        if ($this->isCodeExist($ratingOption->getRatingOptionCode(), $ratingOption->getId())) {
+            throw new LocalizedException(__('Rating option code already exists.'));
+        }
         try {
             $this->resource->save($ratingOption);
         } catch (\Exception $exception) {
             throw new CouldNotSaveException(
-                __('Could not save the rating option: %1', $exception->getMessage()),
-                $exception
+                            __('Could not save the rating option: %1', $exception->getMessage()),
+                            $exception
             );
         }
         return $ratingOption;
+    }
+
+    /**
+     * Check if rating option code exists
+     * 
+     * @param string $ratingOptionCode
+     * @param int|null $ratingOptionId
+     * @return bool
+     */
+    protected function isCodeExist($ratingOptionCode, $ratingOptionId = null): bool {
+        $collection = $this->ratingOptionFactory->create()->getCollection()
+                ->addFieldToFilter('rating_option_code', $ratingOptionCode);
+
+        if ($ratingOptionId) {
+            $collection->addFieldToFilter('rating_option_id', ['neq' => $ratingOptionId]);
+        }
+
+        return $collection->getSize() > 0;
     }
 
     /**
@@ -88,8 +118,7 @@ class RatingOptionRepository implements RatingOptionRepositoryInterface
      * @return RatingOptionInterface Interface
      * @throws NoSuchEntityException
      */
-    public function getById(int $ratingOptionId): RatingOptionInterface
-    {
+    public function getById(int $ratingOptionId): RatingOptionInterface {
         $ratingOption = $this->ratingOptionFactory->create();
         $this->resource->load($ratingOption, $ratingOptionId);
         if (!$ratingOption->getId()) {
@@ -106,8 +135,7 @@ class RatingOptionRepository implements RatingOptionRepositoryInterface
      * @param SearchCriteriaInterface $searchCriteria
      * @return RatingOptionSearchResultsInterface
      */
-    public function getList(SearchCriteriaInterface $searchCriteria)
-    {
+    public function getList(SearchCriteriaInterface $searchCriteria) {
         $collection = $this->ratingOptionCollectionFactory->create();
         $this->collectionProcessor->process($searchCriteria, $collection);
         $searchResults = $this->searchResultsFactory->create();
@@ -124,18 +152,18 @@ class RatingOptionRepository implements RatingOptionRepositoryInterface
      * @return bool
      * @throws CouldNotDeleteException
      */
-    public function delete(RatingOptionInterface $ratingOption): bool
-    {
+    public function delete(RatingOptionInterface $ratingOption): bool {
         try {
             $this->resource->delete($ratingOption);
         } catch (\Exception $exception) {
             throw new CouldNotDeleteException(__(
-                'Could not delete the rating option: %1',
-                $exception->getMessage()
+                                    'Could not delete the rating option: %1',
+                                    $exception->getMessage()
             ));
         }
         return true;
     }
+
     /**
      * Delete RatingOption by given RatingOption Identity
      *
@@ -144,8 +172,17 @@ class RatingOptionRepository implements RatingOptionRepositoryInterface
      * @throws CouldNotDeleteException
      * @throws NoSuchEntityException
      */
-    public function deleteById(int $ratingOptionId): bool
-    {
+    public function deleteById(int $ratingOptionId): bool {
         return $this->delete($this->getById($ratingOptionId));
+    }
+
+    /**
+     * 
+     * @return type
+     */    
+    public function getActiveOptions() {
+        $collection = $this->ratingOptionCollectionFactory->create();
+        $collection->addFieldToFilter('is_active', 1);
+        return $collection->getItems();
     }
 }

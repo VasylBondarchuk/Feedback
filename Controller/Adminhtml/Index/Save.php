@@ -161,8 +161,9 @@ class Save extends Action implements HttpGetActionInterface {
     public function execute() {
         if ($this->form->isFormSubmitted()) {
             $post = $this->form->getFormData();
+            print_r($post);exit;
             try {
-                $this->form->validatePost($post);
+                $this->form->validateFeedbackPost($post);
                 $this->saveFeedback($post);
                 $this->saveReply($post);
                 $this->sendNotificationEmail();
@@ -174,7 +175,8 @@ class Save extends Action implements HttpGetActionInterface {
                         __('An error occurred while saving the feedback. %1', $e->getMessage()));
                 $this->logger->error($e->getLogMessage());
             }
-            $this->dataPersistor->set('training_feedback', $post);            
+            $this->dataPersistor->set('training_feedback', $post);
+                        
             return $this->redirect($post);
         }
     }

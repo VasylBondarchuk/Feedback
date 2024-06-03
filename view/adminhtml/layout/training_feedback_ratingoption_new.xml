@@ -5,7 +5,7 @@
     <update handle="editor"/>
     <body>
         <referenceContainer name="content">
-            <uiComponent name="training_feedback_rating_listing"/>
+            <uiComponent name="training_feedback_ratingoption_form"/>
         </referenceContainer>
     </body>
 </page>
