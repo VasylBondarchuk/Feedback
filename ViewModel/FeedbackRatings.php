@@ -60,17 +60,24 @@ class FeedbackRatings implements ArgumentInterface {
 
     /**
      * 
-     * @param type $feedbackId
-     * @param type $ratingOptionId
-     * @return type
+     * @param int $ratingOptionId
+     * @param int $feedbackId
+     * @return int
      */
-    public function getRatingValue(int $ratingOptionId) : int {
-        $feedbackId = (int)$this->request->get(self::REQUEST_FIELD_NAME);
+    public function getRatingValue(int $ratingOptionId, int $feedbackId) : int {        
         $rating = $feedbackId
                 ? $this->ratingRepository->getRatingValue($feedbackId, $ratingOptionId)
                 : self::DEFAULT_RATING_MIN;
         return (int)$rating;
-    }   
-      
+    }    
+ 
+    /**
+     * 
+     * @return int
+     */
+    public function getFeedbackId() : int {        
+        
+        return (int)$this->request->get(self::REQUEST_FIELD_NAME);
+    } 
     
 }

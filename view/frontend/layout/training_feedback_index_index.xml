@@ -17,8 +17,9 @@
                 </arguments>
             </block>      
             <block class="Training\Feedback\Block\FeedbackList" name="feedback_list" template="Training_Feedback::list.phtml">            
-                <arguments>
-                    <argument name="feedback_list_view_model" xsi:type="object">Training\Feedback\ViewModel\FeedbackList</argument>
+                <arguments>                    
+                    <argument name="feedback" xsi:type="object">Training\Feedback\ViewModel\FeedbackList</argument>
+                    <argument name="rating" xsi:type="object">Training\Feedback\ViewModel\FeedbackRatings</argument>                     
                 </arguments>                
                 <block class="Magento\Theme\Block\Html\Pager" name="feedback_list_pager"/>                             
             </block>

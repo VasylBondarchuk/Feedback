@@ -1,12 +1,12 @@
-<?php $viewModel = $block->getData('feedback_list_view_model'); ?>
-
 <!-- Display feedbacks statistics -->
 <div>
-    <?php if ($viewModel->getAllFeedbackNumber()): ?>
-        <label class="feedback_statistics" for="sorter"><?= $block->escapeHtml(__('Feedbacks statistics')) ?></label>
+    <?php if ($block->getFeedback()->getAllFeedbackNumber()): ?>
+        <label class="feedback_statistics" for="sorter">
+            <?= $block->escapeHtml(__('Feedbacks statistics')) ?>
+        </label>
         <div class="feedback-statistic">
-            <?= __('Total number of submitted feedbacks: %1', '<b>' . $viewModel->getAllFeedbackNumber() . '</b>') ?> /
-            <?= __('Total number of active feedbacks: %1', '<b>' . $viewModel->getActiveFeedbackNumber() . '</b>') ?>
+            <?= __('Total number of submitted feedbacks: %1', '<b>' . $block->getFeedback()->getAllFeedbackNumber() . '</b>') ?> /
+            <?= __('Total number of active feedbacks: %1', '<b>' . $block->getFeedback()->getActiveFeedbackNumber() . '</b>') ?>
         </div>
     <?php else: ?>
         <p><?= $block->escapeHtml('There are no feedbacks at the moment. Be the first to add a feedback.') ?></p>
@@ -19,13 +19,14 @@
         <?php foreach ($block->getCollection() as $feedback): ?>
             <div class="feedback-item" style="background-color: <?= $block->getFeedbackBackgroundColor(); ?>; margin: 10px; padding: 1px;">
                 <div class="feedback-content">
+                    
                     <!-- Left column: Ratings -->
                     <div class="ratings-column">
                         <b><?= __('Ratings:') ?></b>
                         <ul>
-                            <?php foreach ($viewModel->getActiveRatingOptions() as $ratingOption): ?>
-                                <?php
-                                $ratingValue = $viewModel->getRatingValue($feedback->getId(), $ratingOption->getRatingOptionId());
+                            <?php foreach ($block->getRating()->getActiveRatingOptions() as $ratingOption): ?>
+                                <?php                                
+                                $ratingValue = $block->getRating()->getRatingValue($ratingOption->getRatingOptionId(), $feedback->getFeedbackId());                                
                                 if ($ratingValue === null) {
                                     continue;
                                 }
@@ -35,7 +36,7 @@
                                     <div class="stars" data-max="<?= $ratingOption->getRatingOptionMaxValue() ?>">
                                         <?php
                                         for ($i = 1; $i <= $ratingOption->getRatingOptionMaxValue(); $i++):
-                                        ?>
+                                            ?>
                                             <span class="star<?= $i <= $ratingValue ? ' filled' : '' ?>">&#9733;</span>
                                         <?php endfor; ?>
                                     </div>
@@ -43,42 +44,42 @@
                             <?php endforeach; ?>
                         </ul>
                     </div>
-                    
+
                     <!-- Right column: Feedback data -->
                     <div class="feedback-data-column">
                         <p>
                             <?= $block->escapeHtml($feedback->getAuthorName()) ?> |
-                            <?= $viewModel->getFeedbackDate($feedback) ?>
+                            <?= $block->getFeedback()->getFeedbackDate($feedback) ?>
                         </p>
                         <p><?= $block->escapeHtml($feedback->getMessage()) ?></p>
 
                         <?php if ($block->isFeedbackReplied($feedback->getFeedbackId())): ?>
                             <a href="#<?= $feedback->getFeedbackId(); ?>" onclick='showContentById("<?= $feedback->getFeedbackId(); ?>")'>
                                 <?= $block->getRepliesNumber($feedback->getFeedbackId()); ?> answer(s)
-                            </a>
-                        <?php endif; ?>
-                    </div>
-                </div>
+                            </a>                        
 
-                <!-- Display feedback replies if any -->
-                <div id="<?= $feedback->getFeedbackId(); ?>" style="display:none;">
-                    <?php foreach ($viewModel->getRepliesByFeedbackId($feedback->getId()) as $reply): ?>
-                        <?php if ($reply->getReplyText()): ?>
-                            <div class="feedback-item" style="background-color: <?= $block->getReplyBackgroundColor(); ?>; margin: 15px; padding: 10px;">
-                                <p>
-                                    <?= $block->escapeHtml($viewModel->getReplyAuthorName($reply)) ?> |
-                                    <?= $reply->getReplyCreationTime() ?>
-                                </p>
-                                <p>
-                                    <?= $block->escapeHtml($reply->getReplyText()) ?>
-                                </p>
+                            <!-- Display feedback replies if any -->
+                            <div id="<?= $feedback->getFeedbackId(); ?>" style="display:none;">
+                                <?php foreach ($block->getFeedback()->getRepliesByFeedbackId($feedback->getId()) as $reply): ?>
+                                    <?php if ($reply->getReplyText()): ?>
+                                        <div class="feedback-item" style="background-color: <?= $block->getReplyBackgroundColor(); ?>; margin: 15px; padding: 10px;">
+                                            <p>
+                                                <?= $block->escapeHtml($block->getFeedback()->getReplyAuthorName($reply)) ?> |
+                                                <?= $reply->getReplyCreationTime() ?>
+                                            </p>
+                                            <p>
+                                                <?= $block->escapeHtml($reply->getReplyText()) ?>
+                                            </p>
+                                        </div>
+                                    <?php endif ?>
+                                <?php endforeach; ?>
                             </div>
-                        <?php endif ?>
-                    <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
         <?php endforeach; ?>
-    <?php elseif (($viewModel->getActiveFeedbackNumber())): ?>
+    <?php elseif (($feedback->getActiveFeedbackNumber())): ?>
         <p><?= $block->escapeHtml('There are no feedbacks matching your selection.') ?></p>
     <?php endif; ?>
 </div>
@@ -91,45 +92,45 @@
 <?php endif ?>
 
 <style>
-.feedback-content {
-    display: flex;
-    flex-direction: row;
-}
+    .feedback-content {
+        display: flex;
+        flex-direction: row;
+    }
 
-.ratings-column {
-    flex: 1;
-    padding-right: 10px; /* Adjust padding for closer columns */
-}
+    .ratings-column {
+        flex: 1;
+        padding-right: 10px; /* Adjust padding for closer columns */
+    }
 
-.feedback-data-column {
-    flex: 2;
-    padding-left: 10px; /* Adjust padding for closer columns */
-}
+    .feedback-data-column {
+        flex: 2;
+        padding-left: 10px; /* Adjust padding for closer columns */
+    }
 
-.rating-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 5px; /* Adjust margin between items */
-}
+    .rating-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px; /* Adjust margin between items */
+    }
 
-.rating-name {
-    flex-shrink: 0;
-    margin-right: 10px; /* Space between rating name and stars */
-}
+    .rating-name {
+        flex-shrink: 0;
+        margin-right: 10px; /* Space between rating name and stars */
+    }
 
-.star {
-    display: inline-block;
-    font-size: 24px;
-    color: #ddd;
-}
+    .star {
+        display: inline-block;
+        font-size: 24px;
+        color: #ddd;
+    }
 
-.star.filled {
-    color: #ffcc00;
-}
+    .star.filled {
+        color: #ffcc00;
+    }
 
-ul {
-    list-style: none;
-    padding: 0;
-    margin: 0; /* Remove default margin for ul */
-}
+    ul {
+        list-style: none;
+        padding: 0;
+        margin: 0; /* Remove default margin for ul */
+    }
 </style>
