@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Training\Feedback\Controller\Adminhtml\Index;
@@ -19,11 +20,15 @@ use Training\Feedback\Api\Data\Feedback\FeedbackInterface;
 use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
 use Training\Feedback\Api\Data\Reply\ReplyInterface;
 use Training\Feedback\Api\Data\Reply\ReplyRepositoryInterface;
+use Training\Feedback\Api\Data\Rating\RatingInterface;
 use Training\Feedback\Helper\EmailNotifications\ReplyEmailNotification;
 use Training\Feedback\Model\Feedback;
 use Training\Feedback\Model\FeedbackFactory;
 use Training\Feedback\Model\Reply;
 use Training\Feedback\Model\ReplyFactory;
+use Training\Feedback\Model\RatingFactory;
+use Training\Feedback\Model\RatingRepository;
+use Training\Feedback\Api\Data\Rating\RatingRepositoryInterface;
 use Training\Feedback\Helper\Form;
 
 /**
@@ -82,6 +87,18 @@ class Save extends Action implements HttpGetActionInterface {
     private ReplyFactory $replyFactory;
 
     /**
+     * 
+     * @var RatingFactory
+     */
+    private RatingFactory $ratingFactory;
+    
+    /**
+     * 
+     * @var RatingRepository
+     */
+    private RatingRepository $ratingRepository;
+
+    /**
      * @var Session
      */
     private Session $authSession;
@@ -108,9 +125,13 @@ class Save extends Action implements HttpGetActionInterface {
     private Form $form;
 
     /**
+     * 
+     * @param Context $context
      * @param ManagerInterface $messageManager
      * @param ResultFactory $resultFactory
-     * @param DataPersistorInterface $postPersistor
+     * @param DataPersistorInterface $dataPersistor
+     * @param FeedbackInterface $feedback
+     * @param ReplyInterface $reply
      * @param FeedbackRepositoryInterface $feedbackRepository
      * @param FeedbackFactory $feedbackFactory
      * @param ReplyRepositoryInterface $replyRepository
@@ -119,6 +140,7 @@ class Save extends Action implements HttpGetActionInterface {
      * @param LoggerInterface $logger
      * @param RequestInterface $request
      * @param ReplyEmailNotification $email
+     * @param Form $form
      */
     public function __construct(
             Context $context,
@@ -131,6 +153,8 @@ class Save extends Action implements HttpGetActionInterface {
             FeedbackFactory $feedbackFactory,
             ReplyRepositoryInterface $replyRepository,
             ReplyFactory $replyFactory,
+            RatingFactory $ratingFactory,
+            RatingRepository $ratingRepository,
             Session $authSession,
             LoggerInterface $logger,
             RequestInterface $request,
@@ -146,6 +170,8 @@ class Save extends Action implements HttpGetActionInterface {
         $this->feedbackFactory = $feedbackFactory;
         $this->replyRepository = $replyRepository;
         $this->replyFactory = $replyFactory;
+        $this->ratingFactory = $ratingFactory;
+        $this->ratingRepository = $ratingRepository;
         $this->authSession = $authSession;
         $this->logger = $logger;
         $this->request = $request;
@@ -160,11 +186,12 @@ class Save extends Action implements HttpGetActionInterface {
      */
     public function execute() {
         if ($this->form->isFormSubmitted()) {
-            $post = $this->form->getFormData();
-            //print_r($post);exit;
+            $post = $this->form->getFormData();            
             try {
                 $this->form->validateFeedbackPost($post);
+
                 $this->saveFeedback($post);
+                $this->saveRatings($post);
                 $this->saveReply($post);
                 $this->sendNotificationEmail();
 
@@ -173,10 +200,10 @@ class Save extends Action implements HttpGetActionInterface {
             } catch (\Exception $e) {
                 $this->messageManager->addErrorMessage(
                         __('An error occurred while saving the feedback. %1', $e->getMessage()));
-                $this->logger->error($e->getLogMessage());
+                $this->logger->error($e->getMessage());
             }
             $this->dataPersistor->set('training_feedback', $post);
-                        
+
             return $this->redirect($post);
         }
     }
@@ -189,9 +216,7 @@ class Save extends Action implements HttpGetActionInterface {
     private function getFeedbackModel(): FeedbackInterface {
         $editedFeedbackId = $this->getEditedFeedbackId();
         if (!$this->feedback) {
-            $this->feedback = $editedFeedbackId
-                    ? $this->feedbackRepository->getById($editedFeedbackId)
-                    : $this->feedbackFactory->create();
+            $this->feedback = $editedFeedbackId ? $this->feedbackRepository->getById($editedFeedbackId) : $this->feedbackFactory->create();
         }
         return $this->feedback;
     }
@@ -202,12 +227,22 @@ class Save extends Action implements HttpGetActionInterface {
      */
     private function getReplyModel(): ReplyInterface {
         $editedFeedbackId = $this->getEditedFeedbackId();
-        if (!$this->reply) {
-            $this->freply = $this->replyRepository->isReplyExist($editedFeedbackId)
-                    ? $this->replyRepository->getByFeedbackId($editedFeedbackId)
-                    : $this->replyFactory->create();
-        }
+        $this->reply = $this->replyRepository->isReplyExist($editedFeedbackId) ? $this->replyRepository->getByFeedbackId($editedFeedbackId) : $this->replyFactory->create();
         return $this->reply;
+    }
+    
+    /**
+     * 
+     * @param type $feedbackId
+     * @param type $ratingOptionId
+     * @return RatingInterface
+     */
+    private function getRatingModel($feedbackId, $ratingOptionId): RatingInterface {
+        $editedFeedbackId = $this->getEditedFeedbackId();
+        $this->rating = $editedFeedbackId
+                ? $this->ratingRepository->getRatingByFeedbackIdRatingOptionId($feedbackId, $ratingOptionId)
+                : $this->ratingFactory->create();
+        return $this->rating;
     }
 
     /**
@@ -228,6 +263,24 @@ class Save extends Action implements HttpGetActionInterface {
         }
     }
 
+    private function saveRatings(array $post) {
+        if (isset($post['ratings']) && is_array($post['ratings'])) {
+            foreach ($post['ratings'] as $ratingOptionId => $ratingValue) {
+                // Save the rating value for each option            
+                $this->saveRating($ratingOptionId, $ratingValue);
+            }
+        }
+    }
+
+    private function saveRating($ratingOptionId, $ratingValue) {
+        $feedbackId = $this->getFeedbackModel()->getFeedbackId();
+        $rating = $this->getRatingModel($feedbackId, $ratingOptionId);
+        $rating->setFeedbackId($feedbackId);
+        $rating->setRatingOptionId((int)$ratingOptionId);
+        $rating->setRatingValue((int)$ratingValue);        
+        $this->ratingRepository->save($rating);
+    }
+
     /**
      * 
      * @param FeedbackInterface $feedbackModel
@@ -236,8 +289,8 @@ class Save extends Action implements HttpGetActionInterface {
      */
     private function saveReply(array $post) {
         try {
-            $replyModel = $this->getReplyModel();
-            $feedbackModel = $this->getFeedbackModel();            
+            $replyModel = $this->getReplyModel();            
+            $feedbackModel = $this->getFeedbackModel();
             if ($this->isReplySubmitted()) {
                 $feedBackId = $feedbackModel->getFeedbackId();
                 $replyModel
@@ -250,7 +303,7 @@ class Save extends Action implements HttpGetActionInterface {
                 $this->feedbackRepository->save($feedbackModel);
                 // If reply was deleted
             } else {
-                $editedFeedbackId = (int)($this->request->get(FeedbackInterface::FEEDBACK_ID));
+                $editedFeedbackId = (int) ($this->request->get(FeedbackInterface::FEEDBACK_ID));
                 $this->replyRepository->deleteByFeedbackId($editedFeedbackId);
                 $feedbackModel->setIsReplied($this->replyRepository->isReplied($editedFeedbackId));
                 $this->feedbackRepository->save($feedbackModel);
@@ -258,7 +311,7 @@ class Save extends Action implements HttpGetActionInterface {
         } catch (LocalizedException $e) {
             $this->messageManager->addErrorMessage(
                     __('An error occurred while saving the reply. %1', $e->getMessage()));
-            $this->logger->error($e->getLogMessage());            
+            $this->logger->error($e->getLogMessage());
         }
     }
 
@@ -271,7 +324,7 @@ class Save extends Action implements HttpGetActionInterface {
         try {
             $this->email->sendEmail(
                     $feedbackModel->getAuthorEmail(),
-                    [$feedbackModel->getAuthorName(),$replyModel->getReplyText()]
+                    [$feedbackModel->getAuthorName(), $replyModel->getReplyText()]
             );
         } catch (LocalizedException $e) {
             $this->messageManager->addErrorMessage(

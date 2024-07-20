@@ -5,7 +5,7 @@ namespace Training\Feedback\Ui\Component\Form;
 use Magento\Framework\View\Element\UiComponent\DataProvider\DataProviderInterface;
 use Training\Feedback\Model\RatingOptionRepository;
 
-class RatingOptions implements DataProviderInterface
+abstract class RatingOptions implements DataProviderInterface
 {
     protected $ratingOptionRepository;
 

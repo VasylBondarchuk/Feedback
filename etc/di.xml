@@ -61,5 +61,12 @@
         </arguments>
     </type>
     
+    <type name="Training\Feedback\Model\DataProvider">
+        <arguments>
+            <argument name="name" xsi:type="string">feedback_data_provider</argument>
+            <argument name="primaryFieldName" xsi:type="string">entity_id</argument>
+            <argument name="requestFieldName" xsi:type="string">feedback_id</argument>
+        </arguments>
+    </type>
 
 </config>

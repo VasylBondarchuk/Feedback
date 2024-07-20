@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Training\Feedback\Model\ResourceModel\Rating;
 
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
-use Training\Feedback\Model\RatingOption as RatingModel;
+use Training\Feedback\Model\Rating as RatingModel;
 use Training\Feedback\Model\ResourceModel\Rating as RatingResourceModel;
 
 class Collection extends AbstractCollection

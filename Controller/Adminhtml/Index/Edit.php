@@ -15,6 +15,7 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Message\ManagerInterface;
 use Psr\Log\LoggerInterface;
 use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
+use Magento\Framework\Registry;
 
 /**
  * Edits feedback in the admin panel
@@ -48,6 +49,11 @@ class Edit extends Action implements HttpGetActionInterface
      * @var LoggerInterface
      */
     private LoggerInterface $logger;
+    
+    /**
+     * @var \Magento\Framework\Registry
+     */
+    protected $coreRegistry;
 
     /**
      *
@@ -63,13 +69,15 @@ class Edit extends Action implements HttpGetActionInterface
         ResultFactory $resultFactory,
         FeedbackRepositoryInterface $feedbackRepository,
         RequestInterface $request,
-        LoggerInterface  $logger           
+        LoggerInterface  $logger,
+        Registry $coreRegistry    
     ) {
         $this->messageManager = $messageManager;
         $this->resultFactory = $resultFactory;
         $this->feedbackRepository = $feedbackRepository;
         $this->request = $request;
         $this->logger = $logger;
+        $this->coreRegistry = $coreRegistry;
         parent::__construct($context); 
     }
 
@@ -85,6 +93,8 @@ class Edit extends Action implements HttpGetActionInterface
             $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
             return $resultRedirect->setPath('*/*/');
         }
+        $feedback = $this->feedbackRepository->getById($feedbackId);
+        $this->coreRegistry->register('feedback_data', $feedback);
         $resultPage = $this->resultFactory->create(ResultFactory::TYPE_PAGE);
         $resultPage
             ->setActiveMenu('Training_Feedback::feedback')

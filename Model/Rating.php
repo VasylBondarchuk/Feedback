@@ -48,7 +48,7 @@ class Rating extends AbstractExtensibleModel implements RatingInterface {
      * @return int
      */
     public function getRatingValue(): int {
-        return $this->getData(self::RATING_VALUE);
+        return (int)$this->getData(self::RATING_VALUE);
     }
     
     /**
