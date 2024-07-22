@@ -1,25 +1,25 @@
 <?php
+
 namespace Training\Feedback\Block\Adminhtml\Feedback\Edit;
 
-use Magento\Framework\View\Element\Template;
-use Magento\Framework\View\Element\Template\Context;
+use Magento\Backend\Block\Template;
 use Training\Feedback\ViewModel\FeedbackRatings;
 
-class Ratings extends Template
-{
-    protected $feedbackRatingsViewModel;
+class Ratings extends Template{
+    
+    private FeedbackRatings $viewModel;
 
     public function __construct(
-        Context $context,
-        FeedbackRatings $feedbackRatingsViewModel,
+        Template\Context $context,
+        FeedbackRatings $viewModel,
         array $data = []
     ) {
-        $this->feedbackRatingsViewModel = $feedbackRatingsViewModel;
+        $this->viewModel = $viewModel;
         parent::__construct($context, $data);
     }
 
-    public function getViewModel()
+    public function getViewModel() : FeedbackRatings
     {
-        return $this->feedbackRatingsViewModel;
+        return $this->viewModel;
     }
 }

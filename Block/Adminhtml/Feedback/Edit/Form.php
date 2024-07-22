@@ -85,7 +85,6 @@ class Form extends Generic {
                     'value' => isset($data[$feedbackId]['store_id']) ? $data[$feedbackId]['store_id'] : 0
                 ]
         );
-
         // Add the custom ratings field
         $fieldset->addField(
                 'ratings',
@@ -95,7 +94,7 @@ class Form extends Generic {
                     'title' => __('Ratings'),
                     'text' => $this->getLayout()
                             ->createBlock('Training\Feedback\Block\Adminhtml\Feedback\Edit\Ratings')
-                            ->setTemplate('Training_Feedback::ratings.phtml')
+                            ->setTemplate('Training_Feedback::common/form_ratings.phtml')
                             ->toHtml()
                 ]
         );
@@ -200,4 +199,3 @@ class Form extends Generic {
         return parent::_prepareForm();
     }
 }
-
