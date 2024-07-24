@@ -93,7 +93,7 @@ class Form extends Generic {
                     'label' => __('Ratings'),
                     'title' => __('Ratings'),
                     'text' => $this->getLayout()
-                            ->createBlock('Training\Feedback\Block\Adminhtml\Feedback\Edit\Ratings')
+                            ->createBlock('Training\Feedback\Block\Ratings')
                             ->setTemplate('Training_Feedback::common/form_ratings.phtml')
                             ->toHtml()
                 ]
