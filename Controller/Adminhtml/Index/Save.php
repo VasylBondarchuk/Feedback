@@ -27,7 +27,6 @@ use Training\Feedback\Model\FeedbackFactory;
 use Training\Feedback\Model\Reply;
 use Training\Feedback\Model\ReplyFactory;
 use Training\Feedback\Model\RatingFactory;
-use Training\Feedback\Model\RatingRepository;
 use Training\Feedback\Api\Data\Rating\RatingRepositoryInterface;
 use Training\Feedback\Helper\Form;
 
@@ -94,9 +93,9 @@ class Save extends Action implements HttpGetActionInterface {
     
     /**
      * 
-     * @var RatingRepository
+     * @var RatingRepositoryInterface
      */
-    private RatingRepository $ratingRepository;
+    private RatingRepositoryInterface $ratingRepository;
 
     /**
      * @var Session
@@ -154,7 +153,7 @@ class Save extends Action implements HttpGetActionInterface {
             ReplyRepositoryInterface $replyRepository,
             ReplyFactory $replyFactory,
             RatingFactory $ratingFactory,
-            RatingRepository $ratingRepository,
+            RatingRepositoryInterface $ratingRepository,
             Session $authSession,
             LoggerInterface $logger,
             RequestInterface $request,
@@ -263,21 +262,21 @@ class Save extends Action implements HttpGetActionInterface {
         }
     }
 
-    private function saveRatings(array $post) {
+    private function saveRatings(array $post): void {
         if (isset($post['ratings']) && is_array($post['ratings'])) {
             foreach ($post['ratings'] as $ratingOptionId => $ratingValue) {
                 // Save the rating value for each option            
-                $this->saveRating($ratingOptionId, $ratingValue);
+                $this->saveRating((int)$ratingOptionId, (int)$ratingValue);
             }
         }
     }
 
-    private function saveRating($ratingOptionId, $ratingValue) {
+    private function saveRating(int $ratingOptionId, int $ratingValue): void {
         $feedbackId = $this->getFeedbackModel()->getFeedbackId();
         $rating = $this->getRatingModel($feedbackId, $ratingOptionId);
         $rating->setFeedbackId($feedbackId);
-        $rating->setRatingOptionId((int)$ratingOptionId);
-        $rating->setRatingValue((int)$ratingValue);        
+        $rating->setRatingOptionId($ratingOptionId);
+        $rating->setRatingValue($ratingValue);        
         $this->ratingRepository->save($rating);
     }
 
@@ -287,7 +286,7 @@ class Save extends Action implements HttpGetActionInterface {
      * @param ReplyInterface $replyModel
      * @param array $post
      */
-    private function saveReply(array $post) {
+    private function saveReply(array $post): void {
         try {
             $replyModel = $this->getReplyModel();            
             $feedbackModel = $this->getFeedbackModel();

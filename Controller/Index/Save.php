@@ -89,6 +89,7 @@ class Save implements HttpPostActionInterface {
         $resultRedirect->setPath('*/*/index');
         if ($this->form->isFormSubmitted()) {
             $post = $this->form->getFormData();
+            //print_r($post);exit;
             try {
                 $this->form->validateFeedbackPost($post);
                 $this->saveFeedback($post);
@@ -116,32 +117,34 @@ class Save implements HttpPostActionInterface {
     private function saveFeedback(array $post): void {
         $feedback = $this->feedbackFactory->create();
         $this->populateFeedbackModel($feedback, $post);
-
         try {
             $this->feedbackRepository->save($feedback);
-            $this->saveRating($feedback, $post);
+            $this->saveRatings($feedback, $post);
         } catch (\Exception $e) {
             $this->logger->error('Could not save feedback or ratings: ' . $e->getMessage());
             throw new \Exception((string) __('An error occurred while saving feedback or ratings.'));
         }
     }
-
-    /**
-     * 
-     * @param FeedbackInterface $feedback
-     * @param array $post
-     * @return void
-     */
-    private function saveRating(FeedbackInterface $feedback, array $post): void {
-        foreach ($this->getRatingOptions() as $ratingOption) {
-            $rating = $this->ratingFactory->create();
-            $this->populateRatingModel($rating, $feedback, $ratingOption, $post);
-            if ($rating->getRatingValue() !== null) {
-                $this->ratingRepository->save($rating);
+    
+    
+    private function saveRatings($feedback, array $post): void {        
+        if (isset($post['ratings']) && is_array($post['ratings'])) {
+            foreach ($post['ratings'] as $ratingOptionId => $ratingValue) {
+                // Save the rating value for each option            
+                $this->saveRating($feedback, (int)$ratingOptionId, (int)$ratingValue);
             }
         }
     }
 
+    private function saveRating($feedback, int $ratingOptionId, int $ratingValue): void {        
+        $rating = $this->ratingFactory->create();
+        $rating->setFeedbackId($feedback->getFeedbackId());
+        $rating->setRatingOptionId($ratingOptionId);
+        $rating->setRatingValue($ratingValue);        
+        $this->ratingRepository->save($rating);
+    }  
+    
+     
     /**
      * 
      * @param FeedbackInterface $feedback
@@ -170,7 +173,7 @@ class Save implements HttpPostActionInterface {
      * @param array $post
      * @return void
      */
-    private function populateRatingModel(RatingInterface $rating, FeedbackInterface $feedback, $ratingOption, array $post): void {
+    private function populateRatingModel(RatingInterface $rating, FeedbackInterface $feedback, $ratingOption, array $post) {
         $currentDate = (new \DateTime())->format('Y-m-d H:i:s');
         $feedbackId = $feedback->getFeedbackId();
         $ratingOptionId = $ratingOption->getRatingOptionId();
@@ -183,6 +186,7 @@ class Save implements HttpPostActionInterface {
                     ->setRatingValue($ratingValue)
                     ->setCreatedAt($currentDate);
         }
+        return $rating;
     }
 
     /**

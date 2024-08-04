@@ -1,8 +1,4 @@
-<?php
-/** @var \Training\Feedback\ViewModel\FeedbackForm $viewModel */
-$viewModel = $block->getData('feedback_form_view_model');
-$ratingOptions = $viewModel->getRatingOptions();
-?>
+<?php $viewModel = $block->getViewModel(); ?>
 
 <form class="form contact"
       action="<?= $block->escapeUrl($viewModel->getActionUrl()) ?>"
@@ -75,20 +71,11 @@ $ratingOptions = $viewModel->getRatingOptions();
         <!-- Add Rating Options -->
 <div class="field rating-options required">
     <label class="label">
-        <span><?= $block->escapeHtml(__('Rating')) ?></span>
+        <span><?= $block->escapeHtml(__('Ratings')) ?></span>
     </label>
     <div class="control">
-        <?php foreach ($ratingOptions as $option): ?>
-            <div class="rating-option">
-                <span><?= $block->escapeHtml($option->getRatingOptionName()) ?>:</span>
-                <div class="stars" data-max="<?= $option->getRatingOptionMaxValue() ?>">
-                    <?php for ($i = $option->getRatingOptionMaxValue(); $i >= 1; $i--): ?>
-                        <input type="radio" name="rating_<?= $option->getRatingOptionId() ?>" value="<?= $i ?>" id="rating_<?= $option->getRatingOptionId() ?>_<?= $i ?>" class="star">
-                        <label for="rating_<?= $option->getRatingOptionId() ?>_<?= $i ?>" class="star-label" data-value="<?= $i ?>">&#9733;</label>
-                    <?php endfor; ?>
-                </div>
-            </div>
-        <?php endforeach; ?>
+        <!-- Include the common/form_rating template -->
+        <?= $block->getChildHtml('ratings_form') ?>
     </div>
 </div>
 </fieldset>
@@ -101,50 +88,3 @@ $ratingOptions = $viewModel->getRatingOptions();
     </div>
 </div>
 </form>
-
-<style>
-    .stars {
-        display: inline-block;
-    }
-
-    .star {
-        display: none;
-    }
-
-    .star-label {
-        font-size: 24px;
-        cursor: pointer;
-        color: #ccc;
-    }
-
-    .star-label.selected,
-    .star-label.selected ~ .star-label {
-        color: gold;
-    }
-
-    .star-label:hover,
-    .star-label:hover ~ .star-label {
-        color: gold;
-    }
-</style>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('.stars').forEach(function (starsContainer) {
-            const starLabels = Array.from(starsContainer.querySelectorAll('.star-label'));
-            starLabels.forEach(function (label, index) {
-                label.addEventListener('click', function () {
-                    // Reset all labels
-                    starLabels.forEach(function (lbl, idx) {
-                        if (idx >= index) {
-                            lbl.classList.add('selected');
-                        } else {
-                            lbl.classList.remove('selected');
-                        }
-                    });
-                });
-            });
-        });
-    });
-</script>
-

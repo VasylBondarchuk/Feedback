@@ -2,14 +2,26 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <update handle="customer_account"/>
     <head>     
-        <script src="Training_Feedback::js/sorter.js" /> 
+        <script src="Training_Feedback::js/sorter.js" />
+        <css src="Training_Feedback::css/list_ratings.css"/> 
     </head> 
     <body>
-        <referenceContainer name="content">            
+        <referenceContainer name="content">                         
             <block class="Training\Feedback\Block\CustomerFeedbackHistory" name="feedback_history" template="Training_Feedback::history.phtml">
                 <arguments>
-                    <argument name="feedback_history_view_model" xsi:type="object">Training\Feedback\ViewModel\FeedbackHistory</argument>
+                    <argument name="feedback_history_view_model" xsi:type="object">Training\Feedback\ViewModel\FeedbackHistory</argument>                    
                 </arguments>
+                <block class="Training\Feedback\Block\FeedbackSorter" name="feedback_sorter" template="Training_Feedback::sorter.phtml">
+                    <arguments>
+                        <argument name="view_model" xsi:type="object">Training\Feedback\ViewModel\FeedbackList</argument>
+                        <argument name="path" xsi:type="string">training_feedback/index/history/</argument>
+                    </arguments>
+                </block> 
+                <block name="list_ratings" template="Training_Feedback::list_ratings.phtml">
+                    <arguments>                    
+                        <argument name="rating" xsi:type="object">Training\Feedback\ViewModel\FeedbackRatings</argument>                                                              
+                    </arguments>
+                </block>    
                 <block class="Magento\Theme\Block\Html\Pager" name="feedback_list_pager"/>                            
             </block>
             <block name="add_feedback_button" template="Training_Feedback::add_feedback_button.phtml">

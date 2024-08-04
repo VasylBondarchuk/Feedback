@@ -17,32 +17,12 @@
 <div class="feedback-list" style="margin-top: 30px;">
     <?php if (count($block->getCollection())): ?>
         <?php foreach ($block->getCollection() as $feedback): ?>
-            <div class="feedback-item" style="background-color: <?= $block->getFeedbackBackgroundColor(); ?>; margin: 10px; padding: 1px;">
+            <div class="feedback-item" style="background-color: <?= $block->getFeedbackBackgroundColor(); ?>; margin: 10px; padding: 10px;">
                 <div class="feedback-content">
                     
                     <!-- Left column: Ratings -->
-                    <div class="ratings-column">
-                        <b><?= __('Ratings:') ?></b>
-                        <ul>
-                            <?php foreach ($block->getRating()->getActiveRatingOptions() as $ratingOption): ?>
-                                <?php                                
-                                $ratingValue = $block->getRating()->getRatingValue($ratingOption->getRatingOptionId(), $feedback->getFeedbackId());                                
-                                if ($ratingValue === null) {
-                                    continue;
-                                }
-                                ?>
-                                <li class="rating-item">
-                                    <span class="rating-name"><?= $block->escapeHtml($ratingOption->getRatingOptionName()) ?>:</span>
-                                    <div class="stars" data-max="<?= $ratingOption->getRatingOptionMaxValue() ?>">
-                                        <?php
-                                        for ($i = 1; $i <= $ratingOption->getRatingOptionMaxValue(); $i++):
-                                            ?>
-                                            <span class="star<?= $i <= $ratingValue ? ' filled' : '' ?>">&#9733;</span>
-                                        <?php endfor; ?>
-                                    </div>
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
+                    <div class="ratings-column">                        
+                        <?= $block->getChildBlock('list_ratings')->setFeedback($feedback)->toHtml()?>
                     </div>
 
                     <!-- Right column: Feedback data -->
@@ -74,12 +54,12 @@
                                     <?php endif ?>
                                 <?php endforeach; ?>
                             </div>
-                        </div>
-                    <?php endif; ?>
+                        <?php endif; ?>
+                    </div>
                 </div>
             </div>
         <?php endforeach; ?>
-    <?php elseif (($feedback->getActiveFeedbackNumber())): ?>
+    <?php elseif (($block->getFeedback()->getActiveFeedbackNumber())): ?>
         <p><?= $block->escapeHtml('There are no feedbacks matching your selection.') ?></p>
     <?php endif; ?>
 </div>
@@ -90,47 +70,3 @@
         <?= $block->getChildHtml('pager'); ?>
     </div>
 <?php endif ?>
-
-<style>
-    .feedback-content {
-        display: flex;
-        flex-direction: row;
-    }
-
-    .ratings-column {
-        flex: 1;
-        padding-right: 10px; /* Adjust padding for closer columns */
-    }
-
-    .feedback-data-column {
-        flex: 2;
-        padding-left: 10px; /* Adjust padding for closer columns */
-    }
-
-    .rating-item {
-        display: flex;
-        align-items: center;
-        margin-bottom: 5px; /* Adjust margin between items */
-    }
-
-    .rating-name {
-        flex-shrink: 0;
-        margin-right: 10px; /* Space between rating name and stars */
-    }
-
-    .star {
-        display: inline-block;
-        font-size: 24px;
-        color: #ddd;
-    }
-
-    .star.filled {
-        color: #ffcc00;
-    }
-
-    ul {
-        list-style: none;
-        padding: 0;
-        margin: 0; /* Remove default margin for ul */
-    }
-</style>

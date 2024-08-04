@@ -1,0 +1,34 @@
+.ratings-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.rating-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+.stars {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+}
+.star {
+    display: none;
+}
+.star-label {
+    font-size: 24px;
+    cursor: pointer;
+    color: #ddd;
+}
+.star-label.selected {
+    color: #ffcc00;
+}
+.star:checked ~ .star-label,
+.star:checked + .star-label ~ .star-label {
+    color: gold;
+}
+.star-label:hover,
+.star-label:hover ~ .star-label {
+    color: #f30;
+}

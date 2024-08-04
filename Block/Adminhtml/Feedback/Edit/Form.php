@@ -81,10 +81,12 @@ class Form extends Generic {
                     'label' => __('Store View'),
                     'title' => __('Store View'),
                     'required' => true,
-                    'values' => $this->systemStore->getStoreValuesForForm(false, true),
+                    'values' => $this->systemStore->getStoreValuesForForm(false, false),
                     'value' => isset($data[$feedbackId]['store_id']) ? $data[$feedbackId]['store_id'] : 0
                 ]
         );
+        
+        
         // Add the custom ratings field
         $fieldset->addField(
                 'ratings',

@@ -33,7 +33,8 @@
             <argument name="mainTable" xsi:type="string">training_feedback</argument>
             <argument name="resourceModel" xsi:type="string">Training\Feedback\Model\ResourceModel\Feedback</argument>
         </arguments>
-    </virtualType>
+    </virtualType>   
+    
     
     <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
         <arguments>

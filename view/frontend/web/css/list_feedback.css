@@ -1,0 +1,10 @@
+    .feedback-content {
+        display: flex;
+        flex-direction: row;
+    }
+
+    
+    .feedback-data-column {
+        flex: 2;
+        padding-left: 10px; /* Adjust padding for closer columns */
+    }

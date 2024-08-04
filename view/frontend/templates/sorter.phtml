@@ -1,20 +1,21 @@
 <!-- Display sorting -->
-<?php $viewModel = $block->getData('feedback_sorter_view_model'); ?>
+<?php $viewModel = $block->getData('view_model');?>
+
 <?php if ($viewModel->getActiveFeedbackNumber()): ?>
-<div class="toolbar-sorter sorter" style="margin-left: 5px; margin-right: 5px;">        
-    <label class="sorter-label" for="sorter"><?= $block->escapeHtml(__('Sort by')) ?></label>
-    <select name="sort_order"
-            id="sort_order"
-            onchange='addParamToUrl("<?=$escaper->escapeUrl($block->getUrl('training_feedback/index/index/') . '?' . $block->getUrlRequest()); ?>", "sort_order","order")'>            
-        <?php foreach ($block->getAvailableSortingOrders() as $key => $order) : ?>
-            <option value="<?= $block->escapeHtmlAttr($key) ?>"
-            <?php if ($block->isOrderCurrent($key)) : ?>
-                        selected="selected"
-                    <?php endif; ?>
-                    >
-                        <?= $block->escapeHtml(__($order)) ?>
-            </option>
-        <?php endforeach; ?> 
-    </select>
-</div>
+    <div class="toolbar-sorter sorter" style="margin-left: 5px; margin-right: 5px;">        
+        <label class="sorter-label" for="sorter"><?= $block->escapeHtml(__('Sort by')) ?></label>
+        <select name="sort_order"
+                id="sort_order"
+                onchange='addParamToUrl("<?= $escaper->escapeUrl($block->getUrl($block->getPath()) . '?' . $block->getUrlRequest()); ?>", "sort_order", "order")'>            
+                    <?php foreach ($block->getAvailableSortingOrders() as $key => $order) : ?>
+                <option value="<?= $block->escapeHtmlAttr($key) ?>"
+                <?php if ($block->isOrderCurrent($key)) : ?>
+                            selected="selected"
+                        <?php endif; ?>
+                        >
+                            <?= $block->escapeHtml(__($order)) ?>
+                </option>
+            <?php endforeach; ?> 
+        </select>
+    </div>
 <?php endif; ?>

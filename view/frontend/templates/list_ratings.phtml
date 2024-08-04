@@ -1,0 +1,22 @@
+<?php $feedback = $block->getFeedback(); ?>
+<b><?= __('Ratings:') ?></b>
+<ul>
+    <?php foreach ($block->getRating()->getActiveRatingOptions() as $ratingOption): ?>
+        <?php
+        $ratingValue = $block->getRating()->getRatingValue($ratingOption->getRatingOptionId(), $feedback->getFeedbackId());
+        if ($ratingValue === null) {
+            continue;
+        }
+        ?>
+        <li class="rating-item">
+            <span class="rating-name"><?= $block->escapeHtml($ratingOption->getRatingOptionName()) ?>:</span>
+            <div class="stars" data-max="<?= $ratingOption->getRatingOptionMaxValue() ?>">
+                <?php
+                for ($i = 1; $i <= $ratingOption->getRatingOptionMaxValue(); $i++):
+                    ?>
+                    <span class="star<?= $i <= $ratingValue ? ' filled' : '' ?>">&#9733;</span>
+                <?php endfor; ?>
+            </div>
+        </li>
+    <?php endforeach; ?>
+</ul>

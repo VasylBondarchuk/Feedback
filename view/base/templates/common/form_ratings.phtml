@@ -1,0 +1,26 @@
+<?php $viewModel = $block->getViewModel(); ?>
+<div class="admin__field">    
+    <div class="admin__field-control">
+        <ul class="ratings-list">
+            <?php foreach ($viewModel->getActiveRatingOptions() as $ratingOption): ?>
+                <?php $ratingValue = $viewModel->getRatingValue($ratingOption->getRatingOptionId(), $viewModel->getFeedbackId()); ?>
+                <li class="rating-item">
+                    <span class="rating-name"><?= $block->escapeHtml($ratingOption->getRatingOptionName()) ?>:</span>
+                    <div class="stars" data-max="<?= $ratingOption->getRatingOptionMaxValue() ?>" data-current="<?= $ratingValue ?>" data-rating-option-id="<?= $ratingOption->getRatingOptionId() ?>">
+                        <?php for ($i = 1; $i <= $ratingOption->getRatingOptionMaxValue(); $i++): ?>
+                            <input type="radio"
+                                   name="ratings[<?= $ratingOption->getRatingOptionId() ?>]"
+                                   value="<?= $i ?>"
+                                   id="rating_<?= $ratingOption->getRatingOptionId() ?>_<?= $i ?>"
+                                   class="star"<?= $i == $ratingValue ? ' checked' : '' ?>>
+                            <label for="rating_<?= $ratingOption->getRatingOptionId() ?>_<?= $i ?>"
+                                   class="star-label"
+                                   data-value="<?= $i ?>">&#9733;</label>
+                        <?php endfor; ?>
+                    </div>
+                    <input type="hidden" name="ratings[<?= $ratingOption->getRatingOptionId() ?>]" value="<?= $ratingValue ?>">
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+</div>

@@ -142,13 +142,15 @@
                 <label translate="true">ID</label>
                 <sorting>asc</sorting>
             </settings>
-        </column>
-        <!--<column name="store_id">
+        </column>        
+        <column name="is_anonymous" component="Magento_Ui/js/grid/columns/select">
             <settings>
-                <label translate="true">Store ID</label>
-                <sorting>asc</sorting>
+                <options class="Training\Feedback\Model\Source\IsAnonymous"/>
+                <filter>select</filter>
+                <dataType>select</dataType>
+                <label translate="true">Is Anonymous</label>
             </settings>
-        </column>-->
+        </column>        
         <column name="author_name">
             <settings>
                 <filter>text</filter>

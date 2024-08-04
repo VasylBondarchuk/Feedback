@@ -1,14 +1,17 @@
 <?xml version="1.0"?>
 <page layout="1column" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <head>     
-        <script src="Training_Feedback::js/sorter.js" />
-        <script src="Training_Feedback::js/showContentById.js" /> 
-    </head>     
+        <script src="Training_Feedback::js/sorter.js"/>
+        <script src="Training_Feedback::js/showContentById.js"/>        
+        <css src="Training_Feedback::css/list_ratings.css"/>
+        <css src="Training_Feedback::css/list_feedback.css"/>        
+    </head>         
     <body>
-        <referenceContainer name="content">            
+        <referenceContainer name="content"> 
             <block class="Training\Feedback\Block\FeedbackSorter" name="feedback_sorter" template="Training_Feedback::sorter.phtml">
                 <arguments>
-                    <argument name="feedback_sorter_view_model" xsi:type="object">Training\Feedback\ViewModel\FeedbackList</argument>
+                    <argument name="view_model" xsi:type="object">Training\Feedback\ViewModel\FeedbackList</argument>
+                    <argument name="path" xsi:type="string">training_feedback/index/index/</argument>
                 </arguments>
             </block>                  
             <block class="Training\Feedback\Block\FeedbackFilter" name="feedback_filter" template="Training_Feedback::filter.phtml">
@@ -18,10 +21,15 @@
             </block>      
             <block class="Training\Feedback\Block\FeedbackList" name="feedback_list" template="Training_Feedback::list.phtml">            
                 <arguments>                    
-                    <argument name="feedback" xsi:type="object">Training\Feedback\ViewModel\FeedbackList</argument>
-                    <argument name="rating" xsi:type="object">Training\Feedback\ViewModel\FeedbackRatings</argument>                     
-                </arguments>                
-                <block class="Magento\Theme\Block\Html\Pager" name="feedback_list_pager"/>                             
+                    <argument name="feedback" xsi:type="object">Training\Feedback\ViewModel\FeedbackList</argument>                                         
+                </arguments>
+                <block name="list_ratings" template="Training_Feedback::list_ratings.phtml">
+                    <arguments>                    
+                        <argument name="rating" xsi:type="object">Training\Feedback\ViewModel\FeedbackRatings</argument>                                                              
+                    </arguments>
+                </block>                 
+                <block class="Magento\Theme\Block\Html\Pager" name="feedback_list_pager"/>
+                                             
             </block>
             <block name="add_feedback_button" template="Training_Feedback::add_feedback_button.phtml">
                 <arguments>

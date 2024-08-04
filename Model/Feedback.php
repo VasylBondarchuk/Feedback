@@ -186,7 +186,7 @@ class Feedback extends AbstractExtensibleModel implements FeedbackInterface {
     /**
      * @return string
      */
-    public function getIsAnonymous(): string {
+    public function getIsAnonymous(): bool {
         return (bool) $this->getData(self::IS_ANONYMOUS);
     }
 

@@ -1,0 +1,33 @@
+
+    .ratings-column {
+        flex: 1;
+        padding-right: 10px; /* Adjust padding for closer columns */
+    }
+   
+
+    .rating-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px; /* Adjust margin between items */
+    }
+
+    .rating-name {
+        flex-shrink: 0;
+        margin-right: 10px; /* Space between rating name and stars */
+    }
+
+    .star {
+        display: inline-block;
+        font-size: 24px;
+        color: #ddd;
+    }
+
+    .star.filled {
+        color: #ffcc00;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }    

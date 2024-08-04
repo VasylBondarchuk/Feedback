@@ -1,6 +1,6 @@
 <?php
 
-namespace Training\Feedback\Block\Adminhtml\Feedback\Edit;
+namespace Training\Feedback\Block;
 
 use Magento\Backend\Block\Template;
 use Training\Feedback\ViewModel\FeedbackRatings;
