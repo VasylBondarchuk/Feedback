@@ -8,7 +8,11 @@
             "creation_time": true,
             "update_time": true,
             "is_active": true,
-            "reply_notification": true
+            "reply_notification": true,
+            "store_id": true,
+            "customer_id": true,
+            "is_replied": true,
+            "is_anonymous": true
         },
         "index": {
             "TRAINING_FEEDBACK_IS_ACTIVE": true
@@ -25,6 +29,62 @@
             "reply_text": true,
             "reply_creation_time": true,
             "reply_update_time": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "FK_975EFDBE96F69F22159115880C32E72C": true
+        }
+    },
+    "training_feedback_rating_options": {
+        "column": {
+            "rating_option_id": true,
+            "rating_option_code": true,
+            "rating_option_name": true,
+            "rating_option_max_value": true,
+            "is_active": true
+        },
+        "index": {
+            "TRAINING_FEEDBACK_RATING_OPTIONS_RATING_OPTION_CODE": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    },
+    "training_feedback_ratings": {
+        "column": {
+            "rating_id": true,
+            "feedback_id": true,
+            "rating_option_id": true,
+            "rating_value": true,
+            "created_at": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "FK_A8D8F1716443E476453376FDF727F03B": true,
+            "FK_460C56ED971629DEF81E645C6AE9A592": true
+        }
+    },
+    "training_negotiable_quote_items": {
+        "column": {
+            "quote_item_id": true,
+            "product_id": true,
+            "quote_id": true,
+            "proposed_qty": true,
+            "proposed_price": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    },
+    "training_negotiable_quotes": {
+        "column": {
+            "quote_id": true,
+            "quote_name": true,
+            "quote_comment": true,
+            "quote_creation_time": true,
+            "quote_update_time": true,
+            "quote_author_id": true,
+            "quote_status": true
         },
         "constraint": {
             "PRIMARY": true

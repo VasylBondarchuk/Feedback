@@ -1,37 +1,19 @@
 <?xml version="1.0"?>
 <schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
-
     <table name="training_feedback" resource="default" engine="innodb" comment="Feedback Messages Table">
-        <column xsi:type="smallint" name="feedback_id" padding="5" nullable="false" identity="true"
-                comment="Feedback ID"/>
-        <column xsi:type="smallint" name="store_id" padding="5" nullable="false"
-                comment="Store ID"/>
-        <column xsi:type="smallint" name="customer_id" padding="5" nullable="true"
-                comment="Customer ID"/>
-        <column xsi:type="varchar" name="author_name" nullable="false" length="255"
-                comment="Feedback Author Name"/>
-        <column xsi:type="varchar" name="author_email" nullable="false" length="255"
-                comment="Feedback Author Email"/>
-        <column xsi:type="mediumtext" name="message" nullable="false"
-                comment="Feedback Content"/>
-        <column xsi:type="tinyint" name="reply_notification" nullable="true"
-                comment="Reply notification"/>
-        <column xsi:type="timestamp" name="creation_time" on_update="false" nullable="false"
-                default="CURRENT_TIMESTAMP"
-                comment="Feedback Creation Time"/>
-        <column xsi:type="timestamp" name="update_time" on_update="true" nullable="false"
-                default="CURRENT_TIMESTAMP"
-                comment="Feedback Modification Time"/>
-        <column xsi:type="tinyint" name="is_active" padding="5" nullable="false" identity="false"
-                default="0"
-                comment="Is Feedback Active"/>
-        <column xsi:type="tinyint" name="is_replied" nullable="false" identity="false"
-                default="0"
-                comment="Is Feedback replied"/>
-        <column xsi:type="tinyint" name="is_anonymous" nullable="false" identity="false"
-                default="0"
-                comment="Is Feedback Anonymous"/>        
+        <column xsi:type="smallint" name="feedback_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Feedback ID"/>
+        <column xsi:type="smallint" name="store_id" padding="5" unsigned="true" nullable="false" comment="Store ID"/>
+        <column xsi:type="smallint" name="customer_id" padding="5" unsigned="true" nullable="true" comment="Customer ID"/>
+        <column xsi:type="varchar" name="author_name" nullable="false" length="255" comment="Feedback Author Name"/>
+        <column xsi:type="varchar" name="author_email" nullable="false" length="255" comment="Feedback Author Email"/>
+        <column xsi:type="mediumtext" name="message" nullable="false" comment="Feedback Content"/>
+        <column xsi:type="tinyint" name="reply_notification" nullable="true" comment="Reply notification"/>
+        <column xsi:type="timestamp" name="creation_time" nullable="false" default="CURRENT_TIMESTAMP" on_update="false" comment="Feedback Creation Time"/>
+        <column xsi:type="timestamp" name="update_time" nullable="false" default="CURRENT_TIMESTAMP" on_update="true" comment="Feedback Modification Time"/>
+        <column xsi:type="tinyint" name="is_active" nullable="false" default="0" comment="Is Feedback Active"/>
+        <column xsi:type="tinyint" name="is_replied" nullable="false" default="0" comment="Is Feedback replied"/>
+        <column xsi:type="tinyint" name="is_anonymous" nullable="false" default="0" comment="Is Feedback Anonymous"/>
         <constraint xsi:type="primary" referenceId="PRIMARY">
             <column name="feedback_id"/>
         </constraint>
@@ -40,22 +22,67 @@
         </index>
     </table>
 
+    <table name="training_feedback_rating_options" resource="default" engine="innodb" comment="Rating Options Table">
+        <column xsi:type="int" name="rating_option_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Rating Option ID"/>
+        <column xsi:type="varchar" name="rating_option_code" nullable="false" length="255" comment="Rating Option Code"/>
+        <column xsi:type="varchar" name="rating_option_name" nullable="false" length="255" comment="Rating Option Name"/>
+        <column xsi:type="int" name="rating_option_max_value" padding="5" unsigned="true" nullable="false" default="5" comment="Rating Option Max Value"/>
+        <column xsi:type="tinyint" name="is_active" nullable="false" default="1" comment="Is rating active"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="rating_option_id"/>
+        </constraint>
+        <index referenceId="UNIQUE_RATING_OPTION_CODE" indexType="btree">
+            <column name="rating_option_code"/>
+        </index>
+    </table>
+
+    <table name="training_feedback_ratings" resource="default" engine="innodb" comment="Feedback Ratings Table">
+        <column xsi:type="int" name="rating_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Rating ID"/>
+        <column xsi:type="smallint" name="feedback_id" padding="5" unsigned="true" nullable="false" comment="Feedback ID"/>
+        <column xsi:type="int" name="rating_option_id" padding="10" unsigned="true" nullable="false" comment="Rating Option ID"/>
+        <column xsi:type="int" name="rating_value" padding="5" unsigned="true" nullable="false" comment="Rating Value"/>
+        <column xsi:type="timestamp" name="created_at" nullable="true" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="rating_id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="FK_FEEDBACK_ID" table="training_feedback" column="feedback_id" referenceTable="training_feedback" referenceColumn="feedback_id" onDelete="CASCADE"/>
+        <constraint xsi:type="foreign" referenceId="FK_RATING_OPTION_ID" table="training_feedback_rating_options" column="rating_option_id" referenceTable="training_feedback_rating_options" referenceColumn="rating_option_id" onDelete="CASCADE"/>
+    </table>
+
     <table name="training_feedback_reply" resource="default" engine="innodb" comment="Feedback Replies Table">
-        <column xsi:type="smallint" name="reply_id" padding="5" nullable="false" identity="true"
-                comment="Feedback Reply ID"/>
-        <column xsi:type="smallint" name="feedback_id" padding="5" nullable="false"
-                comment="Feedback ID"/>
-        <column xsi:type="varchar" name="admin_id" nullable="false" length="255"
-                comment="Feedback Rely Admin id"/>
-        <column xsi:type="mediumtext" name="reply_text" nullable="true"
-                comment="Feedback Reply Content"/>
-        <column xsi:type="timestamp" name="reply_creation_time" on_update="false" nullable="false"
-                default="CURRENT_TIMESTAMP" comment="Feedback Reply Creation Time"/>
-        <column xsi:type="timestamp" name="reply_update_time" on_update="true" nullable="false"
-                default="CURRENT_TIMESTAMP" comment="Feedback Reply Modification Time"/>
+        <column xsi:type="smallint" name="reply_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Feedback Reply ID"/>
+        <column xsi:type="smallint" name="feedback_id" padding="5" unsigned="true" nullable="false" comment="Feedback ID"/>
+        <column xsi:type="varchar" name="admin_id" nullable="false" length="255" comment="Feedback Reply Admin ID"/>
+        <column xsi:type="mediumtext" name="reply_text" nullable="true" comment="Feedback Reply Content"/>
+        <column xsi:type="timestamp" name="reply_creation_time" nullable="false" default="CURRENT_TIMESTAMP" on_update="false" comment="Feedback Reply Creation Time"/>
+        <column xsi:type="timestamp" name="reply_update_time" nullable="false" default="CURRENT_TIMESTAMP" on_update="true" comment="Feedback Reply Modification Time"/>
         <constraint xsi:type="primary" referenceId="PRIMARY">
             <column name="reply_id"/>
         </constraint>
+        <constraint xsi:type="foreign" referenceId="FK_FEEDBACK_ID_REPLY" table="training_feedback" column="feedback_id" referenceTable="training_feedback" referenceColumn="feedback_id" onDelete="CASCADE"/>
     </table>
 
+    <table name="training_negotiable_quote_items" resource="default" engine="innodb" comment="Quote's products info">
+        <column xsi:type="smallint" name="quote_item_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Quote Item ID"/>
+        <column xsi:type="smallint" name="product_id" padding="5" unsigned="true" nullable="false" comment="Product ID"/>
+        <column xsi:type="smallint" name="quote_id" padding="5" unsigned="true" nullable="false" comment="Quote ID"/>
+        <column xsi:type="float" name="proposed_qty" nullable="false" comment="Product proposed quantity"/>
+        <column xsi:type="float" name="proposed_price" nullable="false" comment="Product proposed price"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="quote_item_id"/>
+        </constraint>
+    </table>
+
+    <table name="training_negotiable_quotes" resource="default" engine="innodb" comment="Quote's general information">
+        <column xsi:type="smallint" name="quote_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Quote ID"/>
+        <column xsi:type="varchar" name="quote_name" nullable="false" length="255" comment="Quote Name"/>
+        <column xsi:type="mediumtext" name="quote_comment" nullable="false" comment="Quote Comment"/>
+        <column xsi:type="timestamp" name="quote_creation_time" nullable="false" default="CURRENT_TIMESTAMP" on_update="false" comment="Quote Creation Time"/>
+        <column xsi:type="timestamp" name="quote_update_time" nullable="false" default="CURRENT_TIMESTAMP" on_update="true" comment="Quote Modification Time"/>
+        <column xsi:type="smallint" name="quote_author_id" padding="5" unsigned="true" nullable="false" comment="Customer's who created the Quote ID"/>
+        <column xsi:type="varchar" name="quote_status" nullable="false" length="255" comment="Quote Status"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="quote_id"/>
+        </constraint>
+    </table>
 </schema>
