@@ -58,18 +58,18 @@
             </argument>
         </exportButton>
         <filters name="listing_filters">
-        <settings>
-            <templates>
-                <filters>
-                    <select>
-                        <param name="template"
-                               xsi:type="string">ui/grid/filters/elements/ui-select</param>
-                        <param name="component"
-                               xsi:type="string">Magento_Ui/js/form/element/ui-select</param>
-                    </select>
-                </filters>
-            </templates>
-        </settings>
+            <settings>
+                <templates>
+                    <filters>
+                        <select>
+                            <param name="template"
+                                   xsi:type="string">ui/grid/filters/elements/ui-select</param>
+                            <param name="component"
+                                   xsi:type="string">Magento_Ui/js/form/element/ui-select</param>
+                        </select>
+                    </filters>
+                </templates>
+            </settings>
             <filterSelect name="store_id" provider="${ $.parentName }">
                 <settings>
                     <options class="Magento\Store\Ui\Component\Listing\Column\Store\Options"/>
@@ -142,15 +142,18 @@
                 <label translate="true">ID</label>
                 <sorting>asc</sorting>
             </settings>
-        </column>        
+        </column> 
+        
         <column name="is_anonymous" component="Magento_Ui/js/grid/columns/select">
             <settings>
-                <options class="Training\Feedback\Model\Source\IsAnonymous"/>
+                <options class="Magento\Config\Model\Config\Source\Yesno"/>
                 <filter>select</filter>
                 <dataType>select</dataType>
                 <label translate="true">Is Anonymous</label>
             </settings>
-        </column>        
+        </column>
+  
+                                
         <column name="author_name">
             <settings>
                 <filter>text</filter>
@@ -171,15 +174,15 @@
         </column>
         <column name="is_active" component="Magento_Ui/js/grid/columns/select">
             <settings>
-                <options class="Training\Feedback\Model\Source\IsActive"/>
+                <options class="Magento\Config\Model\Config\Source\Yesno"/>
                 <filter>select</filter>
                 <dataType>select</dataType>
-                <label translate="true">Status</label>
+                <label translate="true">Published</label>
             </settings>
         </column>
         <column name="reply_notification" component="Magento_Ui/js/grid/columns/select">
             <settings>
-                <options class="Training\Feedback\Model\Source\ReplyNotification"/>
+                <options class="Magento\Config\Model\Config\Source\Yesno"/>
                 <filter>select</filter>
                 <dataType>select</dataType>
                 <label translate="true">Reply Notification</label>
@@ -187,7 +190,7 @@
         </column>
         <column name="is_replied" component="Magento_Ui/js/grid/columns/select">
             <settings>
-                <options class="Training\Feedback\Model\Source\IsReplied"/>
+                <options class="Magento\Config\Model\Config\Source\Yesno"/>
                 <filter>select</filter>
                 <dataType>select</dataType>
                 <label translate="true">Is Replied</label>
