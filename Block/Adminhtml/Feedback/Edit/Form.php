@@ -19,11 +19,11 @@ class Form extends Generic {
             Registry $registry,
             FormFactory $formFactory,
             DataProvider $dataProvider,
-            Store $systemStore, // Inject the Store System Model
+            Store $systemStore, 
             array $data = []
     ) {
         $this->dataProvider = $dataProvider;
-        $this->systemStore = $systemStore; // Assign the Store System Model
+        $this->systemStore = $systemStore; 
         parent::__construct($context, $registry, $formFactory, $data);
     }
 
@@ -33,7 +33,7 @@ class Form extends Generic {
      * @return \Magento\Backend\Block\Widget\Form
      */
     protected function _prepareForm() {
-        $feedbackId = $this->getRequest()->getParam('feedback_id');
+        $feedbackId = (int)$this->getRequest()->getParam('feedback_id');
         $data = $this->dataProvider->getData($feedbackId);
         $form = $this->_formFactory->create(
                 ['data' => [

@@ -71,11 +71,7 @@ class Index extends Action implements HttpGetActionInterface
         $this->displayNotRepliedFeedbacksNumber();
 
         $resultPage = $this->resultFactory->create(ResultFactory::TYPE_PAGE);
-        $resultPage
-            ->setActiveMenu('Training_Feedback::feedback')
-            ->getConfig()->getTitle()->prepend(__('Feedbacks'));
-        $this->dataPersistor->clear('training_feedback');
-
+        $resultPage->getConfig()->getTitle()->prepend(__('Feedbacks')); 
         return $resultPage;
     }
 

@@ -15,7 +15,6 @@ use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Message\ManagerInterface;
 use Psr\Log\LoggerInterface;
-
 use Training\Feedback\Api\Data\Feedback\FeedbackInterface;
 use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
 use Training\Feedback\Api\Data\Reply\ReplyInterface;
@@ -90,7 +89,7 @@ class Save extends Action implements HttpGetActionInterface {
      * @var RatingFactory
      */
     private RatingFactory $ratingFactory;
-    
+
     /**
      * 
      * @var RatingRepositoryInterface
@@ -185,7 +184,7 @@ class Save extends Action implements HttpGetActionInterface {
      */
     public function execute() {
         if ($this->form->isFormSubmitted()) {
-            $post = $this->form->getFormData();                    
+            $post = $this->form->getFormData();
             try {
                 $this->form->validateFeedbackPost($post);
 
@@ -229,7 +228,7 @@ class Save extends Action implements HttpGetActionInterface {
         $this->reply = $this->replyRepository->isReplyExist($editedFeedbackId) ? $this->replyRepository->getByFeedbackId($editedFeedbackId) : $this->replyFactory->create();
         return $this->reply;
     }
-    
+
     /**
      * 
      * @param type $feedbackId
@@ -238,9 +237,7 @@ class Save extends Action implements HttpGetActionInterface {
      */
     private function getRatingModel($feedbackId, $ratingOptionId): RatingInterface {
         $editedFeedbackId = $this->getEditedFeedbackId();
-        $this->rating = $editedFeedbackId
-                ? $this->ratingRepository->getRatingByFeedbackIdRatingOptionId($feedbackId, $ratingOptionId)
-                : $this->ratingFactory->create();
+        $this->rating = $editedFeedbackId ? $this->ratingRepository->getRatingByFeedbackIdRatingOptionId($feedbackId, $ratingOptionId) : $this->ratingFactory->create();
         return $this->rating;
     }
 
@@ -262,21 +259,32 @@ class Save extends Action implements HttpGetActionInterface {
         }
     }
 
+    /**
+     * 
+     * @param array $post
+     * @return void
+     */
     private function saveRatings(array $post): void {
         if (isset($post['ratings']) && is_array($post['ratings'])) {
             foreach ($post['ratings'] as $ratingOptionId => $ratingValue) {
                 // Save the rating value for each option            
-                $this->saveRating((int)$ratingOptionId, (int)$ratingValue);
+                $this->saveRating((int) $ratingOptionId, (int) $ratingValue);
             }
         }
     }
 
+    /**
+     * 
+     * @param int $ratingOptionId
+     * @param int $ratingValue
+     * @return void
+     */
     private function saveRating(int $ratingOptionId, int $ratingValue): void {
         $feedbackId = $this->getFeedbackModel()->getFeedbackId();
         $rating = $this->getRatingModel($feedbackId, $ratingOptionId);
         $rating->setFeedbackId($feedbackId);
         $rating->setRatingOptionId($ratingOptionId);
-        $rating->setRatingValue($ratingValue);        
+        $rating->setRatingValue($ratingValue);
         $this->ratingRepository->save($rating);
     }
 
@@ -288,7 +296,7 @@ class Save extends Action implements HttpGetActionInterface {
      */
     private function saveReply(array $post): void {
         try {
-            $replyModel = $this->getReplyModel();            
+            $replyModel = $this->getReplyModel();
             $feedbackModel = $this->getFeedbackModel();
             if ($this->isReplySubmitted()) {
                 $feedBackId = $feedbackModel->getFeedbackId();
@@ -300,7 +308,6 @@ class Save extends Action implements HttpGetActionInterface {
                 $this->replyRepository->save($replyModel);
                 $feedbackModel->setIsReplied($this->replyRepository->isReplied($feedBackId));
                 $this->feedbackRepository->save($feedbackModel);
-                // If reply was deleted
             } else {
                 $editedFeedbackId = (int) ($this->request->get(FeedbackInterface::FEEDBACK_ID));
                 $this->replyRepository->deleteByFeedbackId($editedFeedbackId);
@@ -369,6 +376,10 @@ class Save extends Action implements HttpGetActionInterface {
         return $resultRedirect;
     }
 
+    /**
+     * 
+     * @return int
+     */
     private function getEditedFeedbackId(): int {
         return (int) ($this->request->get(FeedbackInterface::FEEDBACK_ID));
     }
