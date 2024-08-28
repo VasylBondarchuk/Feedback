@@ -33,6 +33,11 @@ interface RatingOptionInterface
     const RATING_OPTION_IS_ACTIVE = 'is_active';
     
     /**
+     *
+     */
+    const RATING_STORE_ID = 'store_id';
+    
+    /**
      * 
      * @return int
      */
@@ -50,13 +55,24 @@ interface RatingOptionInterface
      */
     public function getRatingOptionName(): string;
     
-    
-    /**
+     /**
      * Get Rating Option max Value
      *
      * @return int|null
     */
     public function getRatingOptionMaxValue(): int;
+    
+    /**
+    * 
+    * @return int
+    */
+    public function getIsActive(): int;
+    
+    /**
+     * 
+     * @return int
+     */
+    public function getStoreId(): int;
     
   
     /**
@@ -88,5 +104,17 @@ interface RatingOptionInterface
      * @return RatingOptionInterface
     */
     public function setRatingOptionMaxValue(int $ratingOptionMaxValue): RatingOptionInterface;
+    
+    /**
+    * 
+    * @return int
+    */
+    public function setIsActive(int $isActive): RatingOptionInterface;
+    
+    /**
+     * 
+     * @return int
+     */
+    public function setStoreId(int $storeId): RatingOptionInterface;
     
 }

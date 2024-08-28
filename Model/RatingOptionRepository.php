@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Training\Feedback\Model;
@@ -9,7 +10,6 @@ use Magento\Framework\Exception\CouldNotDeleteException;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
-
 use Training\Feedback\Api\Data\RatingOption\RatingOptionInterface;
 use Training\Feedback\Api\Data\RatingOption\RatingOptionInterfaceFactory as RatingOptionFactory;
 use Training\Feedback\Api\Data\RatingOption\RatingOptionRepositoryInterface;
@@ -37,7 +37,7 @@ class RatingOptionRepository implements RatingOptionRepositoryInterface {
      * @var RatingOptionCollectionFactory
      */
     private RatingOptionCollectionFactory $ratingOptionCollectionFactory;
-    
+
     /**
      * 
      * @var RatingOptionSearchResultsInterfaceFactory
@@ -61,13 +61,13 @@ class RatingOptionRepository implements RatingOptionRepositoryInterface {
             RatingOptionFactory $ratingOptionFactory,
             RatingOptionCollectionFactory $ratingOptionCollectionFactory,
             RatingOptionSearchResultsInterfaceFactory $searchResultsFactory,
-            CollectionProcessorInterface $collectionProcessor
+            CollectionProcessorInterface $collectionProcessor            
     ) {
         $this->resource = $resource;
         $this->ratingOptionFactory = $ratingOptionFactory;
         $this->ratingOptionCollectionFactory = $ratingOptionCollectionFactory;
         $this->searchResultsFactory = $searchResultsFactory;
-        $this->collectionProcessor = $collectionProcessor;
+        $this->collectionProcessor = $collectionProcessor;        
     }
 
     /**
@@ -177,12 +177,39 @@ class RatingOptionRepository implements RatingOptionRepositoryInterface {
     }
 
     /**
-     * 
-     * @return type
-     */    
-    public function getActiveOptions() {
+     * Get active rating options for a specific store.
+     *
+     * @param int $storeId
+     * @return array
+     */
+    public function getStoreActiveRatingOptions(int $storeId) {
         $collection = $this->ratingOptionCollectionFactory->create();
         $collection->addFieldToFilter('is_active', 1);
+        if ($storeId !== 0) {
+            $collection->addFieldToFilter('store_id', $storeId);
+        }
         return $collection->getItems();
     }
+
+    /**
+     * Get active rating options for all specified stores.
+     *
+     * @param array $storeIds
+     * @return array
+     */
+    public function getAllActiveRatingOptions(array $storeIds): array {
+        // Create a collection of rating options
+        $collection = $this->ratingOptionCollectionFactory->create();
+
+        // Filter the collection to include only active rating options
+        $collection->addFieldToFilter('is_active', 1);
+
+        // If specific store IDs are provided, filter the collection by these store IDs
+        if (!empty($storeIds)) {
+            $collection->addFieldToFilter('store_id', ['in' => $storeIds]);
+        }
+
+        // Return the filtered collection items
+        return $collection->getItems();
+    }    
 }

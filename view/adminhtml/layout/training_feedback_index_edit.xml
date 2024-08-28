@@ -8,5 +8,8 @@
         <referenceContainer name="content">
             <block class="Training\Feedback\Block\Adminhtml\Feedback\Edit" name="feedback_edit"/>
         </referenceContainer>
+        <referenceContainer name="page.main.actions">
+            <block class="Training\Feedback\Block\Adminhtml\Store\Switcher" name="store_switcher"/>
+        </referenceContainer>
     </body>
 </page>

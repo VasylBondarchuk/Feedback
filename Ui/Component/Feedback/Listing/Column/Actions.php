@@ -53,7 +53,8 @@ class Actions extends Column
                             'href' => $this->urlBuilder->getUrl(
                                 static::URL_PATH_EDIT,
                                 [
-                                    'feedback_id' => $item['feedback_id']
+                                    'feedback_id' => $item['feedback_id'],
+                                    'store' => $item['store_id'],
                                 ]
                             ),
                             'label' => __('Edit')

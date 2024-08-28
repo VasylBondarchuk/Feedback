@@ -54,6 +54,24 @@ class RatingOption extends AbstractExtensibleModel implements RatingOptionInterf
     public function getRatingOptionMaxValue(): int {
         return (int)$this->getData(self::RATING_OPTION_MAX_VALUE);
     }
+    
+    /**
+     * Get Rating Option max Value
+     *
+     * @return int|null
+    */
+    public function getIsActive(): int {
+        return (int)$this->getData(self::RATING_OPTION_IS_ACTIVE);
+    }
+    
+    /**
+     * Get Rating Option max Value
+     *
+     * @return int|null
+    */
+    public function getStoreId(): int {
+        return (int)$this->getData(self::RATING_STORE_ID);
+    }
 
     /**
      * 
@@ -89,5 +107,20 @@ class RatingOption extends AbstractExtensibleModel implements RatingOptionInterf
      */
     public function setRatingOptionMaxValue(int $ratingOptionMaxValue): RatingOptionInterface {
         return $this->setData(self::RATING_OPTION_MAX_VALUE, $ratingOptionMaxValue);
+    }
+    
+    /**
+    * 
+    * @return int
+    */
+    public function setIsActive(int $isActive): RatingOptionInterface{
+        return $this->setData(self::RATING_OPTION_IS_ACTIVE, $isActive);
+    }
+    /**
+     * 
+     * @return int
+     */
+    public function setStoreId(int $storeId): RatingOptionInterface{
+        return $this->setData(self::RATING_STORE_ID, $storeId);
     }
 }
