@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Training\Feedback\Controller\Adminhtml\Index;
 
-use Magento\Backend\App\Action;
-use Magento\Backend\App\Action\Context;
-use Magento\Framework\App\Action\HttpGetActionInterface;
+use Magento\Framework\App\ActionInterface;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\ResultFactory;
@@ -14,13 +12,14 @@ use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Message\ManagerInterface;
+use Magento\Framework\AuthorizationInterface;
 use Psr\Log\LoggerInterface;
 use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
 
 /**
  * Edits feedback in the admin panel
  */
-class Edit extends Action implements HttpGetActionInterface {
+class Edit implements ActionInterface {
 
     const ADMIN_RESOURCE = 'Training_Feedback::feedback_save';
     const REQUEST_FIELD_NAME = 'feedback_id';
@@ -28,12 +27,12 @@ class Edit extends Action implements HttpGetActionInterface {
     /**
      * @var ManagerInterface
      */
-    protected $messageManager;
+    private $messageManager;
 
     /**
      * @var ResultFactory
      */
-    protected $resultFactory;
+    private $resultFactory;
 
     /**
      * @var FeedbackRepositoryInterface
@@ -49,29 +48,36 @@ class Edit extends Action implements HttpGetActionInterface {
      * @var LoggerInterface
      */
     private LoggerInterface $logger;
+    
+    /**
+     * 
+     * @var AuthorizationInterface
+     */
+    private AuthorizationInterface $authorization;
 
     /**
-     * @param Context $context
+     * 
      * @param ManagerInterface $messageManager
      * @param ResultFactory $resultFactory
      * @param FeedbackRepositoryInterface $feedbackRepository
      * @param RequestInterface $request
      * @param LoggerInterface $logger
+     * @param AuthorizationInterface $authorization
      */
-    public function __construct(
-            Context $context,
+    public function __construct(           
             ManagerInterface $messageManager,
             ResultFactory $resultFactory,
             FeedbackRepositoryInterface $feedbackRepository,
             RequestInterface $request,
-            LoggerInterface $logger
-    ) {
-        parent::__construct($context);
+            LoggerInterface $logger,
+            AuthorizationInterface $authorization
+    ) {        
         $this->messageManager = $messageManager;
         $this->resultFactory = $resultFactory;
         $this->feedbackRepository = $feedbackRepository;
         $this->request = $request;
         $this->logger = $logger;
+        $this->authorization = $authorization;
     }
 
     /**
@@ -79,6 +85,14 @@ class Edit extends Action implements HttpGetActionInterface {
      * @throws LocalizedException
      */
     public function execute() {
+        
+        // Check if the admin user has the required permission
+        if (!$this->authorization->isAllowed(self::ADMIN_RESOURCE)) {
+            $this->messageManager->addErrorMessage(__('You are not authorized to edit feedbacks.'));
+            return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)
+                            ->setUrl($this->urlBuilder->getUrl('*/*/'));
+        }
+        
         $feedbackId = (int)($this->request->get(self::REQUEST_FIELD_NAME));        
         if (!$this->feedbackExists($feedbackId)) {
             $this->messageManager->addErrorMessage(__('This feedback does not exist.'));
