@@ -1,21 +1,23 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Training\Feedback\Helper;
 
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Exception\LocalizedException;
+use Training\Feedback\Api\Data\RatingOption\RatingOptionRepositoryInterface;
 
 /**
  *
  */
-class Form
-{
+class Form {
+
     const FEEDBACK_AUTHOR_NAME_FIELD = 'author_name';
     const FEEDBACK_AUTHOR_EMAIL_FIELD = 'author_email';
     const FEEDBACK_MESSAGE = 'message';
     const FEEDBACK_REPLY_FIELD = 'reply_text';
-    
+    const FEEDBACK_RATINGS = 'ratings';
     const RATING_OPTION_CODE_FIELD = 'rating_option_code';
     const RATING_OPTION_NAME_FIELD = 'rating_option_name';
     const RATING_OPTION_MAX_VALUE_FIELD = 'rating_option_max_value';
@@ -25,12 +27,17 @@ class Form
      * @var RequestInterface
      */
     private RequestInterface $request;
+    private RatingOptionRepositoryInterface $ratingOptionRepository;
 
     /**
      * @param RequestInterface $request
      */
-    public function __construct(RequestInterface $request) {        
+    public function __construct(
+            RequestInterface $request,
+            RatingOptionRepositoryInterface $ratingOptionRepository
+    ) {
         $this->request = $request;
+        $this->ratingOptionRepository = $ratingOptionRepository;
     }
 
     /**
@@ -39,20 +46,20 @@ class Form
      * @throws LocalizedException
      */
     public function validateFeedbackPost(array $post) {
-        if (!isset($post[self::FEEDBACK_AUTHOR_NAME_FIELD])
-                || trim($post[self::FEEDBACK_AUTHOR_NAME_FIELD]) === '') {
+        if (!isset($post[self::FEEDBACK_AUTHOR_NAME_FIELD]) || trim($post[self::FEEDBACK_AUTHOR_NAME_FIELD]) === '') {
             throw new LocalizedException(__('Name is missing'));
-        }        
-        if (!isset($post[self::FEEDBACK_AUTHOR_EMAIL_FIELD])
-                || false === \strpos($post[self::FEEDBACK_AUTHOR_EMAIL_FIELD], '@')) {
+        }
+        if (!isset($post[self::FEEDBACK_AUTHOR_EMAIL_FIELD]) || false === \strpos($post[self::FEEDBACK_AUTHOR_EMAIL_FIELD], '@')) {
             throw new LocalizedException(__('Invalid email address'));
         }
-        if (!isset($post[self::FEEDBACK_MESSAGE])
-                || trim($post[self::FEEDBACK_MESSAGE]) === '') {
+        if (!isset($post[self::FEEDBACK_MESSAGE]) || trim($post[self::FEEDBACK_MESSAGE]) === '') {
             throw new LocalizedException(__('Comment is missing'));
         }
+        if (!isset($post[self::FEEDBACK_RATINGS]) || !$this->areAllRatingsSubmitted($post[self::FEEDBACK_RATINGS])) {
+            throw new LocalizedException(__($this->getMissingRatingsNames($post[self::FEEDBACK_RATINGS]) . " rating(s) is/are missing"));
+        }
     }
-    
+
     /**
      * @param array $post
      * @return void
@@ -74,10 +81,44 @@ class Form
     }
 
     public function isFormSubmitted(): bool {
-        return (bool)$this->request->getPostValue();
+        return (bool) $this->request->getPostValue();
     }
 
     public function getFormData(): array {
         return $this->request->getPostValue();
+    }
+
+    /**
+     * Check if all available ratings are submitted (i.e., none have a value of 0).
+     *
+     * @param array $ratings
+     * @return bool
+     */
+    function areAllRatingsSubmitted(array $ratings): bool {
+        foreach ($ratings as $ratingOptionId => $ratingValue) {
+            if ($ratingValue == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Gets the names of missing rating options.
+     *
+     * @param array $ratings
+     * @return string
+     */
+    function getMissingRatingsNames(array $ratings): string {
+        $missingRatingsNames = [];
+        foreach ($ratings as $ratingOptionId => $ratingValue) {
+            if ($ratingValue == 0) {
+                $ratingOptionName = $this->ratingOptionRepository->getById($ratingOptionId)->getRatingOptionName();
+                $missingRatingsNames[] = $ratingOptionName;
+            }
+        }
+
+        // Join the names with a comma separator
+        return implode(', ', $missingRatingsNames);
     }
 }
