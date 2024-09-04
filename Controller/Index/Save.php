@@ -88,8 +88,7 @@ class Save implements HttpPostActionInterface {
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         $resultRedirect->setPath('*/*/index');
         if ($this->form->isFormSubmitted()) {
-            $post = $this->form->getFormData();
-            //print_r($post);exit;
+            $post = $this->form->getFormData();                      
             try {
                 $this->form->validateFeedbackPost($post);
                 $this->saveFeedback($post);
