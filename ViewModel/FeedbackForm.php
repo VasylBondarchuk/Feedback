@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
 use Magento\Framework\Escaper;
 
 /**
- * Block for a Feedback's front-end form
+ * Block for a Feedback front-end form
  */
 class FeedbackForm implements ArgumentInterface
 {
