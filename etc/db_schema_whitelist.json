@@ -41,7 +41,8 @@
             "rating_option_code": true,
             "rating_option_name": true,
             "rating_option_max_value": true,
-            "is_active": true
+            "is_active": true,
+            "store_id": true
         },
         "index": {
             "TRAINING_FEEDBACK_RATING_OPTIONS_RATING_OPTION_CODE": true

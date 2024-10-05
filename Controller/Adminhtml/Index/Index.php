@@ -3,19 +3,17 @@ declare(strict_types=1);
 
 namespace Training\Feedback\Controller\Adminhtml\Index;
 
-use Magento\Backend\App\Action;
-use Magento\Backend\App\Action\Context;
-use Magento\Framework\App\Action\HttpGetActionInterface as HttpGetActionInterface;
-use Magento\Framework\App\Request\DataPersistorInterface;
+use Magento\Framework\App\ActionInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Message\ManagerInterface;
+use Magento\Framework\AuthorizationInterface;
 use Training\Feedback\Model\ResourceModel\Feedback as Resource;
 
 /**
  * Index page
  */
-class Index extends Action implements HttpGetActionInterface
+class Index implements ActionInterface
 {
     /**
      *
@@ -26,11 +24,7 @@ class Index extends Action implements HttpGetActionInterface
      * @var ResultFactory
      */
     protected $resultFactory;
-
-    /**
-     * @var DataPersistorInterface
-     */
-    private DataPersistorInterface $dataPersistor;
+    
 
     /**
      * @var ManagerInterface
@@ -41,6 +35,12 @@ class Index extends Action implements HttpGetActionInterface
      * @var Resource
      */
     private Resource $resource;
+    
+     /**
+     * 
+     * @var AuthorizationInterface
+     */
+    private AuthorizationInterface $authorization;
 
     /**
      * @param ResultFactory $resultFactory
@@ -48,18 +48,16 @@ class Index extends Action implements HttpGetActionInterface
      * @param Resource $resource     
      * @param ManagerInterface $messageManager
      */
-    public function __construct(
-        Context $context,
-        ResultFactory $resultFactory,
-        DataPersistorInterface    $dataPersistor,        
+    public function __construct(        
+        ResultFactory $resultFactory,               
         Resource $resource,        
-        ManagerInterface $messageManager
+        ManagerInterface $messageManager,
+        AuthorizationInterface $authorization    
     ) {
-        $this->resultFactory = $resultFactory;
-        $this->dataPersistor = $dataPersistor;
+        $this->resultFactory = $resultFactory;       
         $this->resource = $resource;
         $this->messageManager = $messageManager;
-        parent::__construct($context);
+        $this->authorization = $authorization;
     }
 
     /**
@@ -67,6 +65,14 @@ class Index extends Action implements HttpGetActionInterface
      */
     public function execute()
     {
+        
+        // Check if the admin user has the required permission
+        if (!$this->authorization->isAllowed(self::ADMIN_RESOURCE)) {
+            $this->messageManager->addErrorMessage(__('You are not authorized to view feedbacks.'));
+            return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)
+                            ->setUrl($this->urlBuilder->getUrl('*/*/'));
+        }
+        
         $this->displayNotPublishedFeedbacksNumber();
         $this->displayNotRepliedFeedbacksNumber();
 

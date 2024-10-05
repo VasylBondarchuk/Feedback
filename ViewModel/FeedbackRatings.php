@@ -10,6 +10,7 @@ use Training\Feedback\Model\RatingOptionRepository;
 use Training\Feedback\Model\RatingRepository;
 use Magento\Framework\App\RequestInterface;
 use Magento\Store\Model\StoreManagerInterface;
+use Training\Feedback\Helper\FeedbackConfigProvider;
 
 /**
  *
@@ -18,6 +19,7 @@ class FeedbackRatings implements ArgumentInterface {
 
     private const REQUEST_FIELD_NAME = 'feedback_id';
     private const DEFAULT_RATING_MIN = 0;
+    private const DEFAULT_RATING_MAX = 5;
 
     /**
      * @var CollectionFactory
@@ -36,26 +38,29 @@ class FeedbackRatings implements ArgumentInterface {
 
     /**
      * 
+     * @var FeedbackConfigProvider
+     */
+    private FeedbackConfigProvider $feedbackConfigProvider;
+    
+    /**
+     * 
      * @var StoreManagerInterface
      */
     private StoreManagerInterface $storeManager;
 
-    /**
-     * 
-     * @param RatingOptionRepository $ratingOptionRepository
-     * @param RatingRepository $ratingRepository
-     * @param RequestInterface $request
-     */
+    
     public function __construct(
             RatingOptionRepository $ratingOptionRepository,
             RatingRepository $ratingRepository,
             RequestInterface $request,
-            StoreManagerInterface $storeManager
+            StoreManagerInterface $storeManager,
+            FeedbackConfigProvider $feedbackConfigProvider
     ) {
         $this->ratingOptionRepository = $ratingOptionRepository;
         $this->ratingRepository = $ratingRepository;
         $this->request = $request;
         $this->storeManager = $storeManager;
+        $this->feedbackConfigProvider = $feedbackConfigProvider;
     }
 
     /**
@@ -64,7 +69,9 @@ class FeedbackRatings implements ArgumentInterface {
      */
     public function getActiveRatingOptions() {
         $storeId = (int) ($this->request->get('store'));
-        return $storeId !== 0 ? $this->ratingOptionRepository->getStoreActiveRatingOptions($storeId) : $this->ratingOptionRepository->getAllActiveRatingOptions($this->getAllStoreIds());
+        return $storeId !== 0
+                ? $this->ratingOptionRepository->getStoreActiveRatingOptions($storeId)
+                : $this->ratingOptionRepository->getAllActiveRatingOptions($this->getAllStoreIds());
     }
 
     /**
@@ -76,6 +83,26 @@ class FeedbackRatings implements ArgumentInterface {
     public function getRatingValue(int $ratingOptionId, int $feedbackId): int {
         $rating = $feedbackId ? $this->ratingRepository->getRatingValue($feedbackId, $ratingOptionId) : self::DEFAULT_RATING_MIN;
         return (int) $rating;
+    }
+    
+    
+    /**
+     * 
+     * @return int
+     */
+    public function getRatingOptionMaxValue(): int {
+        return $this->feedbackConfigProvider->getRatingMaxValue()
+               ? (int)$this->feedbackConfigProvider->getRatingMaxValue()
+               : self::DEFAULT_RATING_MAX; 
+    }
+    
+    /**
+     * Checks if there are any active rating options available.
+     *
+     * @return bool
+     */
+    public function hasRatingOptions(): bool {        
+        return count($this->getActiveRatingOptions()) === 0;
     }
 
     /**

@@ -3,46 +3,47 @@ declare(strict_types=1);
 
 namespace Training\Feedback\Plugin;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Data\Tree\NodeFactory;
 use Magento\Framework\UrlInterface;
-use Magento\Store\Model\ScopeInterface;
+use Training\Feedback\Helper\FeedbackConfigProvider;
+
 
 /**
  * Class generates top menu link
  */
 class Topmenu
 {
-    private const TOP_MENU_LINK_NAME_PATH =
-        'feedback_configuration/feedback_configuration_general/top_menu_link_name';
+    private const TOP_MENU_LINK_PATH = 'training_feedback/index/';    
+    private const TOP_MENU_LINK_DEFAULT_NAME = 'Store Feedback';
 
     /**
      * @var NodeFactory
      */
-    protected NodeFactory $nodeFactory;
+    private NodeFactory $nodeFactory;
 
     /**
      * @var UrlInterface
      */
-    protected UrlInterface $urlBuilder;
+    private UrlInterface $urlBuilder;
     /**
      * @var ScopeConfigInterface
      */
-    protected ScopeConfigInterface $scopeConfig;
+    private FeedbackConfigProvider $feedbackConfigProvider;
 
     /**
+     * 
      * @param NodeFactory $nodeFactory
      * @param UrlInterface $urlBuilder
-     * @param ScopeConfigInterface $scopeConfig
+     * @param FeedbackConfigProvider $feedbackConfigProvider
      */
     public function __construct(
         NodeFactory $nodeFactory,
         UrlInterface $urlBuilder,
-        ScopeConfigInterface $scopeConfig
+        FeedbackConfigProvider $feedbackConfigProvider
     ) {
         $this->nodeFactory = $nodeFactory;
         $this->urlBuilder = $urlBuilder;
-        $this->scopeConfig = $scopeConfig;
+        $this->feedbackConfigProvider = $feedbackConfigProvider;
     }
 
     /**
@@ -66,9 +67,7 @@ class Topmenu
             'idField' => 'id',
             'tree' => $subject->getMenu()->getTree()]
         );
-        /*$menuNode->addChild($this->nodeFactory->create(['data' => $this->getNodeAsArray("MainMenu", "mnuMyMenu"),
-            'idField' => 'id',
-            'tree' => $subject->getMenu()->getTree(),]));*/
+        
         $subject->getMenu()->addChild($menuNode);
     }
 
@@ -77,9 +76,10 @@ class Topmenu
      * @param $id
      * @return array
      */
-    protected function getNodeAsArray($name, $id): array
+    private function getNodeAsArray($name, $id): array
     {
-        $url = $this->urlBuilder->getUrl("training_feedback/index/" . $id); //here you can add url as per your choice of menu
+        //here you can add url as per your choice of menu
+        $url = $this->urlBuilder->getUrl(self::TOP_MENU_LINK_PATH . $id); 
         return ['name' => __($name),
             'id' => $id,
             'url' => $url,
@@ -94,6 +94,7 @@ class Topmenu
      */
     public function getTopMenuLinkName(): ?string
     {
-        return $this->scopeConfig->getValue(self::TOP_MENU_LINK_NAME_PATH, ScopeInterface::SCOPE_STORE);
+        return $this->feedbackConfigProvider->getTopMenuLinkName()
+                ?? self::TOP_MENU_LINK_DEFAULT_NAME;
     }
 }

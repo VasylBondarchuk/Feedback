@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Training\Feedback\Block\Adminhtml\Feedback\Edit;
 
@@ -8,11 +9,27 @@ use Magento\Backend\Block\Widget\Context;
 use Magento\Framework\Registry;
 use Magento\Framework\Data\FormFactory;
 use Magento\Store\Model\System\Store;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Training\Feedback\Helper\FeedbackConfigProvider;
 
 class Form extends Generic
-{
-    protected DataProvider $dataProvider;
-    protected Store $systemStore;
+{    
+    private DataProvider $dataProvider;
+    /**
+     * 
+     * @var Store
+     */
+    private Store $systemStore;
+    /**
+     * @var ScopeConfigInterface
+     */
+    private ScopeConfigInterface $scopeConfig;
+    
+    /**
+     * 
+     * @var FeedbackConfigProvider
+     */
+    private FeedbackConfigProvider $feedbackConfigProvider;
 
     public function __construct(
         Context $context,
@@ -20,10 +37,12 @@ class Form extends Generic
         FormFactory $formFactory,
         DataProvider $dataProvider,
         Store $systemStore,
+        FeedbackConfigProvider $feedbackConfigProvider,    
         array $data = []
     ) {
         $this->dataProvider = $dataProvider;
         $this->systemStore = $systemStore;
+        $this->feedbackConfigProvider = $feedbackConfigProvider;
         parent::__construct($context, $registry, $formFactory, $data);
     }
 
@@ -78,20 +97,23 @@ class Form extends Generic
                 'value' => isset($data[$feedbackId]['is_active']) ? $data[$feedbackId]['is_active'] : 0
             ]
         );
-
-        // Add the custom ratings field
-        $fieldset->addField(
-            'ratings',
-            'note',
-            [
-                'label' => __('Ratings'),
-                'title' => __('Ratings'),
-                'text' => $this->getLayout()
-                    ->createBlock('Training\Feedback\Block\Ratings')
-                    ->setTemplate('Training_Feedback::common/form_ratings.phtml')
-                    ->toHtml()
-            ]
-        );
+        
+        
+        // Add the custom ratings field if enabled 
+        if ($this->feedbackConfigProvider->isRatingsEnabled()) {
+            $fieldset->addField(
+                    'ratings',
+                    'note',
+                    [
+                        'label' => __('Ratings'),
+                        'title' => __('Ratings'),
+                        'text' => $this->getLayout()
+                                ->createBlock('Training\Feedback\Block\Ratings')
+                                ->setTemplate('Training_Feedback::common/form_ratings.phtml')
+                                ->toHtml()
+                    ]
+            );
+        }
 
         $fieldset->addField(
             'is_anonymous',

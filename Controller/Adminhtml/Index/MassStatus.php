@@ -3,9 +3,7 @@ declare(strict_types=1);
 
 namespace Training\Feedback\Controller\Adminhtml\Index;
 
-use Magento\Backend\App\Action;
-use Magento\Backend\App\Action\Context;
-use Magento\Framework\App\Action\HttpPostActionInterface;
+use Magento\Framework\App\ActionInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Exception\LocalizedException;
@@ -15,30 +13,64 @@ use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
 use Training\Feedback\Model\ResourceModel\Feedback\CollectionFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Message\ManagerInterface;
+use Magento\Framework\AuthorizationInterface;
 
-class MassStatus extends Action implements HttpPostActionInterface
+class MassStatus implements ActionInterface
 {
     const ADMIN_RESOURCE = 'Training_Feedback::feedback_save';
 
-    protected $messageManager;
-    protected $resultFactory;
+    /**
+     * 
+     * @var type
+     */
+    private $messageManager;
+    /**
+     * 
+     * @var type
+     */
+    private $resultFactory;
+    /**
+     * 
+     * @var Filter
+     */
     private Filter $filter;
+    /**
+     * 
+     * @var CollectionFactory
+     */
     private CollectionFactory $collectionFactory;
+    /**
+     * 
+     * @var FeedbackRepositoryInterface
+     */
     private FeedbackRepositoryInterface $feedbackRepository;
+    /**
+     * 
+     * @var RequestInterface
+     */
     private RequestInterface $request;
+    /**
+     * 
+     * @var LoggerInterface|null
+     */
     private ?LoggerInterface $logger;
+    /**
+     * 
+     * @var AuthorizationInterface
+     */
+    private AuthorizationInterface $authorization;
 
-    public function __construct(
-        Context $context,
+    public function __construct(        
         ManagerInterface $messageManager,
         ResultFactory $resultFactory,
         Filter $filter,
         CollectionFactory $collectionFactory,
         FeedbackRepositoryInterface $feedbackRepository,
         RequestInterface $request,
-        LoggerInterface $logger = null
-    ) {
-        parent::__construct($context);
+        LoggerInterface $logger = null,
+        AuthorizationInterface $authorization
+            
+    ) {        
         $this->messageManager = $messageManager;
         $this->resultFactory = $resultFactory;
         $this->filter = $filter;
@@ -46,10 +78,17 @@ class MassStatus extends Action implements HttpPostActionInterface
         $this->feedbackRepository = $feedbackRepository;
         $this->request = $request;
         $this->logger = $logger;
+        $this->authorization = $authorization;
     }
 
     public function execute(): ResultInterface
     {
+        // Check if the admin user has the required permission
+        if (!$this->authorization->isAllowed(self::ADMIN_RESOURCE)) {
+            $this->messageManager->addErrorMessage(__('You are not authorized to change feedbacks\' status.'));
+            return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)
+                            ->setUrl($this->urlBuilder->getUrl('*/*/'));
+        }
         $collection = $this->filter->getCollection($this->collectionFactory->create());
         [$feedbackStatus, $feedbackStatusError] = $this->updateFeedbackStatus($collection);
 

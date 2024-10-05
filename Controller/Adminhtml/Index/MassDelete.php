@@ -3,40 +3,73 @@ declare(strict_types=1);
 
 namespace Training\Feedback\Controller\Adminhtml\Index;
 
-use Magento\Backend\App\Action;
-use Magento\Backend\App\Action\Context;
-use Magento\Framework\App\Action\HttpPostActionInterface;
+use Magento\Framework\App\ActionInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Ui\Component\MassAction\Filter;
+use Magento\Framework\AuthorizationInterface;
+use Magento\Framework\Controller\ResultInterface;
 use Psr\Log\LoggerInterface;
 use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
 use Training\Feedback\Api\Data\Reply\ReplyRepositoryInterface;
 use Training\Feedback\Model\ResourceModel\Feedback\CollectionFactory;
-use Magento\Framework\Controller\ResultInterface;
 
-class MassDelete extends Action implements HttpPostActionInterface
+
+class MassDelete implements ActionInterface
 {
     const ADMIN_RESOURCE = 'Training_Feedback::feedback_delete';
 
-    protected $messageManager;
-    protected $resultFactory;
-    protected Filter $filter;
-    protected CollectionFactory $collectionFactory;
-    protected FeedbackRepositoryInterface $feedbackRepository;
-    protected ReplyRepositoryInterface $replyRepository;
-    protected ?LoggerInterface $logger;
+    /**
+     * 
+     * @var type
+     */
+    private ManagerInterface $messageManager;
+    /**
+     * 
+     * @var type
+     */
+    private ResultFactory $resultFactory;
+    /**
+     * 
+     * @var Filter
+     */
+    private Filter $filter;
+    /**
+     * 
+     * @var CollectionFactory
+     */
+    private CollectionFactory $collectionFactory;
+    /**
+     * 
+     * @var FeedbackRepositoryInterface
+     */
+    private FeedbackRepositoryInterface $feedbackRepository;
+    /**
+     * 
+     * @var ReplyRepositoryInterface
+     */
+    private ReplyRepositoryInterface $replyRepository;
+    /**
+     * 
+     * @var LoggerInterface|null
+     */
+    private ?LoggerInterface $logger;   
+    /**
+     * 
+     * @var AuthorizationInterface
+     */
+    private AuthorizationInterface $authorization;
 
-    public function __construct(
-        Context $context,
+    public function __construct(        
         ManagerInterface $messageManager,
         ResultFactory $resultFactory,
         Filter $filter,
         CollectionFactory $collectionFactory,
         FeedbackRepositoryInterface $feedbackRepository,
         ReplyRepositoryInterface $replyRepository,
-        LoggerInterface $logger = null
+        LoggerInterface $logger = null,
+        AuthorizationInterface $authorization    
     ) {
         $this->messageManager = $messageManager;
         $this->resultFactory = $resultFactory;
@@ -44,8 +77,8 @@ class MassDelete extends Action implements HttpPostActionInterface
         $this->collectionFactory = $collectionFactory;
         $this->feedbackRepository = $feedbackRepository;
         $this->replyRepository = $replyRepository;
-        $this->logger = $logger;
-        parent::__construct($context);
+        $this->logger = $logger; 
+        $this->authorization = $authorization;
     }
 
     /**
@@ -54,6 +87,13 @@ class MassDelete extends Action implements HttpPostActionInterface
      */
     public function execute(): ResultInterface
     {
+        
+        // Check if the admin user has the required permission
+        if (!$this->authorization->isAllowed(self::ADMIN_RESOURCE)) {
+            $this->messageManager->addErrorMessage(__('You are not authorized to delete feedbacks.'));
+            return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)
+                            ->setUrl($this->urlBuilder->getUrl('*/*/'));
+        }
         $collection = $this->filter->getCollection($this->collectionFactory->create());
         list($feedbackDeleted, $feedbackDeletedError) = $this->processFeedbackCollection($collection);
         $this->addMessages($feedbackDeleted, $feedbackDeletedError);

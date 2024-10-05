@@ -4,31 +4,39 @@ declare(strict_types=1);
 
 namespace Training\Feedback\Controller\Adminhtml\Index;
 
-use Magento\Backend\App\Action;
-use Magento\Backend\App\Action\Context;
+use Magento\Framework\App\ActionInterface;
 use Magento\Framework\Controller\ResultFactory;
-use Magento\Framework\App\Action\HttpGetActionInterface as HttpGetActionInterface;
+use Magento\Framework\AuthorizationInterface;
 
 /**
  * Creates new feedback
  */
-class NewAction extends Action implements HttpGetActionInterface {
+class NewAction implements ActionInterface {
 
     const ADMIN_RESOURCE = 'Training_Feedback::menu';
-
-    protected $resultFactory;
+    /**
+     * 
+     * @var ResultFactory
+     */
+    private ResultFactory $resultFactory;
+    
+    /**
+     * 
+     * @var AuthorizationInterface
+     */
+    private AuthorizationInterface $authorization;
 
     /**
      * 
-     * @param Context $context
      * @param ResultFactory $resultFactory
+     * @param AuthorizationInterface $authorization
      */
-    public function __construct(
-            Context $context,
-            ResultFactory $resultFactory
+    public function __construct(            
+            ResultFactory $resultFactory,
+            AuthorizationInterface $authorization
     ) {
         $this->resultFactory = $resultFactory;
-        parent::__construct($context);
+        $this->authorization = $authorization;        
     }
 
     /**
@@ -36,6 +44,12 @@ class NewAction extends Action implements HttpGetActionInterface {
      *
      */
     public function execute() {               
+        // Check if the admin user has the required permission
+        if (!$this->authorization->isAllowed(self::ADMIN_RESOURCE)) {
+            $this->messageManager->addErrorMessage(__('You are not authorized to add new feedback.'));
+            return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)
+                            ->setUrl($this->urlBuilder->getUrl('*/*/'));
+        }
         $resultPage = $this->resultFactory->create(ResultFactory::TYPE_PAGE);                  
         $resultPage->getConfig()->getTitle()->prepend(__('New Feedback'));
         return $resultPage;

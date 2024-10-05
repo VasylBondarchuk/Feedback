@@ -57,22 +57,22 @@
             </settings>
         </field>
 
-        <field name="storeviews">
+        <field name="storeviews" formElement="select">
             <argument name="data" xsi:type="array">
-                <item name="options" xsi:type="object">Magento\Cms\Ui\Component\Listing\Column\Cms\Options</item>
+                <item name="options" xsi:type="object">Training\Feedback\Model\Source\CustomStoreViews</item> <!-- Custom Source Model -->
                 <item name="config" xsi:type="array">
                     <item name="dataType" xsi:type="string">int</item>
                     <item name="label" xsi:type="string" translate="true">Store View</item>
                     <item name="formElement" xsi:type="string">select</item>
-                    <item name="source" xsi:type="string">.store_id</item>
+                    <item name="source" xsi:type="string">store_id</item>
                     <item name="dataScope" xsi:type="string">store_id</item>
-                    <item name="default" xsi:type="string">1</item>
                     <item name="validation" xsi:type="array">
                         <item name="required-entry" xsi:type="boolean">true</item>
                     </item>
                 </item>
             </argument>
         </field>
+
 
         <field name="rating_option_code" sortOrder="10" formElement="input">
             <argument name="data" xsi:type="array">
@@ -104,23 +104,7 @@
                 <label translate="true">Rating option name</label>
                 <dataScope>rating_option_name</dataScope>
             </settings>
-        </field>
-
-        <field name="rating_option_max_value" sortOrder="30" formElement="input">
-            <argument name="data" xsi:type="array">
-                <item name="config" xsi:type="array">
-                    <item name="source" xsi:type="string">rating_option_max_value</item>
-                </item>
-            </argument>
-            <settings>
-                <validation>
-                    <rule name="required-entry" xsi:type="boolean">true</rule>
-                </validation>
-                <dataType>text</dataType>
-                <label translate="true">Rating option max. value</label>
-                <dataScope>rating_option_max_value</dataScope>
-            </settings>
-        </field>
+        </field>        
 
         <field name="is_active" sortOrder="40" formElement="checkbox">
             <argument name="data" xsi:type="array">

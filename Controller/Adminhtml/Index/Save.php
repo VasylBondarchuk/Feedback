@@ -4,17 +4,15 @@ declare(strict_types=1);
 
 namespace Training\Feedback\Controller\Adminhtml\Index;
 
-use Magento\Backend\App\Action;
-use Magento\Backend\App\Action\Context;
+use Magento\Framework\App\ActionInterface;
 use Magento\Backend\Model\Auth\Session;
-use Magento\Framework\App\Action\HttpPostActionInterface as HttpGetActionInterface;
 use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Message\ManagerInterface;
-use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\AuthorizationInterface;
 use Psr\Log\LoggerInterface;
 use Training\Feedback\Api\Data\Feedback\FeedbackInterface;
 use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
@@ -30,11 +28,12 @@ use Training\Feedback\Model\RatingFactory;
 use Training\Feedback\Api\Data\Rating\RatingRepositoryInterface;
 use Training\Feedback\Helper\Form;
 use Training\Feedback\Api\Data\RatingOption\RatingOptionRepositoryInterface;
+use Training\Feedback\Helper\Stores;
 
 /**
  * Saves feedbacks
  */
-class Save extends Action implements HttpGetActionInterface {
+class Save implements ActionInterface {
 
     /**
      *
@@ -124,15 +123,27 @@ class Save extends Action implements HttpGetActionInterface {
      */
     private Form $form;
 
+    
     /**
      * 
-     * @var StoreManagerInterface
+     * @var Stores
      */
-    private StoreManagerInterface $storeManager;
+    private Stores $storeManager;
+
+    /**
+     * 
+     * @var RatingOptionRepositoryInterface
+     */
     private RatingOptionRepositoryInterface $ratingOptionRepository;
 
+    /**
+     * 
+     * @var AuthorizationInterface
+     */
+    private AuthorizationInterface $authorization;
+    
+    
     public function __construct(
-            Context $context,
             ManagerInterface $messageManager,
             ResultFactory $resultFactory,
             DataPersistorInterface $dataPersistor,
@@ -149,8 +160,9 @@ class Save extends Action implements HttpGetActionInterface {
             RequestInterface $request,
             ReplyEmailNotification $email,
             Form $form,
-            StoreManagerInterface $storeManager,
-            RatingOptionRepositoryInterface $ratingOptionRepository
+            Stores $storeManager,
+            RatingOptionRepositoryInterface $ratingOptionRepository,
+            AuthorizationInterface $authorization
     ) {
         $this->messageManager = $messageManager;
         $this->resultFactory = $resultFactory;
@@ -170,33 +182,51 @@ class Save extends Action implements HttpGetActionInterface {
         $this->form = $form;
         $this->storeManager = $storeManager;
         $this->ratingOptionRepository = $ratingOptionRepository;
-        parent::__construct($context);
+        $this->authorization = $authorization;
     }
 
     /**
      * @return Redirect|ResultInterface
      * @throws LocalizedException
      */
-    public function execute() {
+    public function execute(): ResultInterface {
+        
+        if (!$this->authorization->isAllowed(self::ADMIN_RESOURCE)) {
+            $this->messageManager->addErrorMessage(__('You are not authorized to save feedbacks.'));
+            return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)
+                            ->setUrl($this->urlBuilder->getUrl('*/*/'));
+        }
+
+        $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         if ($this->form->isFormSubmitted()) {
             $post = $this->form->getFormData();
-            $this->form->validateFeedbackPost($post);
+            //print_r($post);exit;
             try {
-                foreach ($this->getStoreIds() as $storId) {
-                    $this->saveFeedback($post, $storId);
-                    $this->saveRatings($post, $storId);
+                $this->form->validateFeedbackPost($post);
+                foreach ($this->storeManager->getStoreIds() as $storeId) {
+                    $this->saveFeedback($post, $storeId);
+                    $this->saveRatings($post, $storeId);
                     $this->saveReply($post);
                     $this->sendNotificationEmail();
                 }
                 $this->messageManager->addSuccessMessage(__('You saved the feedback.'));
-                $this->dataPersistor->clear('training_feedback');
+                $this->dataPersistor->clear('training_feedback');                
+                $resultRedirect->setPath('*/*/*');
             } catch (\Exception $e) {
                 $this->messageManager->addErrorMessage(
-                        __('An error occurred while saving the feedback. %1', $e->getMessage()));
+                        __('An error occurred while saving the feedback. %1', $e->getMessage())
+                );
                 $this->logger->error($e->getMessage());
-            }            
-            return $this->redirect($post);
+                // Save input data for re-population on the form
+                $this->dataPersistor->set('training_feedback', $post);
+                // Redirect back to the referrer page
+                return $resultRedirect->setUrl($this->request->getServer('HTTP_REFERER'));
+            }
+        } else {
+            $resultRedirect->setPath('*/*/');
         }
+
+        return $resultRedirect;
     }
 
     /**
@@ -230,9 +260,7 @@ class Save extends Action implements HttpGetActionInterface {
      */
     private function getRatingModel($feedbackId, $ratingOptionId): RatingInterface {
         $editedFeedbackId = $this->getEditedFeedbackId();
-        $this->rating = $editedFeedbackId
-                ? $this->ratingRepository->getRatingByFeedbackIdRatingOptionId($feedbackId, $ratingOptionId)
-                : $this->ratingFactory->create();
+        $this->rating = $editedFeedbackId ? $this->ratingRepository->getRatingByFeedbackIdRatingOptionId($feedbackId, $ratingOptionId) : $this->ratingFactory->create();
         return $this->rating;
     }
 
@@ -380,41 +408,7 @@ class Save extends Action implements HttpGetActionInterface {
      */
     private function getEditedFeedbackId(): int {
         return (int) ($this->request->get(FeedbackInterface::FEEDBACK_ID));
-    }
-
-    /**
-     * 
-     * @return int
-     */
-    private function getStoreId(): int {
-        return (int) $this->request->get('store_id');
-    }
-
-    /**
-     * 
-     * @return array
-     */
-    private function getAllStoreIds(): array {
-        $storeIds = [];
-        $stores = $this->storeManager->getStores();
-
-        foreach ($stores as $store) {
-            $storeIds[] = (int) $store->getId();
-        }
-
-        return $storeIds;
-    }
-
-    private function getStoreIds(): array {
-        $storeIds = [];
-        // All Store Views option
-        if ($this->getStoreId() === 0) {
-            $storeIds = $this->getAllStoreIds();
-        } else {
-            $storeIds[] = $this->getStoreId();
-        }
-        return $storeIds;
-    }
+    }    
 
     /**
      * 

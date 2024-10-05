@@ -6,6 +6,9 @@
             <feedback_configuration_general>
                 <top_menu_link_name>Store Feedbacks</top_menu_link_name>
             </feedback_configuration_general>
+            <feedback_ratings_configuration>
+                <rating_max_value>5</rating_max_value> <!-- Set default value to 5 -->
+            </feedback_ratings_configuration>
         </feedback_configuration>
     </default>
 </config>

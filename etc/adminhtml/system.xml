@@ -34,12 +34,32 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>            
             
-            <!-- Allow anonymous feedback? -->    
+                <!-- Allow anonymous feedback? -->    
                 <field id="allow_anonymous" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label> Allow anonymous feedback</label>
                     <validate>required-entry</validate>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field> 
+            </group>
+            
+            <!--  Feedback Ratings Configuration -->
+            <group id="feedback_ratings_configuration" translate="label" type="text" sortOrder="25" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Feedback Ratings Configuration</label>                 
+                              
+                <!-- Enable feedback ratings -->
+                <field id="enable_feedback_ratings" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label> Enable feedback ratings</label>
+                    <validate>required-entry</validate>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                
+                <!-- Ratings maximum value  -->
+                <field id="rating_max_value" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Ratings maximum value</label>
+                    <validate>required-entry validate-digits</validate>
+                    <config_path>feedback_configuration/feedback_ratings_configuration/rating_max_value</config_path> <!-- Use config_path to reference default value -->
+                </field>
+                 
             </group>
             
             <!-- Email Notifications -->
@@ -61,7 +81,7 @@
             
             <!-- Feedback and Reply Appearances -->
             <group id="feedback_configuration_appearance" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Feedback and Reply Appearances</label>
+                <label>Feedback and Reply Appearance</label>
                 
                 <!-- Feedback background color -->
                 <field id="feedback_background_color" translate="label" sortOrder="10" type="text" showInDefault="1" showInWebsite="1" showInStore="1">

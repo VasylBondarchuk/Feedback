@@ -20,12 +20,8 @@ interface RatingOptionInterface
     /**
      *
      */
-    const RATING_OPTION_NAME = 'rating_option_name';
+    const RATING_OPTION_NAME = 'rating_option_name';   
     
-    /**
-     *
-     */
-    const RATING_OPTION_MAX_VALUE = 'rating_option_max_value';
     
     /**
      *
@@ -53,14 +49,7 @@ interface RatingOptionInterface
      * 
      * @return string
      */
-    public function getRatingOptionName(): string;
-    
-     /**
-     * Get Rating Option max Value
-     *
-     * @return int|null
-    */
-    public function getRatingOptionMaxValue(): int;
+    public function getRatingOptionName(): string; 
     
     /**
     * 
@@ -96,14 +85,7 @@ interface RatingOptionInterface
      * @param string $ratingOptionName
      * @return RatingOptionInterface
      */
-    public function setRatingOptionName(string $ratingOptionName): RatingOptionInterface;
-
-    /**
-     * 
-     * @param string $ratingOptionMaxValue
-     * @return RatingOptionInterface
-    */
-    public function setRatingOptionMaxValue(int $ratingOptionMaxValue): RatingOptionInterface;
+    public function setRatingOptionName(string $ratingOptionName): RatingOptionInterface;    
     
     /**
     * 

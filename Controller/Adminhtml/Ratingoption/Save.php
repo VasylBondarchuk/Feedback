@@ -69,7 +69,7 @@ class Save extends Action implements HttpGetActionInterface {
      * 
      * @var Form
      */
-    private Form $form;
+    private Form $form; 
     
     public function __construct(
             Context $context,
@@ -80,7 +80,7 @@ class Save extends Action implements HttpGetActionInterface {
             RatingOptionFactory $ratingOptionFactory,            
             LoggerInterface $logger,
             RequestInterface $request,            
-            Form $form
+            Form $form            
     ) {
         $this->messageManager = $messageManager;
         $this->resultFactory = $resultFactory;
@@ -89,7 +89,7 @@ class Save extends Action implements HttpGetActionInterface {
         $this->ratingOptionFactory = $ratingOptionFactory; 
         $this->logger = $logger;
         $this->request = $request;        
-        $this->form = $form;
+        $this->form = $form;       
         parent::__construct($context);
     }
 
@@ -101,9 +101,10 @@ class Save extends Action implements HttpGetActionInterface {
         if ($this->form->isFormSubmitted()) {
             $post = $this->form->getFormData();
             try {
-                $this->form->validateRatingOptionPost($post);
-                $this->saveRatingOption($post); 
-                $this->messageManager->addSuccessMessage(__('You saved the rating option.'));
+                $this->form->validateRatingOptionPost($post);                
+                    $this->saveRatingOption($post); 
+                    $this->messageManager->addSuccessMessage(__('You saved the rating option.'));                
+                
                 $this->dataPersistor->clear('training_feedback_rating_options');
             } catch (\Exception $e) {
                 $this->messageManager->addErrorMessage(
@@ -125,7 +126,7 @@ class Save extends Action implements HttpGetActionInterface {
             $post[RatingOptionInterface::RATING_OPTION_ID] = null;
         }        
         $ratingOption = $this->getRatingOptionModel($post);
-        $ratingOption->setData($post);
+        $ratingOption->setData($post);        
         $this->ratingOptionRepository->save($ratingOption);        
     }  
     

@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Training\Feedback\Helper;
@@ -7,6 +6,7 @@ namespace Training\Feedback\Helper;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Training\Feedback\Api\Data\RatingOption\RatingOptionRepositoryInterface;
+use Training\Feedback\ViewModel\FeedbackRatings;
 
 /**
  *
@@ -18,26 +18,35 @@ class Form {
     const FEEDBACK_MESSAGE = 'message';
     const FEEDBACK_REPLY_FIELD = 'reply_text';
     const FEEDBACK_RATINGS = 'ratings';
+    
     const RATING_OPTION_CODE_FIELD = 'rating_option_code';
-    const RATING_OPTION_NAME_FIELD = 'rating_option_name';
-    const RATING_OPTION_MAX_VALUE_FIELD = 'rating_option_max_value';
+    const RATING_OPTION_NAME_FIELD = 'rating_option_name';    
     const RATING_OPTION_IS_ACTIVE_FIELD = 'is_active';
 
     /**
      * @var RequestInterface
      */
     private RequestInterface $request;
+    /**
+     * 
+     * @var RatingOptionRepositoryInterface
+     */
     private RatingOptionRepositoryInterface $ratingOptionRepository;
+    
+   
+    private FeedbackRatings $feedbackRatings;
 
     /**
      * @param RequestInterface $request
      */
     public function __construct(
             RequestInterface $request,
-            RatingOptionRepositoryInterface $ratingOptionRepository
+            RatingOptionRepositoryInterface $ratingOptionRepository,
+            FeedbackRatings $feedbackRatings
     ) {
         $this->request = $request;
         $this->ratingOptionRepository = $ratingOptionRepository;
+        $this->feedbackRatings = $feedbackRatings;
     }
 
     /**
@@ -55,8 +64,11 @@ class Form {
         if (!isset($post[self::FEEDBACK_MESSAGE]) || trim($post[self::FEEDBACK_MESSAGE]) === '') {
             throw new LocalizedException(__('Comment is missing'));
         }
-        if (!isset($post[self::FEEDBACK_RATINGS]) || !$this->areAllRatingsSubmitted($post[self::FEEDBACK_RATINGS])) {
-            throw new LocalizedException(__($this->getMissingRatingsNames($post[self::FEEDBACK_RATINGS]) . " rating(s) is/are missing"));
+        
+        if($this->feedbackRatings->hasRatingOptions()){
+            if (!isset($post[self::FEEDBACK_RATINGS]) || !$this->areAllRatingsSubmitted($post[self::FEEDBACK_RATINGS])) {
+                throw new LocalizedException(__($this->getMissingRatingsNames($post[self::FEEDBACK_RATINGS]) . " rating(s) is/are missing"));
+            }
         }
     }
 
@@ -71,15 +83,18 @@ class Form {
         }
         if (!isset($post[self::RATING_OPTION_NAME_FIELD]) || trim($post[self::RATING_OPTION_NAME_FIELD]) === '') {
             throw new LocalizedException(__('Rating option name is missing'));
-        }
-        if (!isset($post[self::RATING_OPTION_MAX_VALUE_FIELD]) || !filter_var($post[self::RATING_OPTION_MAX_VALUE_FIELD], FILTER_VALIDATE_INT, ["options" => ["min_range" => 1]])) {
-            throw new LocalizedException(__('Rating option max value must be a positive integer'));
-        }
-        if (!isset($post[self::RATING_OPTION_IS_ACTIVE_FIELD]) || !in_array($post[self::RATING_OPTION_IS_ACTIVE_FIELD], ['0', '1'], true)) {
-            throw new LocalizedException(__('Invalid value for "Is Active" field'));
-        }
+        }        
+        if ($this->feedbackRatings->hasRatingOptions()) {
+            if (!isset($post[self::RATING_OPTION_IS_ACTIVE_FIELD]) || !in_array($post[self::RATING_OPTION_IS_ACTIVE_FIELD], ['0', '1'], true)) {
+                throw new LocalizedException(__('Invalid value for "Is Active" field'));
+            }
+        }    
     }
 
+    /**
+     * 
+     * @return bool
+     */
     public function isFormSubmitted(): bool {
         return (bool) $this->request->getPostValue();
     }
@@ -94,12 +109,12 @@ class Form {
      * @param array $ratings
      * @return bool
      */
-    function areAllRatingsSubmitted(array $ratings): bool {
-        foreach ($ratings as $ratingOptionId => $ratingValue) {
-            if ($ratingValue == 0) {
-                return false;
-            }
-        }
+    function areAllRatingsSubmitted(array $ratings): bool {        
+            foreach ($ratings as $ratingOptionId => $ratingValue) {
+                if ($ratingValue == 0) {
+                    return false;
+                }
+            }        
         return true;
     }
 

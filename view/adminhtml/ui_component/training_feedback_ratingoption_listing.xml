@@ -120,13 +120,7 @@
                 <filter>text</filter>
                 <label translate="true">Rating Option Name</label>
             </settings>
-        </column>
-        <column name="rating_option_max_value">
-            <settings>
-                <filter>text</filter>
-                <label translate="true">Rating Option Max Value</label>
-            </settings>
-        </column>
+        </column>        
         <column name="is_active">
             <settings>
                 <filter>text</filter>

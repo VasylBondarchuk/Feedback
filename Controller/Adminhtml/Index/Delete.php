@@ -3,18 +3,22 @@ declare(strict_types=1);
 
 namespace Training\Feedback\Controller\Adminhtml\Index;
 
-use Magento\Backend\App\Action;
+use Magento\Framework\App\ActionInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\AuthorizationInterface;
 use Training\Feedback\Api\Data\Feedback\FeedbackInterface;
 use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
 use Training\Feedback\Api\Data\Reply\ReplyRepositoryInterface;
+use Magento\Framework\Message\ManagerInterface;
+use Magento\Framework\App\RequestInterface;
 use Psr\Log\LoggerInterface;
+
 
 /**
  * Deletes a feedback
  */
-class Delete extends Action
+class Delete implements ActionInterface
 {
     const ADMIN_RESOURCE = 'Training_Feedback::feedback_delete';
     const REQUEST_FIELD_NAME = 'feedback_id';
@@ -35,25 +39,32 @@ class Delete extends Action
     private LoggerInterface $logger;
 
     /**
+     * 
+     * @var AuthorizationInterface
+     */
+    private AuthorizationInterface $authorization;    
+    
+
+    /**
      * @param Context $context
      * @param FeedbackRepositoryInterface $feedbackRepository
      * @param ReplyRepositoryInterface $replyRepository
      * @param LoggerInterface $logger
      */
-    public function __construct(
-    \Magento\Backend\App\Action\Context $context,
-    \Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface $feedbackRepository,
-    \Training\Feedback\Api\Data\Reply\ReplyRepositoryInterface $replyRepository,
-    \Magento\Framework\Message\ManagerInterface $messageManager, // Correct class reference
-    \Magento\Framework\Controller\ResultFactory $resultFactory,
-    \Magento\Framework\App\RequestInterface $request
-) {
-    parent::__construct($context);
+    public function __construct(    
+    FeedbackRepositoryInterface $feedbackRepository,
+    ReplyRepositoryInterface $replyRepository,
+    ManagerInterface $messageManager, // Correct class reference
+    ResultFactory $resultFactory,
+    RequestInterface $request,
+    AuthorizationInterface $authorization
+) {    
     $this->feedbackRepository = $feedbackRepository;
     $this->replyRepository = $replyRepository;
     $this->messageManager = $messageManager;
     $this->resultFactory = $resultFactory;
     $this->request = $request;
+    $this->authorization = $authorization;
 }
 
 
@@ -62,8 +73,15 @@ class Delete extends Action
      */
     public function execute()
     {
+         // Check if the admin user has the required permission
+        if (!$this->authorization->isAllowed(self::ADMIN_RESOURCE)) {
+            $this->messageManager->addErrorMessage(__('You are not authorized to delete feedback.'));
+            return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)
+                            ->setUrl($this->urlBuilder->getUrl('*/*/'));
+        }
+        
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
-        $feedbackId = (int)$this->getRequest()->getParam(self::REQUEST_FIELD_NAME);
+        $feedbackId = (int)$this->request->get(self::REQUEST_FIELD_NAME);
 
         if ($feedbackId) {
             try {

@@ -69,22 +69,22 @@
         </div>
 
         <!-- Add Rating Options -->
-<div class="field rating-options required">
-    <label class="label">
-        <span><?= $block->escapeHtml(__('Ratings')) ?></span>
-    </label>
-    <div class="control">
-        <!-- Include the common/form_rating template -->
-        <?= $block->getChildHtml('ratings_form') ?>
-    </div>
-</div>
-</fieldset>
+        <div class="field rating-options required">
+            <label class="label">
+                <span><?= $block->escapeHtml(__('Ratings')) ?></span>
+            </label>
+            <div class="control">
+                <!-- Include the common/form_rating template -->
+                <?= $block->getChildHtml('ratings_form') ?>
+            </div>
+        </div>
+    </fieldset>
 
-<div class="actions-toolbar">
-    <div class="primary">
-        <button type="submit" title="<?= $block->escapeHtmlAttr(__('Submit')) ?>" class="action submit primary">
-            <span><?= $block->escapeHtml(__('Submit')) ?></span>
-        </button>
+    <div class="actions-toolbar">
+        <div class="primary">
+            <button type="submit" title="<?= $block->escapeHtmlAttr(__('Submit')) ?>" class="action submit primary">
+                <span><?= $block->escapeHtml(__('Submit')) ?></span>
+            </button>
+        </div>
     </div>
-</div>
 </form>

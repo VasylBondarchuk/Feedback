@@ -25,8 +25,7 @@
     <table name="training_feedback_rating_options" resource="default" engine="innodb" comment="Rating Options Table">
         <column xsi:type="int" name="rating_option_id" padding="10"  nullable="false" identity="true" comment="Rating Option ID"/>
         <column xsi:type="varchar" name="rating_option_code" nullable="false" length="255" comment="Rating Option Code"/>
-        <column xsi:type="varchar" name="rating_option_name" nullable="false" length="255" comment="Rating Option Name"/>
-        <column xsi:type="int" name="rating_option_max_value" padding="5"  nullable="false" default="5" comment="Rating Option Max Value"/>
+        <column xsi:type="varchar" name="rating_option_name" nullable="false" length="255" comment="Rating Option Name"/>        
         <column xsi:type="tinyint" name="is_active" nullable="false" default="1" comment="Is Rating Active"/>
         <column xsi:type="smallint" name="store_id" padding="5"  nullable="false" comment="Store ID"/>
         <constraint xsi:type="primary" referenceId="PRIMARY">

@@ -12,6 +12,8 @@ use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\App\Request\DataPersistorInterface;
+use Magento\Backend\Model\UrlInterface;
 use Training\Feedback\Api\Data\Feedback\FeedbackRepositoryInterface;
 use Training\Feedback\Api\Data\Rating\RatingRepositoryInterface;
 use Training\Feedback\Helper\EmailNotifications\FeedbackEmailNotification;
@@ -21,7 +23,7 @@ use Training\Feedback\Api\Data\Rating\RatingInterface;
 use Training\Feedback\Model\FeedbackFactory;
 use Training\Feedback\Model\RatingFactory;
 use Training\Feedback\Model\ResourceModel\RatingOption\CollectionFactory as RatingOptionCollectionFactory;
-use Magento\Backend\Model\UrlInterface;
+
 use Psr\Log\LoggerInterface;
 use Training\Feedback\Helper\Form;
 
@@ -43,8 +45,20 @@ class Save implements HttpPostActionInterface {
     private RatingOptionCollectionFactory $ratingOptionCollectionFactory;
     private Session $customerSession;
     private StoreManagerInterface $storeManager;
+    /**
+     * 
+     * @var LoggerInterface
+     */
     private LoggerInterface $logger;
+    /**
+     * 
+     * @var Form
+     */
     private Form $form;
+    /**
+     * @var DataPersistorInterface
+     */
+    private DataPersistorInterface $dataPersistor;
 
     public function __construct(
             ManagerInterface $messageManager,
@@ -61,7 +75,8 @@ class Save implements HttpPostActionInterface {
             Session $customerSession,
             StoreManagerInterface $storeManager,
             LoggerInterface $logger,
-            Form $form
+            Form $form,
+            DataPersistorInterface $dataPersistor,
     ) {
         $this->messageManager = $messageManager;
         $this->resultFactory = $resultFactory;
@@ -78,6 +93,7 @@ class Save implements HttpPostActionInterface {
         $this->storeManager = $storeManager;
         $this->logger = $logger;
         $this->form = $form;
+        $this->dataPersistor = $dataPersistor;
     }
 
     /**
@@ -101,6 +117,7 @@ class Save implements HttpPostActionInterface {
                         __('An error occurred while processing your form. %1', $e->getMessage())
                 );
                 $this->logger->error($e->getMessage());
+                $this->dataPersistor->set('training_feedback', $post);
                 $resultRedirect->setPath('*/*/form');
             }
         }
