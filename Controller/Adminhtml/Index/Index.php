@@ -3,74 +3,40 @@ declare(strict_types=1);
 
 namespace Training\Feedback\Controller\Adminhtml\Index;
 
-use Magento\Framework\App\ActionInterface;
+use Magento\Backend\App\Action;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Message\ManagerInterface;
-use Magento\Framework\AuthorizationInterface;
 use Training\Feedback\Model\ResourceModel\Feedback as Resource;
 
 /**
  * Index page
  */
-class Index implements ActionInterface
+class Index extends Action
 {
-    /**
-     *
-     */
     const ADMIN_RESOURCE = 'Training_Feedback::feedback_view';
 
-    /**
-     * @var ResultFactory
-     */
     protected $resultFactory;
-    
-
-    /**
-     * @var ManagerInterface
-     */
     protected $messageManager;
-
-    /**
-     * @var Resource
-     */
     private Resource $resource;
-    
-     /**
-     * 
-     * @var AuthorizationInterface
-     */
-    private AuthorizationInterface $authorization;
 
-    /**
-     * @param ResultFactory $resultFactory
-     * @param DataPersistorInterface $dataPersistor    
-     * @param Resource $resource     
-     * @param ManagerInterface $messageManager
-     */
     public function __construct(        
         ResultFactory $resultFactory,               
         Resource $resource,        
         ManagerInterface $messageManager,
-        AuthorizationInterface $authorization    
+        \Magento\Backend\App\Action\Context $context
     ) {
-        $this->resultFactory = $resultFactory;       
+        parent::__construct($context);
+        $this->resultFactory = $resultFactory;
         $this->resource = $resource;
         $this->messageManager = $messageManager;
-        $this->authorization = $authorization;
     }
 
-    /**
-     * @return ResultInterface
-     */
-    public function execute()
+    public function execute(): ResultInterface
     {
-        
-        // Check if the admin user has the required permission
-        if (!$this->authorization->isAllowed(self::ADMIN_RESOURCE)) {
+        if (!$this->isAllowed()) {
             $this->messageManager->addErrorMessage(__('You are not authorized to view feedbacks.'));
-            return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)
-                            ->setUrl($this->urlBuilder->getUrl('*/*/'));
+            return $this->_redirect('*/*/');
         }
         
         $this->displayNotPublishedFeedbacksNumber();
@@ -81,9 +47,6 @@ class Index implements ActionInterface
         return $resultPage;
     }
 
-    /**
-     * @return void
-     */
     private function displayNotPublishedFeedbacksNumber(): void
     {
         if ($this->resource->getNotPublishedFeedbacksNumber()) {
@@ -94,9 +57,6 @@ class Index implements ActionInterface
         }
     }
 
-    /**
-     * @return void
-     */
     private function displayNotRepliedFeedbacksNumber(): void
     {
         if ($this->resource->getNotRepliedFeedbacksNumber()) {
@@ -105,5 +65,10 @@ class Index implements ActionInterface
                     $this->resource->getNotRepliedFeedbacksNumber())
             );
         }
+    }
+
+    protected function isAllowed(): bool
+    {
+        return $this->_authorization->isAllowed(self::ADMIN_RESOURCE);
     }
 }

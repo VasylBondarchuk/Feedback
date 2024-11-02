@@ -1,4 +1,4 @@
-<?php $feedback = $block->getFeedback(); ?>
+<?php $feedback = $block->getFeedback();?>
 <b><?= __('Ratings:') ?></b>
 <ul>
     <?php foreach ($block->getRating()->getActiveRatingOptions() as $ratingOption): ?>
@@ -10,9 +10,9 @@
         ?>
         <li class="rating-item">
             <span class="rating-name"><?= $block->escapeHtml($ratingOption->getRatingOptionName()) ?>:</span>
-            <div class="stars" data-max="<?= $ratingOption->getRatingOptionMaxValue() ?>">
-                <?php
-                for ($i = 1; $i <= $ratingOption->getRatingOptionMaxValue(); $i++):
+            <div class="stars" data-max="<?= $block->getRating()->getRatingOptionMaxValue() ?>">
+                <?php                
+                    for ($i = 1; $i <= $block->getRating()->getRatingOptionMaxValue(); $i++):
                     ?>
                     <span class="star<?= $i <= $ratingValue ? ' filled' : '' ?>">&#9733;</span>
                 <?php endfor; ?>

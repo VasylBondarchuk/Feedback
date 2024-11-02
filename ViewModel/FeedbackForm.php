@@ -1,6 +1,5 @@
 <?php
 declare(strict_types=1);
-
 namespace Training\Feedback\ViewModel;
 
 use Magento\Customer\Api\CustomerRepositoryInterface;

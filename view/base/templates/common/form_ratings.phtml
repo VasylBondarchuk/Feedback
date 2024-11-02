@@ -11,7 +11,7 @@
                     <tr class="rating-row">
                         <td class="rating-name"><?= $block->escapeHtml($ratingOption->getRatingOptionName()) ?>:</td>
                         <td class="rating-stars">
-                            <div class="stars" data-max="<?= $ratingOption->getRatingOptionMaxValue() ?>" data-current="<?= $ratingValue ?>" data-rating-option-id="<?= $ratingOption->getRatingOptionId() ?>">
+                            <div class="stars" data-max="<?= $viewModel->getRatingOptionMaxValue() ?>" data-current="<?= $ratingValue ?>" data-rating-option-id="<?= $ratingOption->getRatingOptionId() ?>">
                                 <?php for ($i = $viewModel->getRatingOptionMaxValue(); $i >= 1; $i--): ?>
                                     <input type="radio"
                                            name="ratings[<?= $ratingOption->getRatingOptionId() ?>]"

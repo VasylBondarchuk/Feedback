@@ -52,7 +52,7 @@ class FeedbackConfigProvider extends AbstractHelper
      * 
      * @return bool
      */
-    public function isRatingsEnabled() : ?string
+    public function isRatingsEnabled() : bool
     {
         return $this->getConfigValue(self::XML_PATH_RATINGS_CONFIGURATION_GROUP , 'enable_feedback_ratings') == '1';
     }
