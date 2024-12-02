@@ -143,7 +143,6 @@
                 <sorting>asc</sorting>
             </settings>
         </column> 
-        
         <column name="is_anonymous" component="Magento_Ui/js/grid/columns/select">
             <settings>
                 <options class="Magento\Config\Model\Config\Source\Yesno"/>
@@ -151,15 +150,14 @@
                 <dataType>select</dataType>
                 <label translate="true">Is Anonymous</label>
             </settings>
-        </column>
-  
-                                
+        </column>            
         <column name="author_name">
             <settings>
                 <filter>text</filter>
                 <label translate="true">Author Name</label>
             </settings>
         </column>
+        
         <column name="author_email">
             <settings>
                 <filter>text</filter>
@@ -171,7 +169,7 @@
                 <filter>text</filter>
                 <label translate="true">Feedback text</label>
             </settings>
-        </column>
+        </column>        
         <column name="is_active" component="Magento_Ui/js/grid/columns/select">
             <settings>
                 <options class="Magento\Config\Model\Config\Source\Yesno"/>
@@ -179,7 +177,7 @@
                 <dataType>select</dataType>
                 <label translate="true">Published</label>
             </settings>
-        </column>
+        </column>        
         <column name="reply_notification" component="Magento_Ui/js/grid/columns/select">
             <settings>
                 <options class="Magento\Config\Model\Config\Source\Yesno"/>
@@ -187,7 +185,7 @@
                 <dataType>select</dataType>
                 <label translate="true">Reply Notification</label>
             </settings>
-        </column>
+        </column>        
         <column name="is_replied" component="Magento_Ui/js/grid/columns/select">
             <settings>
                 <options class="Magento\Config\Model\Config\Source\Yesno"/>
@@ -195,7 +193,17 @@
                 <dataType>select</dataType>
                 <label translate="true">Is Replied</label>
             </settings>
+        </column>        
+        
+        <column name="visibility" class="Magento\Store\Ui\Component\Listing\Column\Store">
+            <settings>
+                <label translate="true">Visibility</label>
+                <bodyTmpl>ui/grid/cells/html</bodyTmpl>
+                <sortable>false</sortable>
+            </settings>
         </column>
+
+   
         <column name="creation_time" class="Magento\Ui\Component\Listing\Columns\Date"
                 component="Magento_Ui/js/grid/columns/date">
             <settings>
@@ -203,7 +211,7 @@
                 <dataType>date</dataType>
                 <label translate="true">Created</label>
             </settings>
-        </column>
+        </column>        
         <column name="update_time" class="Magento\Ui\Component\Listing\Columns\Date"
                 component="Magento_Ui/js/grid/columns/date">
             <settings>
@@ -211,7 +219,7 @@
                 <dataType>date</dataType>
                 <label translate="true">Modified</label>
             </settings>
-        </column>
+        </column>         
         <actionsColumn name="actions" class="Training\Feedback\Ui\Component\Feedback\Listing\Column\Actions">
             <settings>
                 <indexField>feedback_id</indexField>
