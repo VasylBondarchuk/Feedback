@@ -17,29 +17,37 @@
                 <field id="top_menu_link_name" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label> Top menu link name</label>
                     <validate>required-entry</validate>
-                    <backend_model>Training\Feedback\Model\Config\Backend\NonEmptyValidation</backend_model>
+                    <backend_model>Training\Feedback\Model\Config\Backend\NonEmptyFieldValidator</backend_model>
                 </field>
                 
                 <field id="publish_feedback_without_moderation" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label> Publish feedback without moderation</label>
                     <validate>required-entry</validate>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <backend_model>Training\Feedback\Model\Config\Backend\NonEmptyValidation</backend_model>
+                    <backend_model>Training\Feedback\Model\Config\Backend\NonEmptyFieldValidator</backend_model>
                 </field>
                 
                 <field id="add_feedback_by_guests" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label> Allow not registered users (guests) to add feedback?</label>
                     <validate>required-entry</validate>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <backend_model>Training\Feedback\Model\Config\Backend\NonEmptyValidation</backend_model>
+                    <backend_model>Training\Feedback\Model\Config\Backend\NonEmptyFieldValidator</backend_model>
                 </field>
                 
                 <field id="allow_anonymous" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label> Allow anonymous feedback</label>
                     <validate>required-entry</validate>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <backend_model>Training\Feedback\Model\Config\Backend\NonEmptyValidation</backend_model>
+                    <backend_model>Training\Feedback\Model\Config\Backend\NonEmptyFieldValidator</backend_model>
                 </field>
+                
+                <field id="truncate_length" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Display Length</label>
+                    <comment>Set the maximum number of characters displayed for Feedback text in the admin grid. The full text remains stored.</comment>
+                    <backend_model>Training\Feedback\Model\Config\Backend\PositiveIntegerValidator</backend_model>
+                    <validate>required-entry validate-number</validate>                   
+                </field>
+
             </group>
             
             <!-- Feedback Ratings Configuration -->
@@ -50,13 +58,13 @@
                     <label> Enable feedback ratings</label>
                     <validate>required-entry</validate>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <backend_model>Training\Feedback\Model\Config\Backend\NonEmptyValidation</backend_model>
+                    <backend_model>Training\Feedback\Model\Config\Backend\NonEmptyFieldValidator</backend_model>
                 </field>
                 
                 <field id="rating_max_value" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Ratings maximum value</label>
                     <validate>required-entry validate-digits</validate>
-                    <backend_model>Training\Feedback\Model\Config\Backend\RatingMaxValue</backend_model>
+                    <backend_model>Training\Feedback\Model\Config\Backend\PositiveIntegerValidator</backend_model>
                 </field>
             </group>
             
@@ -67,13 +75,13 @@
                 <field id="admin_email_new_feedback_notification" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label> New feedback notification recipient email</label>
                     <validate>required-entry validate-email</validate>
-                    <backend_model>Training\Feedback\Model\Config\Backend\NonEmptyValidation</backend_model>
+                    <backend_model>Training\Feedback\Model\Config\Backend\NonEmptyFieldValidator</backend_model>
                 </field>
                 
                 <field id="admin_name_new_feedback_notification" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label> New feedback notification recipient name</label>
                     <validate>required-entry</validate>
-                    <backend_model>Training\Feedback\Model\Config\Backend\NonEmptyValidation</backend_model>
+                    <backend_model>Training\Feedback\Model\Config\Backend\NonEmptyFieldValidator</backend_model>
                 </field>
             </group>
             
@@ -85,14 +93,14 @@
                     <label>Feedback background color</label>
                     <validate>required-entry</validate>
                     <frontend_model>Training\Feedback\Block\Colorpicker</frontend_model>
-                    <backend_model>Training\Feedback\Model\Config\Backend\NonEmptyValidation</backend_model>
+                    <backend_model>Training\Feedback\Model\Config\Backend\NonEmptyFieldValidator</backend_model>
                 </field>
                 
                 <field id="reply_background_color" translate="label" sortOrder="20" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Reply background color</label>
                     <validate>required-entry</validate>
                     <frontend_model>Training\Feedback\Block\Colorpicker</frontend_model>
-                    <backend_model>Training\Feedback\Model\Config\Backend\NonEmptyValidation</backend_model>
+                    <backend_model>Training\Feedback\Model\Config\Backend\NonEmptyFieldValidator</backend_model>
                 </field>
             </group>
         </section>

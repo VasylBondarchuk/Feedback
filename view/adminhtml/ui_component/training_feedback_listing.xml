@@ -164,7 +164,7 @@
                 <label translate="true">Author Email</label>
             </settings>
         </column>
-        <column name="message">
+        <column name="message" class="Training\Feedback\Ui\Component\Feedback\Listing\Column\Message">
             <settings>
                 <filter>text</filter>
                 <label translate="true">Feedback text</label>

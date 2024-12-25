@@ -13,28 +13,32 @@ class FeedbackConfigProvider extends AbstractHelper
     private const XML_PATH_RATINGS_CONFIGURATION_GROUP = 'feedback_ratings_configuration/';
     private const XML_PATH_EMAIL_NOTIFICATIONS_CONFIGURATION_GROUP = 'feedback_configuration_email_notifications/';
     private const XML_PATH_FEEDBACK_REPLY_APPEARANCE_CONFIGURATION_GROUP = 'feedback_configuration_appearance/';
-    
-    
+    private const DEFAULT_DISPLAY_LENGTH = 50; // Default value for display length
+
     /**
      * Get configuration value by field
      * 
+     * @param string $group
      * @param string $field
      * @param string $scope
      * @return string|null
      */
-    public function getConfigValue(string $group, string $field, $scope = ScopeInterface::SCOPE_STORE)
+    public function getConfigValue(string $group, string $field, $scope = ScopeInterface::SCOPE_STORE): ?string
     {
-        return $this->scopeConfig->getValue(self::XML_PATH_FEEDBACK_CONFIGURATION_SECTION . $group . $field, $scope);
+        return $this->scopeConfig->getValue(
+            self::XML_PATH_FEEDBACK_CONFIGURATION_SECTION . $group . $field, 
+            $scope
+        );
     }
-    
+
     /**
      * Get top menu link name
      * 
      * @return string|null
      */
-    public function getTopMenuLinkName() : ?string
+    public function getTopMenuLinkName(): ?string
     {
-        return $this->getConfigValue(self::XML_PATH_GENERAL_CONFIGURATION_GROUP , 'top_menu_link_name');
+        return $this->getConfigValue(self::XML_PATH_GENERAL_CONFIGURATION_GROUP, 'top_menu_link_name');
     }
 
     /**
@@ -42,9 +46,9 @@ class FeedbackConfigProvider extends AbstractHelper
      * 
      * @return string|null
      */
-    public function getRatingMaxValue() : ?string
+    public function getRatingMaxValue(): ?string
     {
-        return $this->getConfigValue(self::XML_PATH_RATINGS_CONFIGURATION_GROUP , 'rating_max_value');
+        return $this->getConfigValue(self::XML_PATH_RATINGS_CONFIGURATION_GROUP, 'rating_max_value');
     }
 
     /**
@@ -52,9 +56,9 @@ class FeedbackConfigProvider extends AbstractHelper
      * 
      * @return bool
      */
-    public function isRatingsEnabled() : bool
+    public function isRatingsEnabled(): bool
     {
-        return $this->getConfigValue(self::XML_PATH_RATINGS_CONFIGURATION_GROUP , 'enable_feedback_ratings') == '1';
+        return $this->getConfigValue(self::XML_PATH_RATINGS_CONFIGURATION_GROUP, 'enable_feedback_ratings') == '1';
     }
 
     /**
@@ -62,9 +66,19 @@ class FeedbackConfigProvider extends AbstractHelper
      * 
      * @return string|null
      */
-    public function getBackgroundColor() : ?string
+    public function getBackgroundColor(): ?string
     {
-        return $this->getConfigValue(self::XML_PATH_FEEDBACK_REPLY_APPEARANCE_CONFIGURATION_GROUP , 'feedback_background_color');
-    }  
-    
+        return $this->getConfigValue(self::XML_PATH_FEEDBACK_REPLY_APPEARANCE_CONFIGURATION_GROUP, 'feedback_background_color');
+    }
+
+    /**
+     * Get the display length for feedback text.
+     *
+     * @return int
+     */
+    public function getDisplayLength(): int
+    {
+        $length = $this->getConfigValue(self::XML_PATH_GENERAL_CONFIGURATION_GROUP, 'truncate_length');
+        return is_numeric($length) && (int)$length > 0 ? (int)$length : self::DEFAULT_DISPLAY_LENGTH;
+    }
 }
